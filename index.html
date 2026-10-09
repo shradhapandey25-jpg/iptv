@@ -50,6 +50,7 @@
       overflow: hidden;
     }
 
+    /* Top Navigation Header */
     header {
       height: 66px;
       background: rgba(16, 18, 26, 0.85);
@@ -163,18 +164,29 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+
     .btn-secondary {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--border-subtle);
       color: var(--text-main);
     }
 
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* Main Container */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
+    /* Left Sidebar */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -250,6 +262,11 @@
       cursor: pointer;
     }
 
+    .sidebar-footer a:hover {
+      color: var(--accent-primary);
+    }
+
+    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -258,6 +275,7 @@
       background: var(--bg-dark);
     }
 
+    /* Player Arena */
     .player-theater {
       background: #000;
       position: relative;
@@ -315,6 +333,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
+    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -419,6 +438,7 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
+    /* Channels Grid + Side Ad Rail */
     .content-layout {
       flex: 1;
       display: flex;
@@ -874,7 +894,7 @@
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;News&quot;,Channel Name&#10;https://..."></textarea>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;INT&quot; group-title=&quot;Movies&quot;,Cine Sony&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -884,14 +904,14 @@
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
-    // Exactly matching Sony Cine channel & official badge
+    // Cine Sony from International Movies Category
     const SONY_CINE_CHANNEL = {
-      id: "ch_sony_cine",
-      name: "Sony Cine",
+      id: "ch_cine_sony_intl",
+      name: "Cine Sony",
       group: "Movies",
-      country: "United States",
-      logo: "https://raw.githubusercontent.com/iptv-org/api/master/data/logos/SonyCine.us.png",
-      url: "https://linear-416.frequency.stream/mt/studio/416/hls/master/playlist.m3u8"
+      country: "International",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
+      url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
     };
 
     const COUNTRY_NAMES = {
@@ -908,8 +928,8 @@
     let allChannels = [SONY_CINE_CHANNEL];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
     let activeView = "ALL";
-    let selectedCountry = "ALL";
-    let selectedGenre = "All";
+    let selectedCountry = "International";
+    let selectedGenre = "Movies";
     let activeChannelId = SONY_CINE_CHANNEL.id;
     let hls = null;
 
@@ -1010,7 +1030,7 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = [SONY_CINE_CHANNEL, ...parsed];
+        allChannels = [SONY_CINE_CHANNEL, ...parsed.filter(x => x.name.toLowerCase() !== "cine sony")];
         localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
         initializeData();
       }
@@ -1253,7 +1273,7 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = [SONY_CINE_CHANNEL, ...newChannels.filter(x => x.name !== SONY_CINE_CHANNEL.name)];
+      allChannels = [SONY_CINE_CHANNEL, ...newChannels.filter(x => x.name.toLowerCase() !== "cine sony")];
       localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
       importModal.classList.remove('open');
       initializeData();
