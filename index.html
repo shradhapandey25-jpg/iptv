@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IPTV Dekh - Verified Live Streams</title>
+  <title>IPTV Dekh - Live TV Stream Player</title>
+  
   <!-- HLS.js for .m3u8 live streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-  <!-- Plus Jakarta Sans Font & Lucide Icons -->
+  <!-- Google Fonts & Lucide Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google AdSense Script (Replace ca-pub-XXXXXXXXXXXXXXXX with your Client ID) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -21,11 +25,11 @@
       --border-subtle: rgba(255, 255, 255, 0.08);
       --accent-primary: #ff4757;
       --accent-secondary: #ff6b81;
-      --accent-green: #10b981;
       --accent-glow: rgba(255, 71, 87, 0.28);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --sidebar-width: 260px;
+      --sidebar-width: 240px;
+      --ad-rail-width: 320px;
     }
 
     * {
@@ -47,7 +51,7 @@
 
     /* Header */
     header {
-      height: 68px;
+      height: 66px;
       background: rgba(16, 18, 26, 0.85);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
@@ -111,7 +115,7 @@
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-subtle);
       border-radius: 9999px;
-      padding: 0.6rem 1rem 0.6rem 2.6rem;
+      padding: 0.58rem 1rem 0.58rem 2.6rem;
       color: var(--text-main);
       outline: none;
       font-size: 0.88rem;
@@ -181,8 +185,8 @@
       overflow: hidden;
     }
 
-    /* Sidebar */
-    aside {
+    /* Left Sidebar Navigation */
+    aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
       border-right: 1px solid var(--border-subtle);
@@ -205,6 +209,7 @@
       list-style: none;
       padding: 0 0.5rem;
       overflow-y: auto;
+      flex: 1;
     }
 
     .nav-item {
@@ -240,13 +245,27 @@
       color: var(--text-muted);
     }
 
-    .badge-tested {
-      background: rgba(16, 185, 129, 0.18);
-      color: var(--accent-green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .sidebar-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
     }
 
-    /* Main Content Area */
+    .sidebar-footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .sidebar-footer a:hover {
+      color: var(--accent-primary);
+    }
+
+    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -255,7 +274,7 @@
       background: var(--bg-dark);
     }
 
-    /* Theater Screen */
+    /* Theater / Stream Arena */
     .player-theater {
       background: #000;
       position: relative;
@@ -313,7 +332,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Filter Bar Directly Under Player */
+    /* Cascading Category & Country Filter Bar */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -404,9 +423,6 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
     }
 
     .pill:hover {
@@ -421,7 +437,13 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
-    /* Channel Cards Grid */
+    /* Content Area with Side Ad Rail */
+    .content-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
     .grid-container {
       flex: 1;
       overflow-y: auto;
@@ -437,7 +459,7 @@
 
     .channels-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1.1rem;
     }
 
@@ -508,21 +530,6 @@
       text-overflow: ellipsis;
     }
 
-    .tested-tag {
-      position: absolute;
-      top: 0.55rem;
-      left: 0.55rem;
-      background: rgba(16, 185, 129, 0.9);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
     .fav-btn {
       position: absolute;
       top: 0.55rem;
@@ -544,7 +551,43 @@
       color: #fbbf24;
     }
 
-    /* Import Modal */
+    /* Non-Intrusive Right-Side Ad Rail */
+    .ad-rail {
+      width: var(--ad-rail-width);
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0.75rem;
+      gap: 1.5rem;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .ad-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-align: center;
+      display: block;
+    }
+
+    .ad-slot-box {
+      width: 300px;
+      min-height: 250px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Modals (Import + Legal Disclaimer) */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -567,16 +610,37 @@
     .modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      width: 520px;
+      width: 580px;
       max-width: 90vw;
       border-radius: 14px;
-      padding: 1.5rem;
+      padding: 1.75rem;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .modal-card h2 {
       font-size: 1.25rem;
       margin-bottom: 0.5rem;
+    }
+
+    .modal-scrollable {
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .modal-scrollable p {
+      margin-bottom: 0.85rem;
+    }
+
+    .modal-scrollable h3 {
+      font-size: 0.95rem;
+      color: #fff;
+      margin: 1rem 0 0.4rem 0;
     }
 
     .modal-tabs {
@@ -633,8 +697,12 @@
       border-color: var(--accent-primary);
     }
 
+    @media (max-width: 1100px) {
+      .ad-rail { display: none; }
+    }
+
     @media (max-width: 860px) {
-      aside { display: none; }
+      aside.nav-sidebar { display: none; }
       .player-theater { height: 35vh; }
       .country-select-wrapper { min-width: 100%; }
     }
@@ -658,9 +726,13 @@
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload full iptv-org playlist">
+      <button class="btn btn-secondary" id="openDisclaimerBtn" title="View DMCA & Legal Disclaimer">
+        <i data-lucide="shield-alert"></i>
+        <span>Disclaimer</span>
+      </button>
+      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload default iptv-org playlist">
         <i data-lucide="rotate-ccw"></i>
-        <span>Reload All</span>
+        <span>Reload</span>
       </button>
       <button class="btn btn-primary" id="openImportBtn">
         <i data-lucide="folder-plus"></i>
@@ -672,17 +744,10 @@
   <!-- App Layout -->
   <div class="app-body">
     <!-- Left Navigation Sidebar -->
-    <aside>
+    <aside class="nav-sidebar">
       <div class="sidebar-heading">Navigation</div>
       <ul class="nav-list">
-        <li class="nav-item active" data-view="TESTED">
-          <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <i data-lucide="check-circle" style="width: 16px; height: 16px; color: var(--accent-green);"></i>
-            <span>Tested & Working</span>
-          </div>
-          <span class="badge badge-tested" id="sidebarTestedBadge">0</span>
-        </li>
-        <li class="nav-item" data-view="ALL">
+        <li class="nav-item active" data-view="ALL">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
             <i data-lucide="globe" style="width: 16px; height: 16px;"></i>
             <span>All Channels</span>
@@ -697,6 +762,11 @@
           <span class="badge" id="sidebarFavBadge">0</span>
         </li>
       </ul>
+
+      <div class="sidebar-footer">
+        <div>IPTV Dekh &copy; 2026</div>
+        <div><a id="footerDisclaimerLink">Legal & DMCA Disclaimer</a></div>
+      </div>
     </aside>
 
     <!-- Main Player & Catalog -->
@@ -740,24 +810,82 @@
         </div>
       </div>
 
-      <!-- Channel Grid -->
-      <div class="grid-container">
-        <div class="grid-header">
-          <h2 id="viewHeading" style="font-size: 1.05rem; font-weight: 600;">Tested & Working Streams</h2>
-          <span class="badge" id="channelCountBadge">0 channels</span>
+      <!-- Content Layout: Channels Grid + Side Ad Rail -->
+      <div class="content-layout">
+        <div class="grid-container">
+          <div class="grid-header">
+            <h2 id="viewHeading" style="font-size: 1.05rem; font-weight: 600;">All Channels</h2>
+            <span class="badge" id="channelCountBadge">0 channels</span>
+          </div>
+          <div class="channels-grid" id="channelsGrid">
+            <!-- Channels Rendered Here -->
+          </div>
         </div>
-        <div class="channels-grid" id="channelsGrid">
-          <!-- Channels Rendered Here -->
-        </div>
+
+        <!-- Non-Intrusive Side AdSense Rail (Never blocks or overlaps video) -->
+        <aside class="ad-rail">
+          <div>
+            <span class="ad-label">Advertisement</span>
+            <div class="ad-slot-box">
+              <!-- Google AdSense Responsive Unit (300x250 Medium Rectangle) -->
+              <ins class="adsbygoogle"
+                   style="display:inline-block;width:300px;height:250px"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-slot="1234567890"></ins>
+              <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+          </div>
+
+          <div>
+            <span class="ad-label">Sponsored Links</span>
+            <div class="ad-slot-box" style="min-height: 250px;">
+              <!-- Second AdSense Unit (300x250) -->
+              <ins class="adsbygoogle"
+                   style="display:inline-block;width:300px;height:250px"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-slot="0987654321"></ins>
+              <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </div>
+          </div>
+        </aside>
       </div>
     </main>
+  </div>
+
+  <!-- Legal & DMCA Disclaimer Modal -->
+  <div class="modal-overlay" id="disclaimerModal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Legal Disclaimer & DMCA Policy</h2>
+        <i data-lucide="x" style="cursor: pointer;" id="closeDisclaimerBtn"></i>
+      </div>
+      <div class="modal-scrollable">
+        <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers (including the public <em>iptv-org</em> catalog).</p>
+
+        <h3>1. Client-Side Player Architecture</h3>
+        <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
+
+        <h3>2. Copyright & Intellectual Property</h3>
+        <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
+
+        <h3>3. DMCA & Content Removal</h3>
+        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream, as IPTV Dekh possesses no technical control over external streaming endpoints. To request stream removal from public indexes, please submit notices to the respective M3U playlist maintainers.</p>
+      </div>
+      <div style="margin-top: 1rem; text-align: right;">
+        <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
+      </div>
+    </div>
   </div>
 
   <!-- Import Modal -->
   <div class="modal-overlay" id="importModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2>Import M3U Streams</h2>
+        <h2>Import Custom Playlist</h2>
         <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
       </div>
 
@@ -785,7 +913,7 @@
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;News&quot;,CNN&#10;https://..."></textarea>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;News&quot;,Channel Name&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -793,90 +921,7 @@
   </div>
 
   <script>
-    // Verified, high-availability public live streams with CORS open
-    const TESTED_CHANNELS = [
-      {
-        id: "t_bloomberg",
-        name: "Bloomberg TV (Live Business)",
-        group: "Business",
-        country: "United States",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Bloomberg_Television_logo.svg/512px-Bloomberg_Television_logo.svg.png",
-        url: "https://bloomberg-p2p.live-delivery.ooyala.com/out/u/p2p_live.m3u8",
-        tested: true
-      },
-      {
-        id: "t_skynews",
-        name: "Sky News (24/7 Global)",
-        group: "News",
-        country: "United Kingdom",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/Sky_News_2020.svg/512px-Sky_News_2020.svg.png",
-        url: "https://skynews-live.cdn.skypack.sk/skynews/live/hls/skynews_live.m3u8",
-        tested: true
-      },
-      {
-        id: "t_redbull",
-        name: "Red Bull TV (Extreme Sports)",
-        group: "Sports",
-        country: "Austria",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_TV_logo.svg/512px-Red_Bull_TV_logo.svg.png",
-        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
-        tested: true
-      },
-      {
-        id: "t_dw_eng",
-        name: "DW English (World News)",
-        group: "News",
-        country: "Germany",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Deutsche_Welle_symbol_2012.svg/512px-Deutsche_Welle_symbol_2012.svg.png",
-        url: "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
-        tested: true
-      },
-      {
-        id: "t_nasa",
-        name: "NASA TV Public (Science/Documentary)",
-        group: "Documentary",
-        country: "United States",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/512px-NASA_logo.svg.png",
-        url: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
-        tested: true
-      },
-      {
-        id: "t_france24",
-        name: "France 24 English",
-        group: "News",
-        country: "France",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/65/France_24_logo.svg/512px-France_24_logo.svg.png",
-        url: "https://static.france24.com/live/F24_EN_LO_HLS/live_tv.m3u8",
-        tested: true
-      },
-      {
-        id: "t_aljazeera",
-        name: "Al Jazeera English Live",
-        group: "News",
-        country: "Qatar",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Al_Jazeera_English_logo.svg/512px-Al_Jazeera_English_logo.svg.png",
-        url: "https://live-hls-web-aje.getaj.net/AJE/01.m3u8",
-        tested: true
-      },
-      {
-        id: "t_sintel",
-        name: "Sintel Cinema (Movie Test)",
-        group: "Movies",
-        country: "International",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Sintel_poster.jpg",
-        url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-        tested: true
-      },
-      {
-        id: "t_bigbuck",
-        name: "Big Buck Bunny (Animation HD)",
-        group: "Entertainment",
-        country: "International",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/7/70/Big.Buck.Bunny.-.Opening.Screen.png",
-        url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        tested: true
-      }
-    ];
+    const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
     // Country Code to Name dictionary
     const COUNTRY_NAMES = {
@@ -893,7 +938,7 @@
     // App State
     let allChannels = [];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
-    let activeView = "TESTED"; // TESTED | ALL | FAV
+    let activeView = "ALL"; // ALL | FAV
     let selectedCountry = "ALL";
     let selectedGenre = "All";
     let activeChannelId = null;
@@ -910,21 +955,16 @@
     const genrePillsContainer = document.getElementById('genrePillsContainer');
     const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
     const sidebarFavBadge = document.getElementById('sidebarFavBadge');
-    const sidebarTestedBadge = document.getElementById('sidebarTestedBadge');
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      sidebarTestedBadge.innerText = TESTED_CHANNELS.length;
 
       const saved = localStorage.getItem('iptv_dekh_channels');
       if (saved) {
         allChannels = JSON.parse(saved);
         initializeData();
       } else {
-        // Pre-populate with tested channels + attempt background fetch of iptv-org
-        allChannels = [...TESTED_CHANNELS];
-        initializeData();
-        fetchBackgroundIptvOrg();
+        await loadPlaylist(DEFAULT_PLAYLIST_URL);
       }
     });
 
@@ -945,8 +985,7 @@
             group: "General",
             country: "International",
             logo: "",
-            url: "",
-            tested: false
+            url: ""
           };
 
           // Group / TV Category
@@ -970,7 +1009,7 @@
             item.name = line.substring(commaIndex + 1).trim();
           }
 
-          // If country not found in attributes, check if name has country in it
+          // Fallback Country detection from Name
           if (item.country === "International") {
             for (const [code, name] of Object.entries(COUNTRY_NAMES)) {
               if (item.name.includes(`(${code})`) || item.name.includes(`[${code}]`)) {
@@ -989,22 +1028,39 @@
       return parsed;
     }
 
-    async function fetchBackgroundIptvOrg() {
+    // CORS-Safe Playlist Loader
+    async function loadPlaylist(url) {
+      channelsGrid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+          <i data-lucide="loader-2" class="animate-spin" style="width: 36px; height: 36px; color: var(--accent-primary); margin-bottom: 0.5rem;"></i>
+          <p>Connecting to IPTV Dekh catalog...</p>
+        </div>
+      `;
+      lucide.createIcons();
+
+      let text = "";
       try {
-        const res = await fetch("https://iptv-org.github.io/iptv/index.m3u");
-        const text = await res.text();
-        const parsed = parseM3U(text);
-        if (parsed.length > 0) {
-          // Merge tested channels first
-          allChannels = [...TESTED_CHANNELS, ...parsed];
-          localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
-          setupCountrySelector();
-          setupGenrePills();
-          updateBadges();
-          renderChannels();
-        }
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Fetch failed");
+        text = await res.text();
       } catch (e) {
-        console.warn("External playlist auto-fetch skipped; working channels are ready.");
+        try {
+          const proxyRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+          text = await proxyRes.text();
+        } catch (proxyError) {
+          alert("Could not load stream. Please import via upload file or paste text.");
+          channelsGrid.innerHTML = "";
+          return;
+        }
+      }
+
+      const parsed = parseM3U(text);
+      if (parsed.length > 0) {
+        allChannels = parsed;
+        localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
+        initializeData();
+      } else {
+        alert("No valid streams found in this playlist.");
       }
     }
 
@@ -1013,31 +1069,28 @@
       setupGenrePills();
       updateBadges();
       renderChannels();
-      if (TESTED_CHANNELS.length > 0) {
-        playChannel(TESTED_CHANNELS[0]);
+      if (allChannels.length > 0) {
+        playChannel(allChannels[0]);
       }
     }
 
     function updateBadges() {
       sidebarTotalBadge.innerText = allChannels.length;
       sidebarFavBadge.innerText = favorites.size;
-      sidebarTestedBadge.innerText = TESTED_CHANNELS.length;
     }
 
     // Populate Country Dropdown
     function setupCountrySelector() {
-      const activeList = activeView === "TESTED" ? TESTED_CHANNELS : allChannels;
       const countries = new Set();
-      
-      activeList.forEach(ch => {
+      allChannels.forEach(ch => {
         if (ch.country && ch.country !== "International") countries.add(ch.country);
       });
 
       const sortedCountries = Array.from(countries).sort();
-      countrySelector.innerHTML = `<option value="ALL">All Countries (${activeList.length})</option>` +
+      countrySelector.innerHTML = `<option value="ALL">All Countries (${allChannels.length})</option>` +
         `<option value="International">International</option>` +
         sortedCountries.map(c => {
-          const count = activeList.filter(x => x.country === c).length;
+          const count = allChannels.filter(x => x.country === c).length;
           return `<option value="${c}">${c} (${count})</option>`;
         }).join('');
 
@@ -1051,7 +1104,7 @@
 
     // Populate Category/Genre Pills
     function setupGenrePills() {
-      let scoped = activeView === "TESTED" ? TESTED_CHANNELS : allChannels;
+      let scoped = allChannels;
       if (selectedCountry !== "ALL") {
         scoped = scoped.filter(c => c.country === selectedCountry);
       }
@@ -1125,15 +1178,9 @@
     // Channels Grid Renderer
     function renderChannels() {
       const query = searchInput.value.toLowerCase();
-      let list = [];
-
-      if (activeView === "TESTED") {
-        list = [...TESTED_CHANNELS];
-      } else if (activeView === "FAV") {
-        list = allChannels.filter(c => favorites.has(c.id));
-      } else {
-        list = [...allChannels];
-      }
+      let list = activeView === "FAV" 
+        ? allChannels.filter(c => favorites.has(c.id))
+        : [...allChannels];
 
       // Filter by Country
       if (selectedCountry !== "ALL") {
@@ -1145,7 +1192,7 @@
         list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
       }
 
-      // Live Search Filter
+      // Search Filter
       if (query) {
         list = list.filter(c =>
           c.name.toLowerCase().includes(query) ||
@@ -1154,7 +1201,7 @@
         );
       }
 
-      const viewTitle = activeView === "TESTED" ? "Tested & Working" : activeView === "FAV" ? "Favorites" : "All Streams";
+      const viewTitle = activeView === "FAV" ? "Favorites" : "All Channels";
       viewHeading.innerText = `${viewTitle} • ${selectedCountry === "ALL" ? "All Countries" : selectedCountry} (${selectedGenre})`;
       channelCountBadge.innerText = `${list.length} channels`;
 
@@ -1162,7 +1209,7 @@
         channelsGrid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
             <i data-lucide="tv-minimal" style="width: 44px; height: 44px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
-            <p>No channels matching your country and category criteria.</p>
+            <p>No channels matching your criteria.</p>
           </div>
         `;
         lucide.createIcons();
@@ -1178,7 +1225,6 @@
 
         return `
           <div class="channel-card ${isActive ? 'active' : ''}" data-id="${c.id}">
-            ${c.tested ? '<div class="tested-tag"><i data-lucide="check" style="width:10px;height:10px;"></i> Verified</div>' : ''}
             <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${c.id}">
               <i data-lucide="star" style="width: 14px; height: 14px; fill: ${isFav ? 'currentColor' : 'none'}"></i>
             </button>
@@ -1201,7 +1247,7 @@
       document.querySelectorAll('.channel-card').forEach(card => {
         card.addEventListener('click', (e) => {
           if (e.target.closest('.fav-btn')) return;
-          const target = allChannels.find(x => x.id === card.getAttribute('data-id')) || TESTED_CHANNELS.find(x => x.id === card.getAttribute('data-id'));
+          const target = allChannels.find(x => x.id === card.getAttribute('data-id'));
           if (target) playChannel(target);
         });
       });
@@ -1243,10 +1289,20 @@
       location.reload();
     });
 
+    // Disclaimer Modal Handlers
+    const disclaimerModal = document.getElementById('disclaimerModal');
+    const openDisclaimer = () => disclaimerModal.classList.add('open');
+    const closeDisclaimer = () => disclaimerModal.classList.remove('open');
+
+    document.getElementById('openDisclaimerBtn').addEventListener('click', openDisclaimer);
+    document.getElementById('footerDisclaimerLink').addEventListener('click', openDisclaimer);
+    document.getElementById('closeDisclaimerBtn').addEventListener('click', closeDisclaimer);
+    document.getElementById('acknowledgeDisclaimerBtn').addEventListener('click', closeDisclaimer);
+
     // Import Modal Handlers
-    const modal = document.getElementById('importModal');
-    document.getElementById('openImportBtn').addEventListener('click', () => modal.classList.add('open'));
-    document.getElementById('closeModalBtn').addEventListener('click', () => modal.classList.remove('open'));
+    const importModal = document.getElementById('importModal');
+    document.getElementById('openImportBtn').addEventListener('click', () => importModal.classList.add('open'));
+    document.getElementById('closeModalBtn').addEventListener('click', () => importModal.classList.remove('open'));
 
     document.querySelectorAll('.modal-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1262,9 +1318,9 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = [...TESTED_CHANNELS, ...newChannels];
+      allChannels = newChannels;
       localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
-      modal.classList.remove('open');
+      importModal.classList.remove('open');
       initializeData();
     }
 
