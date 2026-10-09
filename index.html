@@ -179,7 +179,7 @@
       background: rgba(255, 255, 255, 0.09);
     }
 
-    /* Main Container */
+    /* Main App Body */
     .app-body {
       flex: 1;
       display: flex;
@@ -720,7 +720,7 @@
 
     <div class="search-box">
       <i data-lucide="search"></i>
-      <input type="text" id="searchInput" placeholder="Search channels, news, sports...">
+      <input type="text" id="searchInput" placeholder="Search channels, action, movies...">
     </div>
 
     <div class="header-actions">
@@ -894,7 +894,7 @@
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;INT&quot; group-title=&quot;Movies&quot;,Cine Sony&#10;https://..."></textarea>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;INT&quot; group-title=&quot;Action&quot;,Sony One Hits Action&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -904,14 +904,14 @@
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
-    // Cine Sony from International Movies Category
-    const SONY_CINE_CHANNEL = {
-      id: "ch_cine_sony_intl",
-      name: "Cine Sony",
-      group: "Movies",
+    // Primary Landing Channel: Sony One Hits Action (1080p)
+    const SONY_ONE_ACTION_CHANNEL = {
+      id: "ch_sony_one_action",
+      name: "Sony One Hits Action (1080p)",
+      group: "Action",
       country: "International",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
-      url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Sony_Pictures_Television_2020.svg/512px-Sony_Pictures_Television_2020.svg.png",
+      url: "https://linear-416.frequency.stream/mt/studio/416/hls/master/playlist.m3u8"
     };
 
     const COUNTRY_NAMES = {
@@ -923,14 +923,14 @@
       "RU": "Russia", "CN": "China", "NL": "Netherlands"
     };
 
-    const STANDARD_GENRES = ["All", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
+    const STANDARD_GENRES = ["All", "Action", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
 
-    let allChannels = [SONY_CINE_CHANNEL];
+    let allChannels = [SONY_ONE_ACTION_CHANNEL];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
     let activeView = "ALL";
     let selectedCountry = "International";
-    let selectedGenre = "Movies";
-    let activeChannelId = SONY_CINE_CHANNEL.id;
+    let selectedGenre = "Action";
+    let activeChannelId = SONY_ONE_ACTION_CHANNEL.id;
     let hls = null;
 
     const video = document.getElementById('iptvPlayer');
@@ -946,12 +946,12 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      playChannel(SONY_CINE_CHANNEL);
+      playChannel(SONY_ONE_ACTION_CHANNEL);
 
       const saved = localStorage.getItem('iptv_dekh_channels');
       if (saved) {
         const stored = JSON.parse(saved);
-        allChannels = [SONY_CINE_CHANNEL, ...stored.filter(x => x.id !== SONY_CINE_CHANNEL.id)];
+        allChannels = [SONY_ONE_ACTION_CHANNEL, ...stored.filter(x => x.id !== SONY_ONE_ACTION_CHANNEL.id)];
         initializeData();
       } else {
         await loadPlaylist(DEFAULT_PLAYLIST_URL);
@@ -1030,7 +1030,7 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = [SONY_CINE_CHANNEL, ...parsed.filter(x => x.name.toLowerCase() !== "cine sony")];
+        allChannels = [SONY_ONE_ACTION_CHANNEL, ...parsed.filter(x => !x.name.toLowerCase().includes("sony one hits action"))];
         localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
         initializeData();
       }
@@ -1197,7 +1197,7 @@
             <div class="channel-meta-tags">
               <span>${c.country || "INT"}</span>
               <span>•</span>
-              <span>${c.group || "General"}</span>
+              <span>${c.group || "Action"}</span>
             </div>
           </div>
         `;
@@ -1273,7 +1273,7 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = [SONY_CINE_CHANNEL, ...newChannels.filter(x => x.name.toLowerCase() !== "cine sony")];
+      allChannels = [SONY_ONE_ACTION_CHANNEL, ...newChannels.filter(x => !x.name.toLowerCase().includes("sony one hits action"))];
       localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
       importModal.classList.remove('open');
       initializeData();
