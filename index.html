@@ -50,6 +50,7 @@
       overflow: hidden;
     }
 
+    /* Top Navigation Header */
     header {
       height: 66px;
       background: rgba(16, 18, 26, 0.85);
@@ -163,18 +164,29 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+
     .btn-secondary {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--border-subtle);
       color: var(--text-main);
     }
 
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* Main Container */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
+    /* Left Sidebar */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -250,6 +262,11 @@
       cursor: pointer;
     }
 
+    .sidebar-footer a:hover {
+      color: var(--accent-primary);
+    }
+
+    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -258,8 +275,9 @@
       background: var(--bg-dark);
     }
 
+    /* Theater / Welcome Screen Arena */
     .player-theater {
-      background: #000;
+      background: radial-gradient(circle at 50% 50%, #151824 0%, #06070a 100%);
       position: relative;
       height: 44vh;
       min-height: 270px;
@@ -268,21 +286,80 @@
       justify-content: center;
       border-bottom: 1px solid var(--border-subtle);
       flex-shrink: 0;
+      overflow: hidden;
     }
 
     .video-wrapper {
       position: relative;
       width: 100%;
       height: 100%;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
+      background: #000;
     }
 
     video {
       width: 100%;
       height: 100%;
       object-fit: contain;
+    }
+
+    /* Welcome Splash Screen (Visible before any channel is clicked) */
+    .welcome-splash {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: radial-gradient(circle at center, rgba(255, 71, 87, 0.08) 0%, transparent 70%);
+      z-index: 10;
+    }
+
+    .welcome-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 107, 129, 0.1));
+      border: 1px solid rgba(255, 71, 87, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-primary);
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .welcome-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      max-width: 520px;
+      line-height: 1.5;
+      margin-bottom: 0.9rem;
+    }
+
+    .welcome-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.45;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
     }
 
     .stream-overlay {
@@ -315,6 +392,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
+    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -419,6 +497,7 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
+    /* Channels Grid + Side Ad Rail */
     .content-layout {
       flex: 1;
       display: flex;
@@ -503,6 +582,12 @@
       font-size: 0.73rem;
       color: var(--text-muted);
       overflow: hidden;
+    }
+
+    .channel-meta-tags span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .fav-btn {
@@ -593,6 +678,11 @@
       flex-direction: column;
     }
 
+    .modal-card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
     .modal-scrollable {
       overflow-y: auto;
       padding-right: 0.5rem;
@@ -669,7 +759,7 @@
 
     <div class="search-box">
       <i data-lucide="search"></i>
-      <input type="text" id="searchInput" placeholder="Search channels, action, movies...">
+      <input type="text" id="searchInput" placeholder="Search channels, news, sports, movies...">
     </div>
 
     <div class="header-actions">
@@ -677,7 +767,7 @@
         <i data-lucide="shield-alert"></i>
         <span>Disclaimer</span>
       </button>
-      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload playlist">
+      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload default playlist">
         <i data-lucide="rotate-ccw"></i>
         <span>Reload</span>
       </button>
@@ -715,16 +805,31 @@
     </aside>
 
     <main>
+      <!-- Theater: Houses Welcome Splash initially, then switches to live video -->
       <div class="player-theater">
-        <div class="video-wrapper">
-          <video id="iptvPlayer" controls playsinline autoplay></video>
+        <!-- Welcome Screen -->
+        <div class="welcome-splash" id="welcomeSplash">
+          <div class="welcome-icon-box">
+            <i data-lucide="tv" style="width: 32px; height: 32px;"></i>
+          </div>
+          <h1 class="welcome-title">Welcome to IPTV Dekh</h1>
+          <p class="welcome-subtitle">Please select any channel from the catalog below to start watching live TV.</p>
+          <div class="welcome-note">
+            <strong style="color: var(--text-main);">Notice:</strong> Stream availability and buffering speeds vary depending on your geographic location (CORS/geo-restrictions) and internet bandwidth. If a stream fails, try another channel from the list.
+          </div>
+        </div>
+
+        <!-- Video Wrapper (Hidden until a channel is chosen) -->
+        <div class="video-wrapper" id="videoWrapper">
+          <video id="iptvPlayer" controls playsinline></video>
           <div class="stream-overlay">
             <div class="live-pulse"></div>
-            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 600;">Loading stream...</span>
+            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 600;">Connecting...</span>
           </div>
         </div>
       </div>
 
+      <!-- Categories & Country Selection Bar Directly Below Player -->
       <div class="category-filter-bar">
         <div class="filter-row">
           <div class="filter-label">
@@ -748,6 +853,7 @@
         </div>
       </div>
 
+      <!-- Content Layout: Channels Grid + Side Ad Rail -->
       <div class="content-layout">
         <div class="grid-container">
           <div class="grid-header">
@@ -757,6 +863,7 @@
           <div class="channels-grid" id="channelsGrid"></div>
         </div>
 
+        <!-- Google AdSense Rail -->
         <aside class="ad-rail">
           <div>
             <span class="ad-label">Advertisement</span>
@@ -784,6 +891,7 @@
     </main>
   </div>
 
+  <!-- Legal Disclaimer Modal -->
   <div class="modal-overlay" id="disclaimerModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -794,9 +902,11 @@
         <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
         <h3>1. Client-Side Player Architecture</h3>
         <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
-        <h3>2. Copyright & Intellectual Property</h3>
+        <h3>2. Location & Bandwidth Constraints</h3>
+        <p>Stream availability is subject to third-party broadcasting endpoints, regional broadcast licenses, internet service provider routing, and local network speeds. IPTV Dekh cannot guarantee uptime or continuous latency-free broadcast from external endpoints.</p>
+        <h3>3. Copyright & Intellectual Property</h3>
         <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
-        <h3>3. DMCA & Content Removal</h3>
+        <h3>4. DMCA & Content Removal</h3>
         <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream.</p>
       </div>
       <div style="margin-top: 1rem; text-align: right;">
@@ -805,6 +915,7 @@
     </div>
   </div>
 
+  <!-- Import Modal -->
   <div class="modal-overlay" id="importModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -832,7 +943,7 @@
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;INT&quot; group-title=&quot;Action&quot;,Sony One Hits Action&#10;https://..."></textarea>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;News&quot;,Channel Name&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -840,21 +951,8 @@
   </div>
 
   <script>
-    // Invalidate prior stored channels to ensure the new landing page loads cleanly
-    localStorage.removeItem('iptv_dekh_channels');
-
-    const STORAGE_KEY = 'iptv_dekh_channels_v2';
+    const STORAGE_KEY = 'iptv_dekh_channels_v3';
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
-
-    // Primary Landing Channel: Sony One Hits Action (1080p)
-    const PRIMARY_LANDING_CHANNEL = {
-      id: "ch_sony_one_action",
-      name: "Sony One Hits Action (1080p)",
-      group: "Action",
-      country: "International",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Sony_Pictures_Television_2020.svg/512px-Sony_Pictures_Television_2020.svg.png",
-      url: "https://linear-416.frequency.stream/mt/studio/416/hls/master/playlist.m3u8"
-    };
 
     const COUNTRY_NAMES = {
       "US": "United States", "UK": "United Kingdom", "GB": "United Kingdom",
@@ -865,17 +963,19 @@
       "RU": "Russia", "CN": "China", "NL": "Netherlands"
     };
 
-    const STANDARD_GENRES = ["All", "Action", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
+    const STANDARD_GENRES = ["All", "Movies", "Action", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
 
-    let allChannels = [PRIMARY_LANDING_CHANNEL];
+    let allChannels = [];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
     let activeView = "ALL";
     let selectedCountry = "ALL";
     let selectedGenre = "All";
-    let activeChannelId = PRIMARY_LANDING_CHANNEL.id;
+    let activeChannelId = null;
     let hls = null;
 
     const video = document.getElementById('iptvPlayer');
+    const welcomeSplash = document.getElementById('welcomeSplash');
+    const videoWrapper = document.getElementById('videoWrapper');
     const channelsGrid = document.getElementById('channelsGrid');
     const searchInput = document.getElementById('searchInput');
     const currentPlayingTitle = document.getElementById('currentPlayingTitle');
@@ -888,14 +988,10 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      
-      // Start Sony One Hits Action immediately
-      playChannel(PRIMARY_LANDING_CHANNEL);
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const stored = JSON.parse(saved);
-        allChannels = [PRIMARY_LANDING_CHANNEL, ...stored.filter(x => x.id !== PRIMARY_LANDING_CHANNEL.id && x.name !== PRIMARY_LANDING_CHANNEL.name)];
+        allChannels = JSON.parse(saved);
         initializeData();
       } else {
         await loadPlaylist(DEFAULT_PLAYLIST_URL);
@@ -974,7 +1070,7 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = [PRIMARY_LANDING_CHANNEL, ...parsed.filter(x => x.name.toLowerCase() !== PRIMARY_LANDING_CHANNEL.name.toLowerCase())];
+        allChannels = parsed;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
         initializeData();
       }
@@ -1057,9 +1153,14 @@
       });
     }
 
+    // Playback Engine: Switches off Welcome screen and loads player
     function playChannel(channel) {
       activeChannelId = channel.id;
       currentPlayingTitle.innerText = channel.name;
+
+      // Hide welcome splash and reveal video player arena
+      welcomeSplash.style.display = "none";
+      videoWrapper.style.display = "flex";
 
       if (Hls.isSupported() && (channel.url.includes('.m3u8') || channel.url.includes('m3u') || channel.url.includes('live'))) {
         if (hls) hls.destroy();
@@ -1217,7 +1318,7 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = [PRIMARY_LANDING_CHANNEL, ...newChannels.filter(x => x.name.toLowerCase() !== PRIMARY_LANDING_CHANNEL.name.toLowerCase())];
+      allChannels = newChannels;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
       importModal.classList.remove('open');
       initializeData();
