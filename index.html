@@ -27,12 +27,11 @@
       --border-vibrant: rgba(229, 9, 20, 0.4);
       --netflix-red: #e50914;
       --netflix-hover: #b80710;
-      --prime-cyan: #00a8e1;
       --accent-glow: rgba(229, 9, 20, 0.35);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --sidebar-width: 240px;
-      --ad-rail-width: 320px;
+      --ad-rail-width: 190px; /* Slimmer Ad Rail */
     }
 
     * {
@@ -53,7 +52,6 @@
       overflow: hidden;
     }
 
-    /* Top Vibrant Header */
     header {
       height: 64px;
       background: rgba(10, 11, 16, 0.88);
@@ -76,6 +74,7 @@
       letter-spacing: -0.04em;
       text-decoration: none;
       user-select: none;
+      cursor: pointer;
     }
 
     .brand-icon-box {
@@ -108,7 +107,6 @@
       letter-spacing: 0.05em;
     }
 
-    /* Universal Search Input */
     .search-box {
       position: relative;
       width: 360px;
@@ -185,7 +183,6 @@
       background: rgba(255, 255, 255, 0.12);
     }
 
-    /* Mobile Search Toggle Button (Hidden on Desktop) */
     .mobile-search-btn {
       display: none;
       background: transparent;
@@ -195,14 +192,12 @@
       padding: 0.4rem;
     }
 
-    /* Main Container */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
-    /* Left Sidebar Navigation */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -282,7 +277,6 @@
       color: var(--netflix-red);
     }
 
-    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -291,7 +285,6 @@
       background: var(--bg-dark);
     }
 
-    /* Theater Screen / Video Arena */
     .player-theater {
       background: radial-gradient(circle at center, #1b0c11 0%, #050608 100%);
       position: relative;
@@ -321,7 +314,6 @@
       object-fit: contain;
     }
 
-    /* Vibrant Welcome Screen */
     .welcome-splash {
       position: absolute;
       inset: 0;
@@ -408,7 +400,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -516,7 +507,6 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
-    /* Content Layout */
     .content-layout {
       flex: 1;
       display: flex;
@@ -537,15 +527,21 @@
       margin-bottom: 1rem;
     }
 
-    /* Mobile In-Feed Ad Banner (Visible on Phones & Tablets) */
+    /* Compact Mobile Ad Banner */
     .mobile-ad-banner {
       display: none;
       width: 100%;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       text-align: center;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 6px;
+      padding: 4px;
+      min-height: 50px;
+      max-height: 90px;
+      overflow: hidden;
     }
 
-    /* Netflix / Prime-Styled Vibrant Cards */
     .channels-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
@@ -637,7 +633,7 @@
       color: #fbbf24;
     }
 
-    /* Desktop Ad Rail */
+    /* Compact Slimmer Desktop Ad Rail */
     .ad-rail {
       width: var(--ad-rail-width);
       background: var(--bg-surface);
@@ -645,35 +641,34 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem 0.75rem;
-      gap: 1.5rem;
+      padding: 0.75rem 0.5rem;
+      gap: 1rem;
       flex-shrink: 0;
       overflow-y: auto;
     }
 
     .ad-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.25rem;
       text-align: center;
       display: block;
     }
 
     .ad-slot-box {
-      width: 300px;
-      min-height: 250px;
+      width: 160px;
+      min-height: 120px;
       background: rgba(255, 255, 255, 0.02);
       border: 1px dashed var(--border-subtle);
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -761,7 +756,6 @@
 
     .input-group textarea { height: 120px; resize: vertical; }
 
-    /* Responsive Mobile Rules */
     @media (max-width: 1024px) {
       .ad-rail { display: none; }
       .mobile-ad-banner { display: block; }
@@ -770,8 +764,6 @@
     @media (max-width: 768px) {
       aside.nav-sidebar { display: none; }
       .player-theater { height: 32vh; min-height: 220px; }
-      
-      /* Mobile Search Bar Expansion */
       .mobile-search-btn { display: inline-flex; }
       
       .search-box {
@@ -806,22 +798,22 @@
 
   <!-- Top Header Navigation -->
   <header>
-    <a href="#" class="brand">
+    <!-- Logo with Refresh/Reload Trigger -->
+    <div class="brand" id="brandLogoBtn" title="Back to Home">
       <div class="brand-icon-box">
         <i data-lucide="play" style="width: 18px; height: 18px; fill: white;"></i>
       </div>
       <span class="brand-title">IPTV Dekh</span>
       <span class="brand-badge">Live</span>
-    </a>
+    </div>
 
-    <!-- Universal Search Box -->
+    <!-- Search Input Container -->
     <div class="search-box" id="searchBoxContainer">
       <i data-lucide="search"></i>
       <input type="text" id="searchInput" placeholder="Search channels, movies, sports..." autocomplete="off">
     </div>
 
     <div class="header-actions">
-      <!-- Mobile Toggle Search Icon Button -->
       <button class="mobile-search-btn" id="mobileSearchToggle" aria-label="Search">
         <i data-lucide="search" style="width: 20px; height: 20px;"></i>
       </button>
@@ -839,7 +831,6 @@
 
   <!-- App Layout -->
   <div class="app-body">
-    <!-- Left Navigation Sidebar -->
     <aside class="nav-sidebar">
       <div class="sidebar-heading">Browse</div>
       <ul class="nav-list">
@@ -866,21 +857,18 @@
     </aside>
 
     <main>
-      <!-- Theater: Houses Welcome Screen, then seamlessly switches to video -->
       <div class="player-theater">
-        <!-- Netflix-Inspired Welcome Screen -->
         <div class="welcome-splash" id="welcomeSplash">
           <div class="welcome-icon-box">
             <i data-lucide="clapperboard" style="width: 30px; height: 30px;"></i>
           </div>
           <h1 class="welcome-title">Unlimited Live Channels & Movies</h1>
-          <p class="welcome-subtitle">Select any channel below to stream directly on your phone or computer.</p>
+          <p class="welcome-subtitle">Select any channel below to start streaming immediately.</p>
           <div class="welcome-note">
-            <strong style="color: #fff;">Stream Notice:</strong> Playback speed and channel availability depend on your geographical location and internet bandwidth. If a link buffers, simply choose another stream.
+            <strong style="color: #fff;">Stream Notice:</strong> Playback speed and channel availability depend on your geographic location and internet bandwidth. If a link buffers, simply choose another stream.
           </div>
         </div>
 
-        <!-- Video Wrapper -->
         <div class="video-wrapper" id="videoWrapper">
           <video id="iptvPlayer" controls playsinline webkit-playsinline></video>
           <div class="stream-overlay">
@@ -890,7 +878,6 @@
         </div>
       </div>
 
-      <!-- Categories & Country Selection Bar Directly Below Player -->
       <div class="category-filter-bar">
         <div class="filter-row">
           <div class="filter-label">
@@ -914,18 +901,16 @@
         </div>
       </div>
 
-      <!-- Content Layout: Channels Grid + Ads -->
       <div class="content-layout">
         <div class="grid-container">
-          <!-- Mobile In-Feed Responsive Google Ad (Displays on Phones) -->
+          <!-- Compact In-Feed Mobile Ad Banner -->
           <div class="mobile-ad-banner">
-            <span class="ad-label">Advertisement</span>
             <ins class="adsbygoogle"
-                 style="display:block"
+                 style="display:block;height:60px"
                  data-ad-client="ca-pub-8501833361975106"
                  data-ad-slot="1234567890"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
+                 data-ad-format="horizontal"
+                 data-full-width-responsive="false"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
           </div>
 
@@ -937,26 +922,15 @@
           <div class="channels-grid" id="channelsGrid"></div>
         </div>
 
-        <!-- Desktop Side-Rail Google Ad -->
+        <!-- Slim Compact Desktop Ad Rail -->
         <aside class="ad-rail">
           <div>
             <span class="ad-label">Advertisement</span>
             <div class="ad-slot-box">
               <ins class="adsbygoogle"
-                   style="display:inline-block;width:300px;height:250px"
+                   style="display:inline-block;width:160px;height:600px"
                    data-ad-client="ca-pub-8501833361975106"
                    data-ad-slot="1234567890"></ins>
-              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-            </div>
-          </div>
-
-          <div>
-            <span class="ad-label">Sponsored Links</span>
-            <div class="ad-slot-box" style="min-height: 250px;">
-              <ins class="adsbygoogle"
-                   style="display:inline-block;width:300px;height:250px"
-                   data-ad-client="ca-pub-8501833361975106"
-                   data-ad-slot="0987654321"></ins>
               <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
           </div>
@@ -1025,7 +999,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'iptv_dekh_channels_v4';
+    const STORAGE_KEY = 'iptv_dekh_channels_v5';
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
     const COUNTRY_NAMES = {
@@ -1054,6 +1028,7 @@
     const searchInput = document.getElementById('searchInput');
     const searchBoxContainer = document.getElementById('searchBoxContainer');
     const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+    const brandLogoBtn = document.getElementById('brandLogoBtn');
     const currentPlayingTitle = document.getElementById('currentPlayingTitle');
     const viewHeading = document.getElementById('viewHeading');
     const channelCountBadge = document.getElementById('channelCountBadge');
@@ -1061,6 +1036,11 @@
     const genrePillsContainer = document.getElementById('genrePillsContainer');
     const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
     const sidebarFavBadge = document.getElementById('sidebarFavBadge');
+
+    // Reload page and reset to landing view upon logo click
+    brandLogoBtn.addEventListener('click', () => {
+      window.location.href = window.location.pathname;
+    });
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1265,7 +1245,6 @@
         video.play().catch(() => {});
       }
 
-      // Smooth scroll back to player on mobile for instant viewing
       if (window.innerWidth <= 768) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -1287,7 +1266,6 @@
         list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
       }
 
-      // Real-time multi-term search (name, category, country)
       if (query) {
         list = list.filter(c =>
           (c.name && c.name.toLowerCase().includes(query)) ||
@@ -1360,7 +1338,6 @@
       });
     }
 
-    // Touch & Desktop responsive search listeners
     searchInput.addEventListener('input', renderChannels);
     searchInput.addEventListener('keyup', renderChannels);
 
@@ -1377,7 +1354,6 @@
       });
     });
 
-    // Modals
     const disclaimerModal = document.getElementById('disclaimerModal');
     const openDisclaimer = () => disclaimerModal.classList.add('open');
     const closeDisclaimer = () => disclaimerModal.classList.remove('open');
