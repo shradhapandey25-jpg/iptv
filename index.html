@@ -50,7 +50,6 @@
       overflow: hidden;
     }
 
-    /* Top Navigation Header */
     header {
       height: 66px;
       background: rgba(16, 18, 26, 0.85);
@@ -164,29 +163,18 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px var(--accent-glow);
-    }
-
     .btn-secondary {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--border-subtle);
       color: var(--text-main);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.09);
-    }
-
-    /* Main App Body */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
-    /* Left Sidebar */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -262,11 +250,6 @@
       cursor: pointer;
     }
 
-    .sidebar-footer a:hover {
-      color: var(--accent-primary);
-    }
-
-    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -275,7 +258,6 @@
       background: var(--bg-dark);
     }
 
-    /* Player Arena */
     .player-theater {
       background: #000;
       position: relative;
@@ -333,7 +315,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -438,7 +419,6 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
-    /* Channels Grid + Side Ad Rail */
     .content-layout {
       flex: 1;
       display: flex;
@@ -523,12 +503,6 @@
       font-size: 0.73rem;
       color: var(--text-muted);
       overflow: hidden;
-    }
-
-    .channel-meta-tags span {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .fav-btn {
@@ -619,11 +593,6 @@
       flex-direction: column;
     }
 
-    .modal-card h2 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-
     .modal-scrollable {
       overflow-y: auto;
       padding-right: 0.5rem;
@@ -632,15 +601,8 @@
       color: #cbd5e1;
     }
 
-    .modal-scrollable p {
-      margin-bottom: 0.85rem;
-    }
-
-    .modal-scrollable h3 {
-      font-size: 0.95rem;
-      color: #fff;
-      margin: 1rem 0 0.4rem 0;
-    }
+    .modal-scrollable p { margin-bottom: 0.85rem; }
+    .modal-scrollable h3 { font-size: 0.95rem; color: #fff; margin: 1rem 0 0.4rem 0; }
 
     .modal-tabs {
       display: flex;
@@ -665,10 +627,7 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .input-group {
-      margin-bottom: 1rem;
-    }
-
+    .input-group { margin-bottom: 1rem; }
     .input-group label {
       display: block;
       font-size: 0.8rem;
@@ -687,19 +646,9 @@
       font-size: 0.88rem;
     }
 
-    .input-group textarea {
-      height: 120px;
-      resize: vertical;
-    }
+    .input-group textarea { height: 120px; resize: vertical; }
 
-    .input-group input:focus, .input-group textarea:focus {
-      border-color: var(--accent-primary);
-    }
-
-    @media (max-width: 1100px) {
-      .ad-rail { display: none; }
-    }
-
+    @media (max-width: 1100px) { .ad-rail { display: none; } }
     @media (max-width: 860px) {
       aside.nav-sidebar { display: none; }
       .player-theater { height: 35vh; }
@@ -728,7 +677,7 @@
         <i data-lucide="shield-alert"></i>
         <span>Disclaimer</span>
       </button>
-      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload default iptv-org playlist">
+      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload playlist">
         <i data-lucide="rotate-ccw"></i>
         <span>Reload</span>
       </button>
@@ -771,7 +720,7 @@
           <video id="iptvPlayer" controls playsinline autoplay></video>
           <div class="stream-overlay">
             <div class="live-pulse"></div>
-            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 600;">Connecting stream...</span>
+            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 600;">Loading stream...</span>
           </div>
         </div>
       </div>
@@ -816,9 +765,7 @@
                    style="display:inline-block;width:300px;height:250px"
                    data-ad-client="ca-pub-8501833361975106"
                    data-ad-slot="1234567890"></ins>
-              <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
+              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
           </div>
 
@@ -829,9 +776,7 @@
                    style="display:inline-block;width:300px;height:250px"
                    data-ad-client="ca-pub-8501833361975106"
                    data-ad-slot="0987654321"></ins>
-              <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
+              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
           </div>
         </aside>
@@ -847,15 +792,12 @@
       </div>
       <div class="modal-scrollable">
         <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
-
         <h3>1. Client-Side Player Architecture</h3>
         <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
-
         <h3>2. Copyright & Intellectual Property</h3>
         <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
-
         <h3>3. DMCA & Content Removal</h3>
-        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream, as IPTV Dekh possesses no technical control over external streaming endpoints.</p>
+        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream.</p>
       </div>
       <div style="margin-top: 1rem; text-align: right;">
         <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
@@ -869,13 +811,11 @@
         <h2>Import Custom Playlist</h2>
         <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
       </div>
-
       <div class="modal-tabs">
         <div class="modal-tab active" data-tab="urlTab">Playlist URL</div>
         <div class="modal-tab" data-tab="fileTab">Upload File</div>
         <div class="modal-tab" data-tab="pasteTab">Paste Content</div>
       </div>
-
       <div class="tab-content active" id="urlTab">
         <div class="input-group">
           <label>M3U / M3U8 Playlist URL</label>
@@ -883,14 +823,12 @@
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadUrlBtn">Load Playlist</button>
       </div>
-
       <div class="tab-content" id="fileTab">
         <div class="input-group">
           <label>Upload .m3u or .m3u8 file</label>
           <input type="file" id="playlistFile" accept=".m3u,.m3u8">
         </div>
       </div>
-
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
@@ -902,10 +840,14 @@
   </div>
 
   <script>
+    // Invalidate prior stored channels to ensure the new landing page loads cleanly
+    localStorage.removeItem('iptv_dekh_channels');
+
+    const STORAGE_KEY = 'iptv_dekh_channels_v2';
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
     // Primary Landing Channel: Sony One Hits Action (1080p)
-    const SONY_ONE_ACTION_CHANNEL = {
+    const PRIMARY_LANDING_CHANNEL = {
       id: "ch_sony_one_action",
       name: "Sony One Hits Action (1080p)",
       group: "Action",
@@ -925,12 +867,12 @@
 
     const STANDARD_GENRES = ["All", "Action", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
 
-    let allChannels = [SONY_ONE_ACTION_CHANNEL];
+    let allChannels = [PRIMARY_LANDING_CHANNEL];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
     let activeView = "ALL";
-    let selectedCountry = "International";
-    let selectedGenre = "Action";
-    let activeChannelId = SONY_ONE_ACTION_CHANNEL.id;
+    let selectedCountry = "ALL";
+    let selectedGenre = "All";
+    let activeChannelId = PRIMARY_LANDING_CHANNEL.id;
     let hls = null;
 
     const video = document.getElementById('iptvPlayer');
@@ -946,12 +888,14 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      playChannel(SONY_ONE_ACTION_CHANNEL);
+      
+      // Start Sony One Hits Action immediately
+      playChannel(PRIMARY_LANDING_CHANNEL);
 
-      const saved = localStorage.getItem('iptv_dekh_channels');
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const stored = JSON.parse(saved);
-        allChannels = [SONY_ONE_ACTION_CHANNEL, ...stored.filter(x => x.id !== SONY_ONE_ACTION_CHANNEL.id)];
+        allChannels = [PRIMARY_LANDING_CHANNEL, ...stored.filter(x => x.id !== PRIMARY_LANDING_CHANNEL.id && x.name !== PRIMARY_LANDING_CHANNEL.name)];
         initializeData();
       } else {
         await loadPlaylist(DEFAULT_PLAYLIST_URL);
@@ -1030,8 +974,8 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = [SONY_ONE_ACTION_CHANNEL, ...parsed.filter(x => !x.name.toLowerCase().includes("sony one hits action"))];
-        localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
+        allChannels = [PRIMARY_LANDING_CHANNEL, ...parsed.filter(x => x.name.toLowerCase() !== PRIMARY_LANDING_CHANNEL.name.toLowerCase())];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
         initializeData();
       }
     }
@@ -1197,7 +1141,7 @@
             <div class="channel-meta-tags">
               <span>${c.country || "INT"}</span>
               <span>•</span>
-              <span>${c.group || "Action"}</span>
+              <span>${c.group || "General"}</span>
             </div>
           </div>
         `;
@@ -1242,7 +1186,7 @@
     searchInput.addEventListener('input', renderChannels);
 
     document.getElementById('reloadIptvOrgBtn').addEventListener('click', () => {
-      localStorage.removeItem('iptv_dekh_channels');
+      localStorage.removeItem(STORAGE_KEY);
       location.reload();
     });
 
@@ -1273,8 +1217,8 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = [SONY_ONE_ACTION_CHANNEL, ...newChannels.filter(x => !x.name.toLowerCase().includes("sony one hits action"))];
-      localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
+      allChannels = [PRIMARY_LANDING_CHANNEL, ...newChannels.filter(x => x.name.toLowerCase() !== PRIMARY_LANDING_CHANNEL.name.toLowerCase())];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
       importModal.classList.remove('open');
       initializeData();
     }
