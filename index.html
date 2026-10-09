@@ -50,7 +50,6 @@
       overflow: hidden;
     }
 
-    /* Top Navigation Header */
     header {
       height: 66px;
       background: rgba(16, 18, 26, 0.85);
@@ -164,29 +163,18 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px var(--accent-glow);
-    }
-
     .btn-secondary {
       background: rgba(255, 255, 255, 0.05);
       border-color: var(--border-subtle);
       color: var(--text-main);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.09);
-    }
-
-    /* Main Container */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
-    /* Left Sidebar */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -262,11 +250,6 @@
       cursor: pointer;
     }
 
-    .sidebar-footer a:hover {
-      color: var(--accent-primary);
-    }
-
-    /* Main Area */
     main {
       flex: 1;
       display: flex;
@@ -275,7 +258,6 @@
       background: var(--bg-dark);
     }
 
-    /* Player Arena */
     .player-theater {
       background: #000;
       position: relative;
@@ -333,7 +315,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -438,7 +419,6 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
-    /* Channels Grid + Side Ad Rail */
     .content-layout {
       flex: 1;
       display: flex;
@@ -552,7 +532,6 @@
       color: #fbbf24;
     }
 
-    /* Non-Intrusive Right-Side Ad Rail */
     .ad-rail {
       width: var(--ad-rail-width);
       background: var(--bg-surface);
@@ -588,7 +567,6 @@
       overflow: hidden;
     }
 
-    /* Modals (Import + Legal Disclaimer) */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -711,7 +689,6 @@
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
   <header>
     <a href="#" class="brand">
       <div class="brand-icon-box">
@@ -742,9 +719,7 @@
     </div>
   </header>
 
-  <!-- App Body -->
   <div class="app-body">
-    <!-- Left Navigation Sidebar -->
     <aside class="nav-sidebar">
       <div class="sidebar-heading">Navigation</div>
       <ul class="nav-list">
@@ -770,9 +745,7 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main>
-      <!-- Video Player -->
       <div class="player-theater">
         <div class="video-wrapper">
           <video id="iptvPlayer" controls playsinline autoplay></video>
@@ -783,9 +756,7 @@
         </div>
       </div>
 
-      <!-- Categories & Country Selection Bar Directly Below Player -->
       <div class="category-filter-bar">
-        <!-- 1. Country Selection Row -->
         <div class="filter-row">
           <div class="filter-label">
             <i data-lucide="globe" style="width: 14px; height: 14px;"></i>
@@ -799,31 +770,24 @@
           </div>
         </div>
 
-        <!-- 2. TV Genre / Category Row -->
         <div class="filter-row">
           <div class="filter-label">
             <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
             <span>Category</span>
           </div>
-          <div class="genre-pills" id="genrePillsContainer">
-            <!-- Dynamically populated TV genres: Sports, News, Movies, etc. -->
-          </div>
+          <div class="genre-pills" id="genrePillsContainer"></div>
         </div>
       </div>
 
-      <!-- Channels Grid + Side Ad Rail -->
       <div class="content-layout">
         <div class="grid-container">
           <div class="grid-header">
             <h2 id="viewHeading" style="font-size: 1.05rem; font-weight: 600;">All Channels</h2>
             <span class="badge" id="channelCountBadge">0 channels</span>
           </div>
-          <div class="channels-grid" id="channelsGrid">
-            <!-- Channels Rendered Here -->
-          </div>
+          <div class="channels-grid" id="channelsGrid"></div>
         </div>
 
-        <!-- Google AdSense Non-Intrusive Right Rail -->
         <aside class="ad-rail">
           <div>
             <span class="ad-label">Advertisement</span>
@@ -855,7 +819,6 @@
     </main>
   </div>
 
-  <!-- Legal Disclaimer Modal -->
   <div class="modal-overlay" id="disclaimerModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -880,7 +843,6 @@
     </div>
   </div>
 
-  <!-- Import Modal -->
   <div class="modal-overlay" id="importModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -922,17 +884,16 @@
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
-    // Primary Landing Channel: Sony Cine
+    // Exactly matching Sony Cine channel & official badge
     const SONY_CINE_CHANNEL = {
       id: "ch_sony_cine",
       name: "Sony Cine",
       group: "Movies",
       country: "United States",
-      logo: "https://affiliates.cinesony.com/themes/custom/cinesony_theme/images/sonycine-logo.png",
-      url: "https://cdn.klowdtv.net/803B48A/n1.klowdtv.net/live1/cine_720p/playlist.m3u8"
+      logo: "https://raw.githubusercontent.com/iptv-org/api/master/data/logos/SonyCine.us.png",
+      url: "https://linear-416.frequency.stream/mt/studio/416/hls/master/playlist.m3u8"
     };
 
-    // Country Code to Name dictionary
     const COUNTRY_NAMES = {
       "US": "United States", "UK": "United Kingdom", "GB": "United Kingdom",
       "CA": "Canada", "IN": "India", "DE": "Germany", "FR": "France",
@@ -944,7 +905,6 @@
 
     const STANDARD_GENRES = ["All", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
 
-    // App State
     let allChannels = [SONY_CINE_CHANNEL];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
     let activeView = "ALL";
@@ -953,7 +913,6 @@
     let activeChannelId = SONY_CINE_CHANNEL.id;
     let hls = null;
 
-    // Elements
     const video = document.getElementById('iptvPlayer');
     const channelsGrid = document.getElementById('channelsGrid');
     const searchInput = document.getElementById('searchInput');
@@ -967,8 +926,6 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-
-      // Launch Sony Cine immediately upon page entry
       playChannel(SONY_CINE_CHANNEL);
 
       const saved = localStorage.getItem('iptv_dekh_channels');
@@ -981,7 +938,6 @@
       }
     });
 
-    // Smart M3U Parser
     function parseM3U(content) {
       const lines = content.split(/\r?\n/);
       const parsed = [];
@@ -1036,7 +992,6 @@
       return parsed;
     }
 
-    // CORS-Safe Playlist Loader
     async function loadPlaylist(url) {
       let text = "";
       try {
@@ -1138,7 +1093,6 @@
       });
     }
 
-    // Playback Engine
     function playChannel(channel) {
       activeChannelId = channel.id;
       currentPlayingTitle.innerText = channel.name;
@@ -1167,7 +1121,6 @@
       renderChannels();
     }
 
-    // Channels Grid Renderer
     function renderChannels() {
       const query = searchInput.value.toLowerCase();
       let list = activeView === "FAV" 
@@ -1253,7 +1206,6 @@
       });
     }
 
-    // Sidebar View Navigation
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -1274,7 +1226,6 @@
       location.reload();
     });
 
-    // Disclaimer Modals
     const disclaimerModal = document.getElementById('disclaimerModal');
     const openDisclaimer = () => disclaimerModal.classList.add('open');
     const closeDisclaimer = () => disclaimerModal.classList.remove('open');
@@ -1284,7 +1235,6 @@
     document.getElementById('closeDisclaimerBtn').addEventListener('click', closeDisclaimer);
     document.getElementById('acknowledgeDisclaimerBtn').addEventListener('click', closeDisclaimer);
 
-    // Import Modals
     const importModal = document.getElementById('importModal');
     document.getElementById('openImportBtn').addEventListener('click', () => importModal.classList.add('open'));
     document.getElementById('closeModalBtn').addEventListener('click', () => importModal.classList.remove('open'));
