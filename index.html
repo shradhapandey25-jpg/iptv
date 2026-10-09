@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IPTV Dekh Player</title>
+  <title>IPTV Dekh - Live TV Stream Player</title>
   <!-- HLS.js for .m3u8 live streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-  <!-- Fonts & Lucide Icons -->
+  <!-- Plus Jakarta Sans Font & Lucide Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     :root {
-      --bg-dark: #0a0b10;
-      --bg-surface: #12141c;
-      --bg-card: rgba(26, 29, 43, 0.7);
-      --bg-card-hover: rgba(38, 43, 64, 0.85);
+      --bg-dark: #08090e;
+      --bg-surface: #10121a;
+      --bg-card: rgba(22, 26, 38, 0.75);
+      --bg-card-hover: rgba(33, 39, 58, 0.95);
       --border-subtle: rgba(255, 255, 255, 0.08);
+      --accent-primary: #ff4757;
+      --accent-secondary: #ff6b81;
       --accent-cyan: #00f2fe;
-      --accent-indigo: #4facfe;
-      --accent-glow: rgba(0, 242, 254, 0.25);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --danger: #ef4444;
-      --sidebar-width: 270px;
+      --accent-glow: rgba(255, 71, 87, 0.28);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --sidebar-width: 250px;
     }
 
     * {
@@ -37,7 +37,7 @@
     }
 
     body {
-      background: radial-gradient(circle at 10% 20%, #111322 0%, var(--bg-dark) 90%);
+      background: radial-gradient(circle at 15% 15%, #141724 0%, var(--bg-dark) 85%);
       color: var(--text-main);
       height: 100vh;
       display: flex;
@@ -45,64 +45,93 @@
       overflow: hidden;
     }
 
-    /* Top Navigation */
+    /* Header */
     header {
-      height: 70px;
-      background: rgba(18, 20, 28, 0.85);
-      backdrop-filter: blur(12px);
+      height: 68px;
+      background: rgba(16, 18, 26, 0.85);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.5rem;
-      z-index: 20;
+      z-index: 30;
+      flex-shrink: 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      gap: 0.65rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-decoration: none;
       user-select: none;
     }
 
-    .search-container {
+    .brand-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px var(--accent-glow);
+      color: #fff;
+    }
+
+    .brand-title {
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 71, 87, 0.15);
+      border: 1px solid rgba(255, 71, 87, 0.35);
+      color: var(--accent-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .search-box {
       position: relative;
-      width: 380px;
+      width: 360px;
       max-width: 100%;
     }
 
-    .search-container input {
+    .search-box input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-subtle);
       border-radius: 9999px;
       padding: 0.6rem 1rem 0.6rem 2.6rem;
       color: var(--text-main);
       outline: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       transition: all 0.2s ease;
     }
 
-    .search-container input:focus {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--accent-cyan);
+    .search-box input:focus {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: var(--accent-primary);
       box-shadow: 0 0 16px var(--accent-glow);
     }
 
-    .search-container svg {
+    .search-box svg {
       position: absolute;
-      left: 0.9rem;
+      left: 0.95rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      width: 17px;
-      height: 17px;
+      width: 16px;
+      height: 16px;
     }
 
     .header-actions {
@@ -115,24 +144,24 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.55rem 1rem;
+      padding: 0.52rem 1rem;
       font-size: 0.85rem;
       font-weight: 600;
       border-radius: 8px;
       border: 1px solid transparent;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
-      color: #060913;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #fff;
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px var(--accent-glow);
+      box-shadow: 0 6px 18px var(--accent-glow);
     }
 
     .btn-secondary {
@@ -142,17 +171,17 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.09);
     }
 
-    /* Main Workspace */
+    /* Main Container */
     .app-body {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
 
-    /* Sidebar Categories */
+    /* Sidebar */
     aside {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -160,47 +189,47 @@
       display: flex;
       flex-direction: column;
       padding: 1rem 0;
+      flex-shrink: 0;
     }
 
-    .sidebar-header {
-      padding: 0 1.25rem 0.75rem 1.25rem;
-      font-size: 0.75rem;
+    .sidebar-heading {
+      padding: 0 1.25rem 0.6rem 1.25rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
       font-weight: 700;
     }
 
-    .category-list {
+    .nav-list {
       list-style: none;
-      overflow-y: auto;
-      flex: 1;
       padding: 0 0.5rem;
+      overflow-y: auto;
     }
 
-    .category-item {
+    .nav-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0.65rem 0.85rem;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 0.86rem;
       color: var(--text-muted);
-      transition: all 0.15s ease;
       margin-bottom: 2px;
+      transition: all 0.15s ease;
     }
 
-    .category-item:hover {
+    .nav-item:hover {
       background: rgba(255, 255, 255, 0.04);
       color: var(--text-main);
     }
 
-    .category-item.active {
-      background: linear-gradient(90deg, rgba(0, 242, 254, 0.15), rgba(79, 172, 254, 0.05));
-      color: var(--accent-cyan);
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(255, 71, 87, 0.18), rgba(255, 107, 129, 0.06));
+      color: var(--accent-primary);
       font-weight: 600;
-      border-left: 3px solid var(--accent-cyan);
+      border-left: 3px solid var(--accent-primary);
     }
 
     .badge {
@@ -211,7 +240,7 @@
       color: var(--text-muted);
     }
 
-    /* Video Player Arena */
+    /* Main Content Area */
     main {
       flex: 1;
       display: flex;
@@ -220,15 +249,17 @@
       background: var(--bg-dark);
     }
 
+    /* Cinema Screen Section */
     .player-theater {
       background: #000;
       position: relative;
-      height: 48vh;
-      min-height: 280px;
+      height: 44vh;
+      min-height: 270px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
     }
 
     .video-wrapper {
@@ -246,41 +277,144 @@
       object-fit: contain;
     }
 
-    .player-overlay {
+    .stream-overlay {
       position: absolute;
       top: 1rem;
       left: 1rem;
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      background: rgba(10, 11, 16, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 0.5rem 0.9rem;
-      border-radius: 8px;
+      background: rgba(10, 11, 16, 0.78);
+      backdrop-filter: blur(10px);
+      padding: 0.55rem 0.95rem;
+      border-radius: 10px;
       border: 1px solid var(--border-subtle);
       pointer-events: none;
       z-index: 5;
     }
 
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--danger);
+    .live-pulse {
+      width: 9px;
+      height: 9px;
+      background-color: var(--accent-primary);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--danger);
-      animation: pulse 1.8s infinite;
+      box-shadow: 0 0 10px var(--accent-primary);
+      animation: pulse 1.6s infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+      50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Channel Grid */
+    /* Filters Bar (Under Video Player) */
+    .category-filter-bar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      min-width: 78px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .country-select-wrapper {
+      position: relative;
+      min-width: 180px;
+    }
+
+    .country-select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.45rem 1.8rem 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .country-select:focus {
+      border-color: var(--accent-primary);
+    }
+
+    .country-select-wrapper svg {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-muted);
+      width: 15px;
+      height: 15px;
+    }
+
+    .genre-pills {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .pill.active {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* Channels Grid Container */
     .grid-container {
       flex: 1;
       overflow-y: auto;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
     }
 
     .grid-header {
@@ -300,31 +434,31 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 0.9rem;
+      padding: 0.85rem;
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
 
     .channel-card:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(0, 242, 254, 0.4);
+      border-color: rgba(255, 71, 87, 0.5);
       transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
     .channel-card.active {
-      border-color: var(--accent-cyan);
+      border-color: var(--accent-primary);
       box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .channel-thumb-box {
       width: 100%;
-      height: 95px;
-      background: rgba(0, 0, 0, 0.35);
+      height: 90px;
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -340,17 +474,24 @@
     }
 
     .channel-name {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
-    .channel-group {
-      font-size: 0.75rem;
+    .channel-meta-tags {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.73rem;
       color: var(--text-muted);
+      overflow: hidden;
+    }
+
+    .channel-meta-tags span {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -358,9 +499,9 @@
 
     .fav-btn {
       position: absolute;
-      top: 0.6rem;
-      right: 0.6rem;
-      background: rgba(0, 0, 0, 0.5);
+      top: 0.55rem;
+      right: 0.55rem;
+      background: rgba(0, 0, 0, 0.55);
       border: none;
       border-radius: 50%;
       width: 28px;
@@ -381,12 +522,12 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 50;
+      z-index: 60;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
@@ -428,17 +569,12 @@
     }
 
     .modal-tab.active {
-      color: var(--accent-cyan);
-      border-color: var(--accent-cyan);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
     }
 
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     .input-group {
       margin-bottom: 1rem;
@@ -468,81 +604,118 @@
     }
 
     .input-group input:focus, .input-group textarea:focus {
-      border-color: var(--accent-cyan);
+      border-color: var(--accent-primary);
     }
 
-    /* Loading Spinner */
-    .loading-indicator {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      padding: 4rem;
-      color: var(--text-muted);
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
       aside { display: none; }
       .player-theater { height: 35vh; }
+      .filter-row { flex-wrap: wrap; }
+      .country-select-wrapper { width: 100%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation -->
+  <!-- Top Header Navigation -->
   <header>
-    <div class="brand">
-      <i data-lucide="tv"></i>
-      <span>AETHER IPTV</span>
-    </div>
+    <a href="#" class="brand">
+      <div class="brand-icon-box">
+        <i data-lucide="play" style="width: 20px; height: 20px; fill: white;"></i>
+      </div>
+      <span class="brand-title">IPTV Dekh</span>
+      <span class="brand-badge">Live</span>
+    </a>
 
-    <div class="search-container">
+    <div class="search-box">
       <i data-lucide="search"></i>
-      <input type="text" id="searchInput" placeholder="Search channels, genres, categories...">
+      <input type="text" id="searchInput" placeholder="Search channels, news, sports...">
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-secondary" id="resetIptvOrgBtn" title="Reset to iptv-org catalog">
+      <button class="btn btn-secondary" id="reloadIptvOrgBtn" title="Reload default iptv-org playlist">
         <i data-lucide="rotate-ccw"></i>
-        <span>Reload iptv-org</span>
+        <span>iptv-org Index</span>
       </button>
       <button class="btn btn-primary" id="openImportBtn">
-        <i data-lucide="plus-circle"></i>
+        <i data-lucide="folder-plus"></i>
         <span>Import M3U</span>
       </button>
     </div>
   </header>
 
-  <!-- App Interface -->
+  <!-- App Layout -->
   <div class="app-body">
-    <!-- Sidebar Categories -->
+    <!-- Left Navigation Sidebar -->
     <aside>
-      <div class="sidebar-header">Categories</div>
-      <ul class="category-list" id="categoryList">
-        <!-- Rendered by JS -->
+      <div class="sidebar-heading">Browse</div>
+      <ul class="nav-list">
+        <li class="nav-item active" data-view="ALL">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i data-lucide="compass" style="width: 16px; height: 16px;"></i>
+            <span>All Channels</span>
+          </div>
+          <span class="badge" id="sidebarTotalBadge">0</span>
+        </li>
+        <li class="nav-item" data-view="FAV">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i data-lucide="star" style="width: 16px; height: 16px;"></i>
+            <span>Favorites</span>
+          </div>
+          <span class="badge" id="sidebarFavBadge">0</span>
+        </li>
       </ul>
     </aside>
 
-    <!-- Player & Stream Grid -->
+    <!-- Main Player & Catalog -->
     <main>
+      <!-- Video Player -->
       <div class="player-theater">
         <div class="video-wrapper">
           <video id="iptvPlayer" controls playsinline autoplay></video>
-          <div class="player-overlay" id="playerOverlay">
-            <div class="live-dot"></div>
-            <span id="currentPlayingName" style="font-size: 0.85rem; font-weight: 600;">Loading stream...</span>
+          <div class="stream-overlay">
+            <div class="live-pulse"></div>
+            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 600;">Connecting stream...</span>
           </div>
         </div>
       </div>
 
+      <!-- Categories & Country Selection Bar -->
+      <div class="category-filter-bar">
+        <!-- Country Row -->
+        <div class="filter-row">
+          <div class="filter-label">
+            <i data-lucide="globe" style="width: 14px; height: 14px;"></i>
+            <span>Country</span>
+          </div>
+          <div class="country-select-wrapper">
+            <select class="country-select" id="countrySelector">
+              <option value="ALL">All Countries</option>
+            </select>
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+
+        <!-- TV Category / Genre Row -->
+        <div class="filter-row">
+          <div class="filter-label">
+            <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+            <span>Category</span>
+          </div>
+          <div class="genre-pills" id="genrePillsContainer">
+            <!-- Dynamically populated genres: Sports, News, Business, etc. -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Channel Grid -->
       <div class="grid-container">
         <div class="grid-header">
-          <h2 id="activeCategoryTitle" style="font-size: 1.1rem; font-weight: 600;">All Channels</h2>
+          <h2 id="viewHeading" style="font-size: 1.05rem; font-weight: 600;">Channels</h2>
           <span class="badge" id="channelCountBadge">0 channels</span>
         </div>
         <div class="channels-grid" id="channelsGrid">
-          <!-- Rendered Channels -->
+          <!-- Channels Rendered Here -->
         </div>
       </div>
     </main>
@@ -552,7 +725,7 @@
   <div class="modal-overlay" id="importModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2>Import Custom Playlist</h2>
+        <h2>Import M3U Streams</h2>
         <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
       </div>
 
@@ -579,8 +752,8 @@
 
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
-          <label>Paste M3U Raw Text</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-logo=&quot;...&quot; group-title=&quot;News&quot;,Channel Name&#10;https://..."></textarea>
+          <label>Paste Raw M3U Content</label>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;News&quot;,CNN&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -588,37 +761,47 @@
   </div>
 
   <script>
-    // Primary iptv-org raw stream index
-    const IPTV_ORG_URL = "https://iptv-org.github.io/iptv/index.m3u";
+    const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
-    // App State
+    // Standard genres to feature prominently
+    const STANDARD_GENRES = [
+      "All", "Sports", "News", "Business", "Entertainment", 
+      "Movies", "Music", "Documentary", "Kids", "Education", "General"
+    ];
+
+    // State
     let channels = [];
-    let favorites = new Set(JSON.parse(localStorage.getItem('aether_favs')) || []);
-    let currentCategory = "ALL";
+    let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
+    let activeView = "ALL"; // ALL | FAV
+    let selectedCountry = "ALL";
+    let selectedGenre = "All";
     let activeChannelId = null;
     let hls = null;
 
-    // DOM Elements
+    // Elements
     const video = document.getElementById('iptvPlayer');
-    const categoryList = document.getElementById('categoryList');
     const channelsGrid = document.getElementById('channelsGrid');
     const searchInput = document.getElementById('searchInput');
-    const currentPlayingName = document.getElementById('currentPlayingName');
-    const activeCategoryTitle = document.getElementById('activeCategoryTitle');
+    const currentPlayingTitle = document.getElementById('currentPlayingTitle');
+    const viewHeading = document.getElementById('viewHeading');
     const channelCountBadge = document.getElementById('channelCountBadge');
+    const countrySelector = document.getElementById('countrySelector');
+    const genrePillsContainer = document.getElementById('genrePillsContainer');
+    const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
+    const sidebarFavBadge = document.getElementById('sidebarFavBadge');
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
-      const saved = localStorage.getItem('aether_channels');
+      const saved = localStorage.getItem('iptv_dekh_channels');
       if (saved) {
         channels = JSON.parse(saved);
-        initializeUI();
+        initializeData();
       } else {
-        await fetchAndLoadPlaylist(IPTV_ORG_URL);
+        await loadPlaylist(DEFAULT_PLAYLIST_URL);
       }
     });
 
-    // M3U Stream Parser
+    // M3U Parser extracting Country and Genre
     function parseM3U(content) {
       const lines = content.split(/\r?\n/);
       const parsed = [];
@@ -633,16 +816,26 @@
             id: Math.random().toString(36).substring(2, 11),
             name: "Channel",
             group: "General",
+            country: "International",
             logo: "",
             url: ""
           };
 
+          // Group / TV Category regex
           const groupMatch = line.match(/group-title="([^"]+)"/i);
-          if (groupMatch) item.group = groupMatch[1];
+          if (groupMatch) item.group = groupMatch[1].trim();
 
+          // Country regex (tvg-country="US" or country="US")
+          const countryMatch = line.match(/tvg-country="([^"]+)"/i) || line.match(/country="([^"]+)"/i);
+          if (countryMatch) {
+            item.country = countryMatch[1].trim().toUpperCase();
+          }
+
+          // Logo regex
           const logoMatch = line.match(/tvg-logo="([^"]+)"/i);
-          if (logoMatch) item.logo = logoMatch[1];
+          if (logoMatch) item.logo = logoMatch[1].trim();
 
+          // Channel Name
           const commaIndex = line.lastIndexOf(',');
           if (commaIndex !== -1) {
             item.name = line.substring(commaIndex + 1).trim();
@@ -656,12 +849,12 @@
       return parsed;
     }
 
-    // CORS-Safe Playlist Fetcher
-    async function fetchAndLoadPlaylist(url) {
+    // CORS-Safe Playlist Loader
+    async function loadPlaylist(url) {
       channelsGrid.innerHTML = `
-        <div class="loading-indicator" style="grid-column: 1/-1;">
-          <i data-lucide="loader-2" class="animate-spin" style="width: 38px; height: 38px; color: var(--accent-cyan);"></i>
-          <p>Importing streams from iptv-org...</p>
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+          <i data-lucide="loader-2" class="animate-spin" style="width: 36px; height: 36px; color: var(--accent-primary); margin-bottom: 0.5rem;"></i>
+          <p>Connecting to IPTV Dekh catalog...</p>
         </div>
       `;
       lucide.createIcons();
@@ -669,15 +862,14 @@
       let text = "";
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Direct fetch failed");
+        if (!res.ok) throw new Error("Fetch failed");
         text = await res.text();
       } catch (e) {
-        // Transparent proxy fallback if CORS blocks client-side fetch
         try {
           const proxyRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
           text = await proxyRes.text();
         } catch (proxyError) {
-          alert("Failed to load stream playlist. Please import via file upload or paste text.");
+          alert("Could not load stream. Please import via upload file or paste text.");
           channelsGrid.innerHTML = "";
           return;
         }
@@ -686,25 +878,97 @@
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
         channels = parsed;
-        localStorage.setItem('aether_channels', JSON.stringify(channels));
-        initializeUI();
+        localStorage.setItem('iptv_dekh_channels', JSON.stringify(channels));
+        initializeData();
       } else {
-        alert("No valid streams identified in this playlist.");
+        alert("No valid streams found in this playlist.");
       }
     }
 
-    function initializeUI() {
-      renderCategories();
+    function initializeData() {
+      setupCountrySelector();
+      setupGenrePills();
+      updateBadges();
       renderChannels();
       if (channels.length > 0) {
         playChannel(channels[0]);
       }
     }
 
-    // HLS Stream Player
+    function updateBadges() {
+      sidebarTotalBadge.innerText = channels.length;
+      sidebarFavBadge.innerText = favorites.size;
+    }
+
+    // Populate Country Dropdown
+    function setupCountrySelector() {
+      const countries = new Set();
+      channels.forEach(ch => {
+        if (ch.country) countries.add(ch.country);
+      });
+
+      const sortedCountries = Array.from(countries).sort();
+      countrySelector.innerHTML = `<option value="ALL">All Countries (${channels.length})</option>` +
+        sortedCountries.map(c => {
+          const count = channels.filter(x => x.country === c).length;
+          return `<option value="${c}">${c} (${count})</option>`;
+        }).join('');
+
+      countrySelector.value = selectedCountry;
+      countrySelector.addEventListener('change', (e) => {
+        selectedCountry = e.target.value;
+        setupGenrePills(); // Refresh genres based on country
+        renderChannels();
+      });
+    }
+
+    // Populate Category/Genre Pills
+    function setupGenrePills() {
+      // Find all categories available for current country selection
+      let scoped = channels;
+      if (selectedCountry !== "ALL") {
+        scoped = scoped.filter(c => c.country === selectedCountry);
+      }
+
+      const availableGenres = new Set();
+      scoped.forEach(ch => {
+        if (ch.group) availableGenres.add(ch.group);
+      });
+
+      // Merge standard genres first, then add whatever exists in data
+      const mergedGenres = ["All"];
+      STANDARD_GENRES.slice(1).forEach(g => {
+        if (Array.from(availableGenres).some(ag => ag.toLowerCase().includes(g.toLowerCase()))) {
+          mergedGenres.push(g);
+        }
+      });
+
+      // Add other unique groups not captured by standard list
+      availableGenres.forEach(g => {
+        if (!mergedGenres.includes(g) && mergedGenres.length < 15) {
+          mergedGenres.push(g);
+        }
+      });
+
+      genrePillsContainer.innerHTML = mergedGenres.map(g => `
+        <button class="pill ${selectedGenre === g ? 'active' : ''}" data-genre="${g}">
+          ${g}
+        </button>
+      `).join('');
+
+      document.querySelectorAll('.genre-pills .pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedGenre = btn.getAttribute('data-genre');
+          setupGenrePills();
+          renderChannels();
+        });
+      });
+    }
+
+    // Playback Controller
     function playChannel(channel) {
       activeChannelId = channel.id;
-      currentPlayingName.innerText = channel.name;
+      currentPlayingTitle.innerText = channel.name;
 
       if (Hls.isSupported() && (channel.url.includes('.m3u8') || channel.url.includes('m3u'))) {
         if (hls) hls.destroy();
@@ -720,7 +984,6 @@
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native Safari HLS
         video.src = channel.url;
         video.play().catch(() => {});
       } else {
@@ -731,86 +994,56 @@
       renderChannels();
     }
 
-    // Category Management
-    function renderCategories() {
-      const categoryMap = {};
-      channels.forEach(ch => {
-        const g = ch.group || "General";
-        categoryMap[g] = (categoryMap[g] || 0) + 1;
-      });
-
-      const sortedCategories = Object.keys(categoryMap).sort();
-      const groups = [
-        { id: "ALL", name: "All Channels", icon: "layout-grid", count: channels.length },
-        { id: "FAV", name: "Favorites", icon: "star", count: favorites.size },
-        ...sortedCategories.map(c => ({
-          id: c,
-          name: c,
-          icon: "folder",
-          count: categoryMap[c]
-        }))
-      ];
-
-      categoryList.innerHTML = groups.map(g => `
-        <li class="category-item ${currentCategory === g.id ? 'active' : ''}" data-cat="${g.id}">
-          <div style="display: flex; align-items: center; gap: 0.6rem; overflow: hidden;">
-            <i data-lucide="${g.icon}" style="width: 16px; height: 16px; flex-shrink: 0;"></i>
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${g.name}</span>
-          </div>
-          <span class="badge">${g.count}</span>
-        </li>
-      `).join('');
-
-      lucide.createIcons();
-
-      document.querySelectorAll('.category-item').forEach(el => {
-        el.addEventListener('click', () => {
-          currentCategory = el.getAttribute('data-cat');
-          renderCategories();
-          renderChannels();
-        });
-      });
-    }
-
-    // Grid Channels Renderer
+    // Grid Renderer
     function renderChannels() {
       const query = searchInput.value.toLowerCase();
       let list = channels;
 
-      if (currentCategory === "FAV") {
+      // 1. Sidebar View (ALL vs FAV)
+      if (activeView === "FAV") {
         list = list.filter(c => favorites.has(c.id));
-      } else if (currentCategory !== "ALL") {
-        list = list.filter(c => (c.group || "General") === currentCategory);
       }
 
+      // 2. Country Filter
+      if (selectedCountry !== "ALL") {
+        list = list.filter(c => c.country === selectedCountry);
+      }
+
+      // 3. Category / Genre Filter
+      if (selectedGenre !== "All") {
+        list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
+      }
+
+      // 4. Live Search Filter
       if (query) {
-        list = list.filter(c => 
-          c.name.toLowerCase().includes(query) || 
-          (c.group && c.group.toLowerCase().includes(query))
+        list = list.filter(c =>
+          c.name.toLowerCase().includes(query) ||
+          (c.group && c.group.toLowerCase().includes(query)) ||
+          (c.country && c.country.toLowerCase().includes(query))
         );
       }
 
-      activeCategoryTitle.innerText = currentCategory === "ALL" ? "All Channels" : currentCategory === "FAV" ? "Favorites" : currentCategory;
+      viewHeading.innerText = `${selectedCountry === "ALL" ? "All Countries" : selectedCountry} • ${selectedGenre}`;
       channelCountBadge.innerText = `${list.length} channels`;
 
       if (list.length === 0) {
         channelsGrid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-            <i data-lucide="video-off" style="width: 44px; height: 44px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
-            <p>No channels found.</p>
+            <i data-lucide="tv-minimal" style="width: 44px; height: 44px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+            <p>No channels matching your country and category criteria.</p>
           </div>
         `;
         lucide.createIcons();
         return;
       }
 
-      // Cap initial rendering window for swift DOM loading
+      // Render limited batch for optimal rendering speed
       const displayChannels = list.slice(0, 150);
 
       channelsGrid.innerHTML = displayChannels.map(c => {
         const isFav = favorites.has(c.id);
         const isActive = c.id === activeChannelId;
-        const logo = c.logo || `https://dummyimage.com/150x150/12141c/00f2fe&text=${encodeURIComponent(c.name.slice(0, 3))}`;
+        const logo = c.logo || `https://dummyimage.com/150x150/12141c/ff4757&text=${encodeURIComponent(c.name.slice(0, 3))}`;
 
         return `
           <div class="channel-card ${isActive ? 'active' : ''}" data-id="${c.id}">
@@ -818,10 +1051,14 @@
               <i data-lucide="star" style="width: 14px; height: 14px; fill: ${isFav ? 'currentColor' : 'none'}"></i>
             </button>
             <div class="channel-thumb-box">
-              <img src="${logo}" alt="${c.name}" onerror="this.src='https://dummyimage.com/150x150/12141c/00f2fe&text=TV'">
+              <img src="${logo}" alt="${c.name}" onerror="this.src='https://dummyimage.com/150x150/12141c/ff4757&text=TV'">
             </div>
             <div class="channel-name" title="${c.name}">${c.name}</div>
-            <div class="channel-group">${c.group || "General"}</div>
+            <div class="channel-meta-tags">
+              <span>${c.country || "INT"}</span>
+              <span>•</span>
+              <span>${c.group || "General"}</span>
+            </div>
           </div>
         `;
       }).join('');
@@ -844,20 +1081,30 @@
           const id = btn.getAttribute('data-fav');
           if (favorites.has(id)) favorites.delete(id);
           else favorites.add(id);
-          localStorage.setItem('aether_favs', JSON.stringify(Array.from(favorites)));
-          renderCategories();
+          localStorage.setItem('iptv_dekh_favs', JSON.stringify(Array.from(favorites)));
+          updateBadges();
           renderChannels();
         });
       });
     }
 
+    // Sidebar View Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+        activeView = item.getAttribute('data-view');
+        renderChannels();
+      });
+    });
+
     // Search filter
     searchInput.addEventListener('input', renderChannels);
 
-    // Reload iptv-org Default
-    document.getElementById('resetIptvOrgBtn').addEventListener('click', () => {
-      localStorage.removeItem('aether_channels');
-      fetchAndLoadPlaylist(IPTV_ORG_URL);
+    // Reload Default Catalog
+    document.getElementById('reloadIptvOrgBtn').addEventListener('click', () => {
+      localStorage.removeItem('iptv_dekh_channels');
+      loadPlaylist(DEFAULT_PLAYLIST_URL);
     });
 
     // Import Modal Handlers
@@ -876,25 +1123,23 @@
 
     function saveAndApply(newChannels) {
       if (!newChannels.length) {
-        alert('No valid channels found in the provided payload.');
+        alert('No valid channels found in the provided playlist.');
         return;
       }
       channels = newChannels;
-      localStorage.setItem('aether_channels', JSON.stringify(channels));
+      localStorage.setItem('iptv_dekh_channels', JSON.stringify(channels));
       modal.classList.remove('open');
-      initializeUI();
+      initializeData();
     }
 
-    // Import via URL
     document.getElementById('loadUrlBtn').addEventListener('click', () => {
       const url = document.getElementById('playlistUrl').value.trim();
       if (url) {
         modal.classList.remove('open');
-        fetchAndLoadPlaylist(url);
+        loadPlaylist(url);
       }
     });
 
-    // Import via File
     document.getElementById('playlistFile').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -903,7 +1148,6 @@
       reader.readAsText(file);
     });
 
-    // Import via Paste
     document.getElementById('loadRawBtn').addEventListener('click', () => {
       const text = document.getElementById('playlistRaw').value;
       saveAndApply(parseM3U(text));
