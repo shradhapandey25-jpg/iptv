@@ -163,10 +163,9 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: var(--border-subtle);
-      color: var(--text-main);
+    .btn-primary:hover {
+      background: var(--netflix-hover);
+      box-shadow: 0 6px 18px var(--accent-glow);
     }
 
     .mobile-search-btn {
@@ -221,6 +220,11 @@
       color: var(--text-muted);
       margin-bottom: 3px;
       transition: all 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
     }
 
     .nav-item.active {
@@ -738,9 +742,10 @@
           <h1 class="welcome-title">Live TV & Movies</h1>
           <p class="welcome-subtitle">Tap below to watch our featured channel or choose from the list:</p>
 
-          <div class="featured-recommend-box" id="quickSonyCineBtn" title="Play Cine Sony (720p)">
+          <!-- Featured 24 Hour Free Movie (720p) Recommendation Button -->
+          <div class="featured-recommend-box" id="quickFeaturedBtn" title="Play 24 Hour Free Movie (720p)">
             <span class="featured-pill-tag">Featured</span>
-            <span class="featured-stream-name">Watch Cine Sony (720p) &rarr;</span>
+            <span class="featured-stream-name">Watch 24 Hour Free Movie (720p) &rarr;</span>
           </div>
 
           <div class="welcome-note">
@@ -812,22 +817,22 @@
   </div>
 
   <script>
-    // New Cache Key to ensure immediate client-side invalidation
-    const STORAGE_KEY = 'iptv_dekh_channels_v7_cinesony720';
+    // Distinct cache key to instantly drop older client cached playlists
+    const STORAGE_KEY = 'iptv_dekh_channels_v8_24hmovie720';
 
-    // Direct Cine Sony (720p) Feed
-    const CINE_SONY_720P = {
-      id: "ch_cine_sony_720p",
-      name: "Cine Sony (720p)",
+    // Featured 24 Hour Free Movie (720p) Definition
+    const RECOMMENDED_MOVIE_CHANNEL = {
+      id: "ch_24h_free_movie_720p",
+      name: "24 Hour Free Movie (720p)",
       group: "Movies",
-      country: "United States",
+      country: "International",
       logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
-      url: "https://cdn.klowdtv.net/803B48A/n1.klowdtv.net/live1/cine_720p/playlist.m3u8",
+      url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8",
       isRecommended: true
     };
 
     const HARDCODED_FEATURED_CHANNELS = [
-      CINE_SONY_720P,
+      RECOMMENDED_MOVIE_CHANNEL,
       {
         id: "ch_sky_news",
         name: "Sky News Live",
@@ -885,7 +890,7 @@
     const searchBoxContainer = document.getElementById('searchBoxContainer');
     const mobileSearchToggle = document.getElementById('mobileSearchToggle');
     const brandLogoBtn = document.getElementById('brandLogoBtn');
-    const quickSonyCineBtn = document.getElementById('quickSonyCineBtn');
+    const quickFeaturedBtn = document.getElementById('quickFeaturedBtn');
     const fullScreenBtn = document.getElementById('fullScreenBtn');
     const currentPlayingTitle = document.getElementById('currentPlayingTitle');
     const viewHeading = document.getElementById('viewHeading');
@@ -899,8 +904,8 @@
       window.location.href = window.location.pathname;
     });
 
-    quickSonyCineBtn.addEventListener('click', () => {
-      playChannel(CINE_SONY_720P);
+    quickFeaturedBtn.addEventListener('click', () => {
+      playChannel(RECOMMENDED_MOVIE_CHANNEL);
     });
 
     function toggleFullScreen() {
@@ -933,10 +938,7 @@
         }
       });
 
-      // Render Cine Sony (720p) first immediately
       initializeData();
-
-      // Background playlist fetch
       loadPlaylist(DEFAULT_PLAYLIST_URL);
     });
 
@@ -1001,7 +1003,7 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = [CINE_SONY_720P, ...parsed.filter(x => !x.name.toLowerCase().includes("cine sony"))];
+        allChannels = [RECOMMENDED_MOVIE_CHANNEL, ...parsed.filter(x => !x.name.toLowerCase().includes("24 hour free movie"))];
         initializeData();
       }
     }
@@ -1026,9 +1028,8 @@
 
       const sortedCountries = Array.from(countries).sort();
       countrySelector.innerHTML = `<option value="ALL">All Countries (${allChannels.length})</option>` +
-        `<option value="United States">United States</option>` +
         `<option value="International">International</option>` +
-        sortedCountries.filter(c => c !== "United States").map(c => {
+        sortedCountries.map(c => {
           const count = allChannels.filter(x => x.country === c).length;
           return `<option value="${c}">${c} (${count})</option>`;
         }).join('');
