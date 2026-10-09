@@ -13,8 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Google AdSense Script (Replace ca-pub-XXXXXXXXXXXXXXXX with your Client ID) -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- Google AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8501833361975106"
+      crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -49,7 +50,7 @@
       overflow: hidden;
     }
 
-    /* Header */
+    /* Top Navigation Header */
     header {
       height: 66px;
       background: rgba(16, 18, 26, 0.85);
@@ -185,7 +186,7 @@
       overflow: hidden;
     }
 
-    /* Left Sidebar Navigation */
+    /* Left Sidebar */
     aside.nav-sidebar {
       width: var(--sidebar-width);
       background: var(--bg-surface);
@@ -274,7 +275,7 @@
       background: var(--bg-dark);
     }
 
-    /* Theater / Stream Arena */
+    /* Player Arena */
     .player-theater {
       background: #000;
       position: relative;
@@ -332,7 +333,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Cascading Category & Country Filter Bar */
+    /* Filter Bar Directly Under Player */
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
@@ -437,7 +438,7 @@
       box-shadow: 0 2px 10px var(--accent-glow);
     }
 
-    /* Content Area with Side Ad Rail */
+    /* Channels Grid + Side Ad Rail */
     .content-layout {
       flex: 1;
       display: flex;
@@ -741,7 +742,7 @@
     </div>
   </header>
 
-  <!-- App Layout -->
+  <!-- App Body -->
   <div class="app-body">
     <!-- Left Navigation Sidebar -->
     <aside class="nav-sidebar">
@@ -769,7 +770,7 @@
       </div>
     </aside>
 
-    <!-- Main Player & Catalog -->
+    <!-- Main Content Area -->
     <main>
       <!-- Video Player -->
       <div class="player-theater">
@@ -805,12 +806,12 @@
             <span>Category</span>
           </div>
           <div class="genre-pills" id="genrePillsContainer">
-            <!-- Dynamically populated TV genres: Sports, News, Business, etc. -->
+            <!-- Dynamically populated TV genres: Sports, News, Movies, etc. -->
           </div>
         </div>
       </div>
 
-      <!-- Content Layout: Channels Grid + Side Ad Rail -->
+      <!-- Channels Grid + Side Ad Rail -->
       <div class="content-layout">
         <div class="grid-container">
           <div class="grid-header">
@@ -822,15 +823,14 @@
           </div>
         </div>
 
-        <!-- Non-Intrusive Side AdSense Rail (Never blocks or overlaps video) -->
+        <!-- Google AdSense Non-Intrusive Right Rail -->
         <aside class="ad-rail">
           <div>
             <span class="ad-label">Advertisement</span>
             <div class="ad-slot-box">
-              <!-- Google AdSense Responsive Unit (300x250 Medium Rectangle) -->
               <ins class="adsbygoogle"
                    style="display:inline-block;width:300px;height:250px"
-                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-client="ca-pub-8501833361975106"
                    data-ad-slot="1234567890"></ins>
               <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
@@ -841,10 +841,9 @@
           <div>
             <span class="ad-label">Sponsored Links</span>
             <div class="ad-slot-box" style="min-height: 250px;">
-              <!-- Second AdSense Unit (300x250) -->
               <ins class="adsbygoogle"
                    style="display:inline-block;width:300px;height:250px"
-                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-client="ca-pub-8501833361975106"
                    data-ad-slot="0987654321"></ins>
               <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
@@ -856,7 +855,7 @@
     </main>
   </div>
 
-  <!-- Legal & DMCA Disclaimer Modal -->
+  <!-- Legal Disclaimer Modal -->
   <div class="modal-overlay" id="disclaimerModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -864,7 +863,7 @@
         <i data-lucide="x" style="cursor: pointer;" id="closeDisclaimerBtn"></i>
       </div>
       <div class="modal-scrollable">
-        <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers (including the public <em>iptv-org</em> catalog).</p>
+        <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
 
         <h3>1. Client-Side Player Architecture</h3>
         <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
@@ -873,7 +872,7 @@
         <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
 
         <h3>3. DMCA & Content Removal</h3>
-        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream, as IPTV Dekh possesses no technical control over external streaming endpoints. To request stream removal from public indexes, please submit notices to the respective M3U playlist maintainers.</p>
+        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream, as IPTV Dekh possesses no technical control over external streaming endpoints.</p>
       </div>
       <div style="margin-top: 1rem; text-align: right;">
         <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
@@ -923,6 +922,16 @@
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
+    // Primary Landing Channel: Sony Cine
+    const SONY_CINE_CHANNEL = {
+      id: "ch_sony_cine",
+      name: "Sony Cine",
+      group: "Movies",
+      country: "United States",
+      logo: "https://affiliates.cinesony.com/themes/custom/cinesony_theme/images/sonycine-logo.png",
+      url: "https://cdn.klowdtv.net/803B48A/n1.klowdtv.net/live1/cine_720p/playlist.m3u8"
+    };
+
     // Country Code to Name dictionary
     const COUNTRY_NAMES = {
       "US": "United States", "UK": "United Kingdom", "GB": "United Kingdom",
@@ -933,15 +942,15 @@
       "RU": "Russia", "CN": "China", "NL": "Netherlands"
     };
 
-    const STANDARD_GENRES = ["All", "Sports", "News", "Business", "Entertainment", "Movies", "Music", "Documentary"];
+    const STANDARD_GENRES = ["All", "Movies", "Entertainment", "Sports", "News", "Business", "Music", "Documentary"];
 
     // App State
-    let allChannels = [];
+    let allChannels = [SONY_CINE_CHANNEL];
     let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
-    let activeView = "ALL"; // ALL | FAV
+    let activeView = "ALL";
     let selectedCountry = "ALL";
     let selectedGenre = "All";
-    let activeChannelId = null;
+    let activeChannelId = SONY_CINE_CHANNEL.id;
     let hls = null;
 
     // Elements
@@ -959,9 +968,13 @@
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
 
+      // Launch Sony Cine immediately upon page entry
+      playChannel(SONY_CINE_CHANNEL);
+
       const saved = localStorage.getItem('iptv_dekh_channels');
       if (saved) {
-        allChannels = JSON.parse(saved);
+        const stored = JSON.parse(saved);
+        allChannels = [SONY_CINE_CHANNEL, ...stored.filter(x => x.id !== SONY_CINE_CHANNEL.id)];
         initializeData();
       } else {
         await loadPlaylist(DEFAULT_PLAYLIST_URL);
@@ -988,28 +1001,23 @@
             url: ""
           };
 
-          // Group / TV Category
           const groupMatch = line.match(/group-title="([^"]+)"/i);
           if (groupMatch) item.group = groupMatch[1].trim();
 
-          // Country parsing
           const countryMatch = line.match(/tvg-country="([^"]+)"/i) || line.match(/country="([^"]+)"/i);
           if (countryMatch) {
             const rawCode = countryMatch[1].trim().toUpperCase();
             item.country = COUNTRY_NAMES[rawCode] || rawCode;
           }
 
-          // Logo
           const logoMatch = line.match(/tvg-logo="([^"]+)"/i);
           if (logoMatch) item.logo = logoMatch[1].trim();
 
-          // Channel Name
           const commaIndex = line.lastIndexOf(',');
           if (commaIndex !== -1) {
             item.name = line.substring(commaIndex + 1).trim();
           }
 
-          // Fallback Country detection from Name
           if (item.country === "International") {
             for (const [code, name] of Object.entries(COUNTRY_NAMES)) {
               if (item.name.includes(`(${code})`) || item.name.includes(`[${code}]`)) {
@@ -1030,14 +1038,6 @@
 
     // CORS-Safe Playlist Loader
     async function loadPlaylist(url) {
-      channelsGrid.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-          <i data-lucide="loader-2" class="animate-spin" style="width: 36px; height: 36px; color: var(--accent-primary); margin-bottom: 0.5rem;"></i>
-          <p>Connecting to IPTV Dekh catalog...</p>
-        </div>
-      `;
-      lucide.createIcons();
-
       let text = "";
       try {
         const res = await fetch(url);
@@ -1048,19 +1048,16 @@
           const proxyRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
           text = await proxyRes.text();
         } catch (proxyError) {
-          alert("Could not load stream. Please import via upload file or paste text.");
-          channelsGrid.innerHTML = "";
+          initializeData();
           return;
         }
       }
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = parsed;
+        allChannels = [SONY_CINE_CHANNEL, ...parsed];
         localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
         initializeData();
-      } else {
-        alert("No valid streams found in this playlist.");
       }
     }
 
@@ -1069,9 +1066,6 @@
       setupGenrePills();
       updateBadges();
       renderChannels();
-      if (allChannels.length > 0) {
-        playChannel(allChannels[0]);
-      }
     }
 
     function updateBadges() {
@@ -1079,7 +1073,6 @@
       sidebarFavBadge.innerText = favorites.size;
     }
 
-    // Populate Country Dropdown
     function setupCountrySelector() {
       const countries = new Set();
       allChannels.forEach(ch => {
@@ -1102,7 +1095,6 @@
       };
     }
 
-    // Populate Category/Genre Pills
     function setupGenrePills() {
       let scoped = allChannels;
       if (selectedCountry !== "ALL") {
@@ -1182,17 +1174,14 @@
         ? allChannels.filter(c => favorites.has(c.id))
         : [...allChannels];
 
-      // Filter by Country
       if (selectedCountry !== "ALL") {
         list = list.filter(c => c.country === selectedCountry);
       }
 
-      // Filter by TV Category / Genre
       if (selectedGenre !== "All") {
         list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
       }
 
-      // Search Filter
       if (query) {
         list = list.filter(c =>
           c.name.toLowerCase().includes(query) ||
@@ -1243,7 +1232,6 @@
 
       lucide.createIcons();
 
-      // Card Click Handler
       document.querySelectorAll('.channel-card').forEach(card => {
         card.addEventListener('click', (e) => {
           if (e.target.closest('.fav-btn')) return;
@@ -1252,7 +1240,6 @@
         });
       });
 
-      // Favorites Toggle
       document.querySelectorAll('.fav-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1280,16 +1267,14 @@
       });
     });
 
-    // Live search
     searchInput.addEventListener('input', renderChannels);
 
-    // Reload Everything
     document.getElementById('reloadIptvOrgBtn').addEventListener('click', () => {
       localStorage.removeItem('iptv_dekh_channels');
       location.reload();
     });
 
-    // Disclaimer Modal Handlers
+    // Disclaimer Modals
     const disclaimerModal = document.getElementById('disclaimerModal');
     const openDisclaimer = () => disclaimerModal.classList.add('open');
     const closeDisclaimer = () => disclaimerModal.classList.remove('open');
@@ -1299,7 +1284,7 @@
     document.getElementById('closeDisclaimerBtn').addEventListener('click', closeDisclaimer);
     document.getElementById('acknowledgeDisclaimerBtn').addEventListener('click', closeDisclaimer);
 
-    // Import Modal Handlers
+    // Import Modals
     const importModal = document.getElementById('importModal');
     document.getElementById('openImportBtn').addEventListener('click', () => importModal.classList.add('open'));
     document.getElementById('closeModalBtn').addEventListener('click', () => importModal.classList.remove('open'));
@@ -1318,7 +1303,7 @@
         alert('No valid channels found in the playlist.');
         return;
       }
-      allChannels = newChannels;
+      allChannels = [SONY_CINE_CHANNEL, ...newChannels.filter(x => x.name !== SONY_CINE_CHANNEL.name)];
       localStorage.setItem('iptv_dekh_channels', JSON.stringify(allChannels));
       importModal.classList.remove('open');
       initializeData();
