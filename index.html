@@ -5,17 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>IPTV Dekh - Stream Live TV & Movies</title>
   
-  <!-- HLS.js for .m3u8 live streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-  <!-- Google Fonts & Lucide Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Google AdSense Script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8501833361975106"
-      crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8501833361975106" crossorigin="anonymous"></script>
 
   <style>
     :root {
@@ -31,7 +26,7 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --sidebar-width: 240px;
-      --ad-rail-width: 190px; /* Slimmer Ad Rail */
+      --ad-rail-width: 190px;
     }
 
     * {
@@ -53,14 +48,14 @@
     }
 
     header {
-      height: 64px;
+      height: 60px;
       background: rgba(10, 11, 16, 0.88);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.25rem;
+      padding: 0 1rem;
       z-index: 40;
       flex-shrink: 0;
     }
@@ -68,8 +63,8 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
-      font-size: 1.35rem;
+      gap: 0.6rem;
+      font-size: 1.25rem;
       font-weight: 900;
       letter-spacing: -0.04em;
       text-decoration: none;
@@ -78,9 +73,9 @@
     }
 
     .brand-icon-box {
-      width: 36px;
-      height: 36px;
-      border-radius: 9px;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
       background: linear-gradient(135deg, var(--netflix-red), #ff3d47);
       display: flex;
       align-items: center;
@@ -96,8 +91,8 @@
     }
 
     .brand-badge {
-      font-size: 0.65rem;
-      padding: 2px 6px;
+      font-size: 0.6rem;
+      padding: 2px 5px;
       border-radius: 4px;
       background: rgba(229, 9, 20, 0.18);
       border: 1px solid rgba(229, 9, 20, 0.45);
@@ -109,7 +104,7 @@
 
     .search-box {
       position: relative;
-      width: 360px;
+      width: 320px;
       max-width: 100%;
       transition: all 0.25s ease;
     }
@@ -119,10 +114,10 @@
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border-subtle);
       border-radius: 9999px;
-      padding: 0.55rem 1rem 0.55rem 2.6rem;
+      padding: 0.5rem 0.9rem 0.5rem 2.4rem;
       color: var(--text-main);
       outline: none;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       transition: all 0.2s ease;
     }
 
@@ -134,27 +129,27 @@
 
     .search-box svg {
       position: absolute;
-      left: 0.95rem;
+      left: 0.85rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       pointer-events: none;
     }
 
     .header-actions {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.5rem 0.9rem;
-      font-size: 0.82rem;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       border-radius: 7px;
       border: 1px solid transparent;
@@ -168,19 +163,10 @@
       box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-primary:hover {
-      background: var(--netflix-hover);
-      box-shadow: 0 6px 18px var(--accent-glow);
-    }
-
     .btn-secondary {
       background: rgba(255, 255, 255, 0.06);
       border-color: var(--border-subtle);
       color: var(--text-main);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
     }
 
     .mobile-search-btn {
@@ -204,13 +190,13 @@
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      padding: 1rem 0;
+      padding: 0.85rem 0;
       flex-shrink: 0;
     }
 
     .sidebar-heading {
-      padding: 0 1.25rem 0.6rem 1.25rem;
-      font-size: 0.72rem;
+      padding: 0 1.1rem 0.5rem 1.1rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
@@ -228,18 +214,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.65rem 0.85rem;
+      padding: 0.6rem 0.8rem;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.86rem;
+      font-size: 0.84rem;
       color: var(--text-muted);
       margin-bottom: 3px;
       transition: all 0.15s ease;
-    }
-
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
     }
 
     .nav-item.active {
@@ -251,30 +232,23 @@
 
     .badge {
       background: rgba(255, 255, 255, 0.08);
-      font-size: 0.72rem;
-      padding: 2px 7px;
+      font-size: 0.7rem;
+      padding: 2px 6px;
       border-radius: 9999px;
       color: var(--text-muted);
     }
 
     .sidebar-footer {
-      padding: 1rem;
+      padding: 0.85rem 1rem;
       border-top: 1px solid var(--border-subtle);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
     }
 
     .sidebar-footer a {
       color: var(--text-muted);
       text-decoration: underline;
       cursor: pointer;
-    }
-
-    .sidebar-footer a:hover {
-      color: var(--netflix-red);
     }
 
     main {
@@ -285,11 +259,12 @@
       background: var(--bg-dark);
     }
 
+    /* Player Container */
     .player-theater {
       background: radial-gradient(circle at center, #1b0c11 0%, #050608 100%);
       position: relative;
-      height: 44vh;
-      min-height: 270px;
+      height: 36vh;
+      min-height: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -314,6 +289,26 @@
       object-fit: contain;
     }
 
+    .fs-btn {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      background: rgba(10, 11, 16, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.4rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 25;
+    }
+
+    /* Compact Welcome Screen */
     .welcome-splash {
       position: absolute;
       inset: 0;
@@ -322,64 +317,79 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 1.5rem;
+      padding: 0.75rem 1rem;
       background: radial-gradient(circle at center, rgba(229, 9, 20, 0.12) 0%, transparent 70%);
       z-index: 10;
     }
 
-    .welcome-icon-box {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(229, 9, 20, 0.25), rgba(0, 168, 225, 0.15));
-      border: 1px solid rgba(229, 9, 20, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--netflix-red);
-      margin-bottom: 0.9rem;
-      box-shadow: 0 0 28px var(--accent-glow);
-    }
-
     .welcome-title {
-      font-size: 1.5rem;
+      font-size: 1.15rem;
       font-weight: 900;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.2rem;
       background: linear-gradient(135deg, #ffffff 40%, #ff4b55 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .welcome-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-main);
-      max-width: 500px;
-      line-height: 1.45;
-      margin-bottom: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.3;
+      margin-bottom: 0.55rem;
+    }
+
+    /* Featured Sony Cine Banner */
+    .featured-recommend-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(229, 9, 20, 0.15);
+      border: 1px solid rgba(229, 9, 20, 0.45);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      margin-bottom: 0.55rem;
+      box-shadow: 0 0 18px rgba(229, 9, 20, 0.25);
+    }
+
+    .featured-pill-tag {
+      background: var(--netflix-red);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .featured-stream-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #fff;
     }
 
     .welcome-note {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      max-width: 520px;
-      line-height: 1.4;
-      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.68rem;
+      color: #94a3b8;
+      max-width: 460px;
+      line-height: 1.35;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
-      padding: 0.55rem 0.9rem;
-      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
     }
 
     .stream-overlay {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
+      top: 0.75rem;
+      left: 0.75rem;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       background: rgba(10, 11, 16, 0.88);
       backdrop-filter: blur(12px);
-      padding: 0.5rem 0.9rem;
+      padding: 0.4rem 0.7rem;
       border-radius: 8px;
       border: 1px solid var(--border-subtle);
       pointer-events: none;
@@ -387,11 +397,11 @@
     }
 
     .live-pulse {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       background-color: var(--netflix-red);
       border-radius: 50%;
-      box-shadow: 0 0 12px var(--netflix-red);
+      box-shadow: 0 0 10px var(--netflix-red);
       animation: pulse 1.5s infinite;
     }
 
@@ -403,10 +413,10 @@
     .category-filter-bar {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 0.75rem 1.25rem;
+      padding: 0.6rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      gap: 0.5rem;
       flex-shrink: 0;
     }
 
@@ -418,26 +428,23 @@
       scrollbar-width: none;
     }
 
-    .filter-row::-webkit-scrollbar {
-      display: none;
-    }
+    .filter-row::-webkit-scrollbar { display: none; }
 
     .filter-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       font-weight: 800;
       color: var(--text-muted);
-      letter-spacing: 0.05em;
-      min-width: 82px;
+      min-width: 78px;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       flex-shrink: 0;
     }
 
     .country-select-wrapper {
       position: relative;
-      min-width: 200px;
+      min-width: 170px;
       flex-shrink: 0;
     }
 
@@ -446,37 +453,30 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
-      padding: 0.45rem 1.8rem 0.45rem 0.85rem;
+      padding: 0.4rem 1.6rem 0.4rem 0.75rem;
       border-radius: 8px;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       outline: none;
       cursor: pointer;
       appearance: none;
     }
 
-    .country-select:focus {
-      border-color: var(--netflix-red);
-    }
-
-    .country-select option {
-      background: #10121a;
-      color: #fff;
-    }
+    .country-select option { background: #10121a; color: #fff; }
 
     .country-select-wrapper svg {
       position: absolute;
-      right: 0.7rem;
+      right: 0.65rem;
       top: 50%;
       transform: translateY(-50%);
       pointer-events: none;
       color: var(--text-muted);
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
     }
 
     .genre-pills {
       display: flex;
-      gap: 0.45rem;
+      gap: 0.4rem;
       align-items: center;
       flex-wrap: nowrap;
     }
@@ -484,20 +484,14 @@
     .pill {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-subtle);
-      padding: 0.4rem 0.85rem;
+      padding: 0.35rem 0.75rem;
       border-radius: 9999px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
       flex-shrink: 0;
-    }
-
-    .pill:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-main);
     }
 
     .pill.active {
@@ -516,7 +510,7 @@
     .grid-container {
       flex: 1;
       overflow-y: auto;
-      padding: 1.25rem;
+      padding: 1rem;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -524,77 +518,71 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-
-    /* Compact Mobile Ad Banner */
-    .mobile-ad-banner {
-      display: none;
-      width: 100%;
-      margin-bottom: 1rem;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.015);
-      border: 1px dashed var(--border-subtle);
-      border-radius: 6px;
-      padding: 4px;
-      min-height: 50px;
-      max-height: 90px;
-      overflow: hidden;
+      margin-bottom: 0.85rem;
     }
 
     .channels-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-      gap: 1.1rem;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 0.9rem;
     }
 
     .channel-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 0.85rem;
+      padding: 0.75rem;
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s, border-color 0.22s;
       position: relative;
       overflow: hidden;
     }
 
     .channel-card:hover {
-      background: var(--bg-card-hover);
       border-color: var(--border-vibrant);
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 28px rgba(229, 9, 20, 0.18), 0 4px 12px rgba(0, 0, 0, 0.8);
+      transform: translateY(-3px);
     }
 
     .channel-card.active {
       border-color: var(--netflix-red);
-      box-shadow: 0 0 18px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .recommended-badge {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      background: var(--netflix-red);
+      color: #fff;
+      font-size: 0.58rem;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      z-index: 5;
     }
 
     .channel-thumb-box {
       width: 100%;
-      height: 96px;
-      background: radial-gradient(circle at center, #1b2030 0%, #090a10 100%);
+      height: 90px;
+      background: #0d0f16;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
     .channel-thumb-box img {
-      max-width: 82%;
-      max-height: 82%;
+      max-width: 80%;
+      max-height: 80%;
       object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
     }
 
     .channel-name {
-      font-size: 0.9rem;
+      font-size: 0.86rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -606,34 +594,30 @@
     .channel-meta-tags {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.73rem;
+      gap: 0.35rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
-      overflow: hidden;
     }
 
     .fav-btn {
       position: absolute;
-      top: 0.55rem;
-      right: 0.55rem;
+      top: 0.5rem;
+      right: 0.5rem;
       background: rgba(0, 0, 0, 0.7);
       border: none;
       border-radius: 50%;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       color: var(--text-muted);
-      transition: color 0.2s;
+      z-index: 5;
     }
 
-    .fav-btn.active {
-      color: #fbbf24;
-    }
+    .fav-btn.active { color: #fbbf24; }
 
-    /* Compact Slimmer Desktop Ad Rail */
     .ad-rail {
       width: var(--ad-rail-width);
       background: var(--bg-surface);
@@ -669,136 +653,44 @@
       overflow: hidden;
     }
 
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      width: 580px;
-      max-width: 90vw;
-      border-radius: 14px;
-      padding: 1.75rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-      max-height: 85vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .modal-scrollable {
-      overflow-y: auto;
-      padding-right: 0.5rem;
-      font-size: 0.85rem;
-      line-height: 1.6;
-      color: #cbd5e1;
-    }
-
-    .modal-scrollable p { margin-bottom: 0.85rem; }
-    .modal-scrollable h3 { font-size: 0.95rem; color: #fff; margin: 1rem 0 0.4rem 0; }
-
-    .modal-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 1.2rem;
-    }
-
-    .modal-tab {
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      color: var(--text-muted);
-    }
-
-    .modal-tab.active {
-      color: var(--netflix-red);
-      border-color: var(--netflix-red);
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .input-group { margin-bottom: 1rem; }
-    .input-group label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 0.4rem;
-    }
-
-    .input-group input, .input-group textarea {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-subtle);
-      padding: 0.7rem;
-      border-radius: 8px;
-      color: var(--text-main);
-      outline: none;
-      font-size: 0.88rem;
-    }
-
-    .input-group textarea { height: 120px; resize: vertical; }
-
     @media (max-width: 1024px) {
       .ad-rail { display: none; }
-      .mobile-ad-banner { display: block; }
     }
 
     @media (max-width: 768px) {
       aside.nav-sidebar { display: none; }
-      .player-theater { height: 32vh; min-height: 220px; }
+      .player-theater { height: 26vh; min-height: 180px; }
       .mobile-search-btn { display: inline-flex; }
       
       .search-box {
         display: none;
         position: absolute;
-        top: 64px;
+        top: 60px;
         left: 0;
         right: 0;
         width: 100%;
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 0.85rem;
         background: rgba(15, 17, 24, 0.98);
         border-bottom: 1px solid var(--border-subtle);
         z-index: 35;
       }
 
       .search-box.open { display: block; }
-      .search-box input { border-radius: 8px; font-size: 0.95rem; }
 
       .channels-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        gap: 0.65rem;
       }
 
-      .country-select-wrapper { min-width: 150px; }
-      .welcome-title { font-size: 1.25rem; }
-      .welcome-subtitle { font-size: 0.82rem; }
-      .welcome-note { font-size: 0.7rem; padding: 0.45rem 0.6rem; }
+      .welcome-title { font-size: 0.95rem; }
+      .welcome-subtitle { font-size: 0.7rem; margin-bottom: 0.35rem; }
+      .welcome-note { font-size: 0.62rem; padding: 0.25rem 0.45rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
   <header>
-    <!-- Logo with Refresh/Reload Trigger -->
     <div class="brand" id="brandLogoBtn" title="Back to Home">
       <div class="brand-icon-box">
         <i data-lucide="play" style="width: 18px; height: 18px; fill: white;"></i>
@@ -807,43 +699,37 @@
       <span class="brand-badge">Live</span>
     </div>
 
-    <!-- Search Input Container -->
     <div class="search-box" id="searchBoxContainer">
       <i data-lucide="search"></i>
-      <input type="text" id="searchInput" placeholder="Search channels, movies, sports..." autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Search channels, movies..." autocomplete="off">
     </div>
 
     <div class="header-actions">
       <button class="mobile-search-btn" id="mobileSearchToggle" aria-label="Search">
-        <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+        <i data-lucide="search" style="width: 19px; height: 19px;"></i>
       </button>
 
-      <button class="btn btn-secondary" id="openDisclaimerBtn" title="DMCA Disclaimer">
-        <i data-lucide="shield-alert" style="width: 15px; height: 15px;"></i>
-        <span class="desktop-only">Disclaimer</span>
-      </button>
       <button class="btn btn-primary" id="openImportBtn">
-        <i data-lucide="folder-plus" style="width: 15px; height: 15px;"></i>
-        <span class="desktop-only">Import M3U</span>
+        <i data-lucide="folder-plus" style="width: 14px; height: 14px;"></i>
+        <span>Import</span>
       </button>
     </div>
   </header>
 
-  <!-- App Layout -->
   <div class="app-body">
     <aside class="nav-sidebar">
       <div class="sidebar-heading">Browse</div>
       <ul class="nav-list">
         <li class="nav-item active" data-view="ALL">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <i data-lucide="film" style="width: 16px; height: 16px;"></i>
+            <i data-lucide="film" style="width: 15px; height: 15px;"></i>
             <span>All Streams</span>
           </div>
           <span class="badge" id="sidebarTotalBadge">0</span>
         </li>
         <li class="nav-item" data-view="FAV">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <i data-lucide="star" style="width: 16px; height: 16px;"></i>
+            <i data-lucide="star" style="width: 15px; height: 15px;"></i>
             <span>Favorites</span>
           </div>
           <span class="badge" id="sidebarFavBadge">0</span>
@@ -852,36 +738,47 @@
 
       <div class="sidebar-footer">
         <div>IPTV Dekh &copy; 2026</div>
-        <div><a id="footerDisclaimerLink">Legal & DMCA Disclaimer</a></div>
       </div>
     </aside>
 
     <main>
-      <div class="player-theater">
+      <div class="player-theater" id="playerTheater">
+        <!-- Compact Welcome Screen -->
         <div class="welcome-splash" id="welcomeSplash">
-          <div class="welcome-icon-box">
-            <i data-lucide="clapperboard" style="width: 30px; height: 30px;"></i>
+          <h1 class="welcome-title">Live TV & Movies</h1>
+          <p class="welcome-subtitle">Tap below to watch our featured channel or choose from the list:</p>
+
+          <!-- Guaranteed Featured Sony Cine Link -->
+          <div class="featured-recommend-box" id="quickSonyCineBtn" title="Play Sony Cine">
+            <span class="featured-pill-tag">Featured</span>
+            <span class="featured-stream-name">Watch Sony Cine Now &rarr;</span>
           </div>
-          <h1 class="welcome-title">Unlimited Live Channels & Movies</h1>
-          <p class="welcome-subtitle">Select any channel below to start streaming immediately.</p>
+
           <div class="welcome-note">
-            <strong style="color: #fff;">Stream Notice:</strong> Playback speed and channel availability depend on your geographic location and internet bandwidth. If a link buffers, simply choose another stream.
+            Availability depends on location and network bandwidth.
           </div>
         </div>
 
+        <!-- Video Player Wrapper -->
         <div class="video-wrapper" id="videoWrapper">
           <video id="iptvPlayer" controls playsinline webkit-playsinline></video>
+          
           <div class="stream-overlay">
             <div class="live-pulse"></div>
-            <span id="currentPlayingTitle" style="font-size: 0.86rem; font-weight: 700;">Connecting...</span>
+            <span id="currentPlayingTitle" style="font-size: 0.84rem; font-weight: 700;">Connecting...</span>
           </div>
+
+          <button class="fs-btn" id="fullScreenBtn" title="Full Screen">
+            <i data-lucide="maximize" style="width: 13px; height: 13px;"></i>
+            <span>Full Screen</span>
+          </button>
         </div>
       </div>
 
       <div class="category-filter-bar">
         <div class="filter-row">
           <div class="filter-label">
-            <i data-lucide="globe" style="width: 14px; height: 14px;"></i>
+            <i data-lucide="globe" style="width: 13px; height: 13px;"></i>
             <span>Country</span>
           </div>
           <div class="country-select-wrapper">
@@ -894,7 +791,7 @@
 
         <div class="filter-row">
           <div class="filter-label">
-            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+            <i data-lucide="sparkles" style="width: 13px; height: 13px;"></i>
             <span>Genre</span>
           </div>
           <div class="genre-pills" id="genrePillsContainer"></div>
@@ -903,26 +800,13 @@
 
       <div class="content-layout">
         <div class="grid-container">
-          <!-- Compact In-Feed Mobile Ad Banner -->
-          <div class="mobile-ad-banner">
-            <ins class="adsbygoogle"
-                 style="display:block;height:60px"
-                 data-ad-client="ca-pub-8501833361975106"
-                 data-ad-slot="1234567890"
-                 data-ad-format="horizontal"
-                 data-full-width-responsive="false"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-          </div>
-
           <div class="grid-header">
-            <h2 id="viewHeading" style="font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em;">All Channels</h2>
+            <h2 id="viewHeading" style="font-size: 0.95rem; font-weight: 800;">All Channels</h2>
             <span class="badge" id="channelCountBadge">0 channels</span>
           </div>
-          
           <div class="channels-grid" id="channelsGrid"></div>
         </div>
 
-        <!-- Slim Compact Desktop Ad Rail -->
         <aside class="ad-rail">
           <div>
             <span class="ad-label">Advertisement</span>
@@ -939,82 +823,61 @@
     </main>
   </div>
 
-  <!-- Legal Disclaimer Modal -->
-  <div class="modal-overlay" id="disclaimerModal">
-    <div class="modal-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2>Legal Disclaimer & DMCA Policy</h2>
-        <i data-lucide="x" style="cursor: pointer;" id="closeDisclaimerBtn"></i>
-      </div>
-      <div class="modal-scrollable">
-        <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
-        <h3>1. Client-Side Player Architecture</h3>
-        <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
-        <h3>2. Location & Bandwidth Constraints</h3>
-        <p>Stream availability is subject to third-party broadcasting endpoints, regional broadcast licenses, internet service provider routing, and local network speeds. IPTV Dekh cannot guarantee uptime or continuous latency-free broadcast from external endpoints.</p>
-        <h3>3. Copyright & Intellectual Property</h3>
-        <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
-        <h3>4. DMCA & Content Removal</h3>
-        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream.</p>
-      </div>
-      <div style="margin-top: 1rem; text-align: right;">
-        <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div class="modal-overlay" id="importModal">
-    <div class="modal-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2>Import Custom Playlist</h2>
-        <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
-      </div>
-      <div class="modal-tabs">
-        <div class="modal-tab active" data-tab="urlTab">Playlist URL</div>
-        <div class="modal-tab" data-tab="fileTab">Upload File</div>
-        <div class="modal-tab" data-tab="pasteTab">Paste Content</div>
-      </div>
-      <div class="tab-content active" id="urlTab">
-        <div class="input-group">
-          <label>M3U / M3U8 Playlist URL</label>
-          <input type="url" id="playlistUrl" placeholder="https://iptv-org.github.io/iptv/index.m3u">
-        </div>
-        <button class="btn btn-primary" style="width: 100%;" id="loadUrlBtn">Load Playlist</button>
-      </div>
-      <div class="tab-content" id="fileTab">
-        <div class="input-group">
-          <label>Upload .m3u or .m3u8 file</label>
-          <input type="file" id="playlistFile" accept=".m3u,.m3u8">
-        </div>
-      </div>
-      <div class="tab-content" id="pasteTab">
-        <div class="input-group">
-          <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;US&quot; group-title=&quot;Movies&quot;,Channel Name&#10;https://..."></textarea>
-        </div>
-        <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    const STORAGE_KEY = 'iptv_dekh_channels_v5';
+    // Primary pre-seeded channels to guarantee instant display on mobile
+    const HARDCODED_FEATURED_CHANNELS = [
+      {
+        id: "ch_sony_cine_rec",
+        name: "Sony Cine",
+        group: "Movies",
+        country: "International",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
+        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8",
+        isRecommended: true
+      },
+      {
+        id: "ch_sky_news",
+        name: "Sky News Live",
+        group: "News",
+        country: "United Kingdom",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/Sky_News_2020.svg/512px-Sky_News_2020.svg.png",
+        url: "https://skynews-live.cdn.skypack.sk/skynews/live/hls/skynews_live.m3u8",
+        isRecommended: false
+      },
+      {
+        id: "ch_bloomberg",
+        name: "Bloomberg TV",
+        group: "Business",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Bloomberg_Television_logo.svg/512px-Bloomberg_Television_logo.svg.png",
+        url: "https://bloomberg-p2p.live-delivery.ooyala.com/out/u/p2p_live.m3u8",
+        isRecommended: false
+      },
+      {
+        id: "ch_redbull",
+        name: "Red Bull TV",
+        group: "Sports",
+        country: "Austria",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_TV_logo.svg/512px-Red_Bull_TV_logo.svg.png",
+        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+        isRecommended: false
+      }
+    ];
+
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
 
     const COUNTRY_NAMES = {
       "US": "United States", "UK": "United Kingdom", "GB": "United Kingdom",
       "CA": "Canada", "IN": "India", "DE": "Germany", "FR": "France",
       "AU": "Australia", "IT": "Italy", "ES": "Spain", "BR": "Brazil",
-      "MX": "Mexico", "JP": "Japan", "KR": "South Korea", "AT": "Austria",
-      "QA": "Qatar", "AE": "United Arab Emirates", "CH": "Switzerland",
-      "RU": "Russia", "CN": "China", "NL": "Netherlands"
+      "MX": "Mexico", "JP": "Japan", "KR": "South Korea", "AT": "Austria"
     };
 
-    const STANDARD_GENRES = ["All", "Movies", "Action", "Entertainment", "Sports", "News", "Business", "Music", "Animation"];
+    const STANDARD_GENRES = ["All", "Movies", "Action", "Entertainment", "Sports", "News", "Business"];
 
-    let allChannels = [];
-    let favorites = new Set(JSON.parse(localStorage.getItem('iptv_dekh_favs')) || []);
+    // Initialize with pre-seeded channels immediately so mobile is NEVER empty
+    let allChannels = [...HARDCODED_FEATURED_CHANNELS];
+    let favorites = new Set();
     let activeView = "ALL";
     let selectedCountry = "ALL";
     let selectedGenre = "All";
@@ -1024,11 +887,14 @@
     const video = document.getElementById('iptvPlayer');
     const welcomeSplash = document.getElementById('welcomeSplash');
     const videoWrapper = document.getElementById('videoWrapper');
+    const playerTheater = document.getElementById('playerTheater');
     const channelsGrid = document.getElementById('channelsGrid');
     const searchInput = document.getElementById('searchInput');
     const searchBoxContainer = document.getElementById('searchBoxContainer');
     const mobileSearchToggle = document.getElementById('mobileSearchToggle');
     const brandLogoBtn = document.getElementById('brandLogoBtn');
+    const quickSonyCineBtn = document.getElementById('quickSonyCineBtn');
+    const fullScreenBtn = document.getElementById('fullScreenBtn');
     const currentPlayingTitle = document.getElementById('currentPlayingTitle');
     const viewHeading = document.getElementById('viewHeading');
     const channelCountBadge = document.getElementById('channelCountBadge');
@@ -1037,15 +903,37 @@
     const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
     const sidebarFavBadge = document.getElementById('sidebarFavBadge');
 
-    // Reload page and reset to landing view upon logo click
     brandLogoBtn.addEventListener('click', () => {
       window.location.href = window.location.pathname;
     });
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    quickSonyCineBtn.addEventListener('click', () => {
+      playChannel(HARDCODED_FEATURED_CHANNELS[0]);
+    });
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (playerTheater.requestFullscreen) {
+          playerTheater.requestFullscreen();
+        } else if (playerTheater.webkitRequestFullscreen) {
+          playerTheater.webkitRequestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    fullScreenBtn.addEventListener('click', toggleFullScreen);
+
+    window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
 
-      // Mobile search toggle handler
       mobileSearchToggle.addEventListener('click', () => {
         searchBoxContainer.classList.toggle('open');
         if (searchBoxContainer.classList.contains('open')) {
@@ -1053,13 +941,11 @@
         }
       });
 
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        allChannels = JSON.parse(saved);
-        initializeData();
-      } else {
-        await loadPlaylist(DEFAULT_PLAYLIST_URL);
-      }
+      // Render the hardcoded channels right away
+      initializeData();
+
+      // Fetch external playlist in background
+      loadPlaylist(DEFAULT_PLAYLIST_URL);
     });
 
     function parseM3U(content) {
@@ -1097,16 +983,6 @@
           if (commaIndex !== -1) {
             item.name = line.substring(commaIndex + 1).trim();
           }
-
-          if (item.country === "International") {
-            for (const [code, name] of Object.entries(COUNTRY_NAMES)) {
-              if (item.name.includes(`(${code})`) || item.name.includes(`[${code}]`)) {
-                item.country = name;
-                break;
-              }
-            }
-          }
-
         } else if (!line.startsWith('#') && item) {
           item.url = line;
           parsed.push(item);
@@ -1120,22 +996,21 @@
       let text = "";
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Fetch failed");
+        if (!res.ok) throw new Error("Direct fetch failed");
         text = await res.text();
       } catch (e) {
         try {
           const proxyRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
           text = await proxyRes.text();
         } catch (proxyError) {
-          initializeData();
           return;
         }
       }
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        allChannels = parsed;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
+        // Keep Sony Cine first, append the rest
+        allChannels = [HARDCODED_FEATURED_CHANNELS[0], ...parsed.filter(x => x.name.toLowerCase() !== "sony cine")];
         initializeData();
       }
     }
@@ -1192,12 +1067,6 @@
         }
       });
 
-      availableGenres.forEach(g => {
-        if (!mergedGenres.includes(g) && mergedGenres.length < 12) {
-          mergedGenres.push(g);
-        }
-      });
-
       if (!mergedGenres.includes(selectedGenre)) {
         selectedGenre = "All";
       }
@@ -1230,13 +1099,6 @@
         hls.loadSource(channel.url);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
-        hls.on(Hls.Events.ERROR, (_, data) => {
-          if (data.fatal) {
-            if (data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
-            else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
-            else hls.destroy();
-          }
-        });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = channel.url;
         video.play().catch(() => {});
@@ -1254,9 +1116,7 @@
 
     function renderChannels() {
       const query = searchInput.value.trim().toLowerCase();
-      let list = activeView === "FAV" 
-        ? allChannels.filter(c => favorites.has(c.id))
-        : [...allChannels];
+      let list = [...allChannels];
 
       if (selectedCountry !== "ALL") {
         list = list.filter(c => c.country === selectedCountry);
@@ -1269,28 +1129,14 @@
       if (query) {
         list = list.filter(c =>
           (c.name && c.name.toLowerCase().includes(query)) ||
-          (c.group && c.group.toLowerCase().includes(query)) ||
-          (c.country && c.country.toLowerCase().includes(query))
+          (c.group && c.group.toLowerCase().includes(query))
         );
       }
 
-      const viewTitle = activeView === "FAV" ? "Favorites" : "All Channels";
-      viewHeading.innerText = `${viewTitle} • ${selectedCountry === "ALL" ? "All Countries" : selectedCountry} (${selectedGenre})`;
+      viewHeading.innerText = `${selectedCountry === "ALL" ? "All Channels" : selectedCountry} (${selectedGenre})`;
       channelCountBadge.innerText = `${list.length} channels`;
 
-      if (list.length === 0) {
-        channelsGrid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
-            <i data-lucide="tv-minimal" style="width: 44px; height: 44px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
-            <p style="font-weight: 600;">No channels found.</p>
-            <p style="font-size: 0.8rem; margin-top: 0.25rem;">Try clearing your search or picking another category.</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      const displayChannels = list.slice(0, 120);
+      const displayChannels = list.slice(0, 100);
 
       channelsGrid.innerHTML = displayChannels.map(c => {
         const isFav = favorites.has(c.id);
@@ -1299,6 +1145,7 @@
 
         return `
           <div class="channel-card ${isActive ? 'active' : ''}" data-id="${c.id}">
+            ${c.isRecommended ? '<span class="recommended-badge">Featured</span>' : ''}
             <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${c.id}">
               <i data-lucide="star" style="width: 14px; height: 14px; fill: ${isFav ? 'currentColor' : 'none'}"></i>
             </button>
@@ -1324,93 +1171,10 @@
           if (target) playChannel(target);
         });
       });
-
-      document.querySelectorAll('.fav-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute('data-fav');
-          if (favorites.has(id)) favorites.delete(id);
-          else favorites.add(id);
-          localStorage.setItem('iptv_dekh_favs', JSON.stringify(Array.from(favorites)));
-          updateBadges();
-          renderChannels();
-        });
-      });
     }
 
     searchInput.addEventListener('input', renderChannels);
     searchInput.addEventListener('keyup', renderChannels);
-
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        item.classList.add('active');
-        activeView = item.getAttribute('data-view');
-        selectedCountry = "ALL";
-        selectedGenre = "All";
-        setupCountrySelector();
-        setupGenrePills();
-        renderChannels();
-      });
-    });
-
-    const disclaimerModal = document.getElementById('disclaimerModal');
-    const openDisclaimer = () => disclaimerModal.classList.add('open');
-    const closeDisclaimer = () => disclaimerModal.classList.remove('open');
-
-    document.getElementById('openDisclaimerBtn').addEventListener('click', openDisclaimer);
-    document.getElementById('footerDisclaimerLink').addEventListener('click', openDisclaimer);
-    document.getElementById('closeDisclaimerBtn').addEventListener('click', closeDisclaimer);
-    document.getElementById('acknowledgeDisclaimerBtn').addEventListener('click', closeDisclaimer);
-
-    const importModal = document.getElementById('importModal');
-    document.getElementById('openImportBtn').addEventListener('click', () => importModal.classList.add('open'));
-    document.getElementById('closeModalBtn').addEventListener('click', () => importModal.classList.remove('open'));
-
-    document.querySelectorAll('.modal-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
-      });
-    });
-
-    function saveAndApply(newChannels) {
-      if (!newChannels.length) {
-        alert('No valid channels found in the playlist.');
-        return;
-      }
-      allChannels = newChannels;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(allChannels));
-      importModal.classList.remove('open');
-      initializeData();
-    }
-
-    document.getElementById('loadUrlBtn').addEventListener('click', async () => {
-      const url = document.getElementById('playlistUrl').value.trim();
-      if (!url) return;
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        saveAndApply(parseM3U(text));
-      } catch (err) {
-        alert("Failed to fetch playlist directly. Use upload or paste tab to avoid CORS blocks.");
-      }
-    });
-
-    document.getElementById('playlistFile').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => saveAndApply(parseM3U(event.target.result));
-      reader.readAsText(file);
-    });
-
-    document.getElementById('loadRawBtn').addEventListener('click', () => {
-      const text = document.getElementById('playlistRaw').value;
-      saveAndApply(parseM3U(text));
-    });
   </script>
 </body>
 </html>
