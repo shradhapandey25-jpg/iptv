@@ -245,12 +245,6 @@
       color: var(--text-muted);
     }
 
-    .sidebar-footer a {
-      color: var(--text-muted);
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
     main {
       flex: 1;
       display: flex;
@@ -259,7 +253,6 @@
       background: var(--bg-dark);
     }
 
-    /* Player Container */
     .player-theater {
       background: radial-gradient(circle at center, #1b0c11 0%, #050608 100%);
       position: relative;
@@ -308,7 +301,6 @@
       z-index: 25;
     }
 
-    /* Compact Welcome Screen */
     .welcome-splash {
       position: absolute;
       inset: 0;
@@ -339,7 +331,6 @@
       margin-bottom: 0.55rem;
     }
 
-    /* Featured Sony Cine Banner */
     .featured-recommend-box {
       display: inline-flex;
       align-items: center;
@@ -743,15 +734,13 @@
 
     <main>
       <div class="player-theater" id="playerTheater">
-        <!-- Compact Welcome Screen -->
         <div class="welcome-splash" id="welcomeSplash">
           <h1 class="welcome-title">Live TV & Movies</h1>
           <p class="welcome-subtitle">Tap below to watch our featured channel or choose from the list:</p>
 
-          <!-- Guaranteed Featured Sony Cine Link -->
-          <div class="featured-recommend-box" id="quickSonyCineBtn" title="Play Sony Cine">
+          <div class="featured-recommend-box" id="quickSonyCineBtn" title="Play Cine Sony (720p)">
             <span class="featured-pill-tag">Featured</span>
-            <span class="featured-stream-name">Watch Sony Cine Now &rarr;</span>
+            <span class="featured-stream-name">Watch Cine Sony (720p) &rarr;</span>
           </div>
 
           <div class="welcome-note">
@@ -759,7 +748,6 @@
           </div>
         </div>
 
-        <!-- Video Player Wrapper -->
         <div class="video-wrapper" id="videoWrapper">
           <video id="iptvPlayer" controls playsinline webkit-playsinline></video>
           
@@ -824,17 +812,22 @@
   </div>
 
   <script>
-    // Primary pre-seeded channels to guarantee instant display on mobile
+    // New Cache Key to ensure immediate client-side invalidation
+    const STORAGE_KEY = 'iptv_dekh_channels_v7_cinesony720';
+
+    // Direct Cine Sony (720p) Feed
+    const CINE_SONY_720P = {
+      id: "ch_cine_sony_720p",
+      name: "Cine Sony (720p)",
+      group: "Movies",
+      country: "United States",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
+      url: "https://cdn.klowdtv.net/803B48A/n1.klowdtv.net/live1/cine_720p/playlist.m3u8",
+      isRecommended: true
+    };
+
     const HARDCODED_FEATURED_CHANNELS = [
-      {
-        id: "ch_sony_cine_rec",
-        name: "Sony Cine",
-        group: "Movies",
-        country: "International",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
-        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8",
-        isRecommended: true
-      },
+      CINE_SONY_720P,
       {
         id: "ch_sky_news",
         name: "Sky News Live",
@@ -875,7 +868,6 @@
 
     const STANDARD_GENRES = ["All", "Movies", "Action", "Entertainment", "Sports", "News", "Business"];
 
-    // Initialize with pre-seeded channels immediately so mobile is NEVER empty
     let allChannels = [...HARDCODED_FEATURED_CHANNELS];
     let favorites = new Set();
     let activeView = "ALL";
@@ -908,7 +900,7 @@
     });
 
     quickSonyCineBtn.addEventListener('click', () => {
-      playChannel(HARDCODED_FEATURED_CHANNELS[0]);
+      playChannel(CINE_SONY_720P);
     });
 
     function toggleFullScreen() {
@@ -941,10 +933,10 @@
         }
       });
 
-      // Render the hardcoded channels right away
+      // Render Cine Sony (720p) first immediately
       initializeData();
 
-      // Fetch external playlist in background
+      // Background playlist fetch
       loadPlaylist(DEFAULT_PLAYLIST_URL);
     });
 
@@ -1009,8 +1001,7 @@
 
       const parsed = parseM3U(text);
       if (parsed.length > 0) {
-        // Keep Sony Cine first, append the rest
-        allChannels = [HARDCODED_FEATURED_CHANNELS[0], ...parsed.filter(x => x.name.toLowerCase() !== "sony cine")];
+        allChannels = [CINE_SONY_720P, ...parsed.filter(x => !x.name.toLowerCase().includes("cine sony"))];
         initializeData();
       }
     }
@@ -1035,8 +1026,9 @@
 
       const sortedCountries = Array.from(countries).sort();
       countrySelector.innerHTML = `<option value="ALL">All Countries (${allChannels.length})</option>` +
+        `<option value="United States">United States</option>` +
         `<option value="International">International</option>` +
-        sortedCountries.map(c => {
+        sortedCountries.filter(c => c !== "United States").map(c => {
           const count = allChannels.filter(x => x.country === c).length;
           return `<option value="${c}">${c} (${count})</option>`;
         }).join('');
