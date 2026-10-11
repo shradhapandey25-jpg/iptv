@@ -10,6 +10,12 @@
   <link rel="apple-touch-icon" href="/icon.svg">
   <meta name="theme-color" content="#e50914">
 
+  <!-- Stream CDN Preconnect & DNS-Prefetch for Faster Playback -->
+  <link rel="preconnect" href="https://akamaized.net" crossorigin>
+  <link rel="preconnect" href="https://cloudfront.net" crossorigin>
+  <link rel="dns-prefetch" href="https://akamaized.net">
+  <link rel="dns-prefetch" href="https://cloudfront.net">
+
   <!-- Core Scripts & Fonts -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7/dist/fuse.basic.min.js"></script>
@@ -119,7 +125,7 @@
       letter-spacing: 0.05em;
     }
 
-    /* Search Box with Clear Button */
+    /* Search Box */
     .search-box {
       position: relative;
       width: 340px;
@@ -963,7 +969,7 @@
         font-size: 0.74rem;
       }
       .stream-status-badge {
-        display: none; /* Hide middle badge on mobile so Home button & Close button stay uncluttered */
+        display: none;
       }
 
       .search-box {
@@ -1276,6 +1282,27 @@
 
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
+    const FAV_STORAGE_KEY = "iptv_dekh_saved_favs_v2";
+
+    // Persistent Favorites Handler
+    function loadSavedFavorites() {
+      try {
+        const stored = localStorage.getItem(FAV_STORAGE_KEY);
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+      } catch (err) {
+        return new Set();
+      }
+    }
+
+    function persistFavorites(favSet) {
+      try {
+        localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(Array.from(favSet)));
+      } catch (err) {
+        console.warn("Unable to save favorites to storage:", err);
+      }
+    }
+
+    let favorites = loadSavedFavorites();
 
     // Comprehensive starter channels featuring Kantipur, Star, Sony, Zoom, 9X, Goldmines & Global Streams
     const STARTER_CHANNELS = [
@@ -1674,7 +1701,6 @@
     const STANDARD_GENRES = ["All", "India", "Nepal", "Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom", "Movies", "News", "Sports", "Kids", "Music", "Business"];
 
     let allChannels = [...STARTER_CHANNELS];
-    let favorites = new Set();
     let activeView = "ALL";
     let selectedCountry = "ALL";
     let selectedGenre = "All";
@@ -1715,7 +1741,6 @@
        HOME NAVIGATION CONTROLLER
     ======================================================== */
     function goHome() {
-      // 1. Terminate active stream & video playback
       if (video) {
         video.pause();
         video.removeAttribute('src');
@@ -1726,23 +1751,19 @@
         hls = null;
       }
 
-      // 2. Hide player, reveal Welcome Discovery Splash
       videoWrapper.style.display = "none";
       welcomeSplash.style.display = "flex";
       activeChannelId = null;
 
-      // 3. Reset theater mode on mobile
       if (isTheaterMode && window.innerWidth <= 768) {
         toggleTheaterMode();
       }
 
-      // 4. Exit native fullscreen if currently active
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
 
-      // 5. Reset views & search filters back to default Home view
       activeView = "ALL";
       selectedCountry = "ALL";
       selectedGenre = "All";
@@ -1760,7 +1781,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Attach goHome to Header Brand Logo, Player Top Brand Button, and Player Top Close Button
     brandLogoBtn.addEventListener('click', goHome);
     playerHomeBtn.addEventListener('click', goHome);
     playerCloseBtn.addEventListener('click', goHome);
@@ -1948,7 +1968,6 @@
             const rawCode = countryMatch[1].trim().toUpperCase();
             item.country = COUNTRY_NAMES[rawCode] || rawCode;
           } else {
-            // Heuristic country tagging for India & Nepal
             const lowerGroup = (item.group || "").toLowerCase();
             const lowerName = line.toLowerCase();
             if (lowerGroup.includes("india") || lowerName.includes("india") || lowerName.includes("hindi") || lowerGroup.includes("star") || lowerGroup.includes("sony") || lowerGroup.includes("goldmines") || lowerGroup.includes("9x")) {
@@ -2096,7 +2115,7 @@
     }
 
     /* ========================================================
-       MEDIA PLAYBACK
+       MEDIA PLAYBACK (OPTIMIZED HIGH-SPEED LOW-LATENCY ENGINE)
     ======================================================== */
     function playChannel(channel) {
       activeChannelId = channel.id;
@@ -2105,12 +2124,45 @@
       welcomeSplash.style.display = "none";
       videoWrapper.style.display = "flex";
 
-      if (Hls.isSupported() && (channel.url.includes('.m3u8') || channel.url.includes('m3u') || channel.url.includes('live'))) {
-        if (hls) hls.destroy();
-        hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+      if (hls) {
+        hls.destroy();
+        hls = null;
+      }
+
+      const isHls = channel.url.includes('.m3u8') || channel.url.includes('m3u') || channel.url.includes('live');
+
+      if (Hls.isSupported() && isHls) {
+        // High-performance HLS configuration for minimal buffering and ultra-fast startup
+        hls = new Hls({
+          enableWorker: true,              // Run video decoding/demuxing on Web Worker
+          lowLatencyMode: true,            // Cuts down broadcast latency
+          startFragPrefetch: true,         // Prefetches 1st video chunk while manifest loads
+          maxBufferLength: 8,              // Compact buffer to lower time-to-first-frame
+          maxMaxBufferLength: 15,          // Avoid over-buffering and saving memory
+          maxBufferSize: 20 * 1000 * 1000, // 20 MB buffer footprint
+          maxBufferHole: 0.5,              // Smooth jump over live stream gaps
+          liveSyncDurationCount: 3,        // Stay 3 segments behind live broadcast
+          liveMaxLatencyDurationCount: 5,  // Catch up seamlessly if delayed
+          manifestLoadingTimeOut: 6000,    // Quick failure response if URL is unresponsive
+          manifestLoadingMaxRetry: 2,
+          levelLoadingTimeOut: 6000,
+          fragLoadingTimeOut: 10000
+        });
+
         hls.loadSource(channel.url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Graceful fallback: muted play if browser restricts unmuted autoplay
+              video.muted = true;
+              video.play().catch(() => {});
+            });
+          }
+        });
+
         hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
             switch (data.type) {
@@ -2127,11 +2179,18 @@
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native Safari/iOS playback
         video.src = channel.url;
-        video.play().catch(() => {});
+        video.play().catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
       } else {
         video.src = channel.url;
-        video.play().catch(() => {});
+        video.play().catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
       }
 
       if (window.innerWidth <= 768) {
@@ -2213,7 +2272,7 @@
         }
       }
 
-      // Heading setup
+      // Dynamic Title
       let heading = "All Channels";
       if (activeView === "FAV") heading = "Favorite Channels";
       else if (selectedCountry === "India") heading = "🇮🇳 India Live TV";
@@ -2245,11 +2304,11 @@
 
         return `
           <div class="channel-card ${isActive ? 'active' : ''}" data-id="${c.id}">
-            <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${c.id}">
+            <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${c.id}" title="${isFav ? 'Remove Favorite' : 'Save Favorite'}">
               <i data-lucide="star" style="width: 14px; height: 14px; fill: ${isFav ? 'currentColor' : 'none'}"></i>
             </button>
             <div class="channel-thumb-box">
-              <img src="${logo}" alt="${c.name}" onerror="this.src='https://dummyimage.com/150x150/141824/ff4757&text=TV'">
+              <img src="${logo}" alt="${c.name}" loading="lazy" onerror="this.src='https://dummyimage.com/150x150/141824/ff4757&text=TV'">
             </div>
             <div class="channel-name" title="${c.name}">${c.name}</div>
             <div class="channel-meta-tags">
@@ -2271,12 +2330,17 @@
         });
       });
 
+      // Persistent Favorite Toggle
       document.querySelectorAll('.fav-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const id = btn.getAttribute('data-fav');
-          if (favorites.has(id)) favorites.delete(id);
-          else favorites.add(id);
+          if (favorites.has(id)) {
+            favorites.delete(id);
+          } else {
+            favorites.add(id);
+          }
+          persistFavorites(favorites);
           updateBadges();
           renderChannels();
         });
