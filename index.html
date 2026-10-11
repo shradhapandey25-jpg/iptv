@@ -1225,4 +1225,1158 @@
       <div class="modal-scrollable">
         <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
         <h3>1. Client-Side Player Architecture</h3>
-        <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place
+        <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
+        <h3>2. Location & Bandwidth Constraints</h3>
+        <p>Stream availability is subject to third-party broadcasting endpoints, regional broadcast licenses, internet service provider routing, and local network speeds. IPTV Dekh cannot guarantee uptime or continuous latency-free broadcast from external endpoints.</p>
+        <h3>3. Copyright & Intellectual Property</h3>
+        <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
+        <h3>4. DMCA & Content Removal</h3>
+        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream.</p>
+      </div>
+      <div style="margin-top: 1rem; text-align: right;">
+        <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div class="modal-overlay" id="importModal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+        <h2>Import Custom Playlist</h2>
+        <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
+      </div>
+      <div class="modal-tabs">
+        <div class="modal-tab active" data-tab="urlTab">Playlist URL</div>
+        <div class="modal-tab" data-tab="fileTab">Upload File</div>
+        <div class="modal-tab" data-tab="pasteTab">Paste Content</div>
+      </div>
+      <div class="tab-content active" id="urlTab">
+        <div class="input-group">
+          <label>M3U / M3U8 Playlist URL</label>
+          <input type="url" id="playlistUrl" placeholder="https://iptv-org.github.io/iptv/index.m3u">
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" id="loadUrlBtn">Load Playlist</button>
+      </div>
+      <div class="tab-content" id="fileTab">
+        <div class="input-group">
+          <label>Upload .m3u or .m3u8 file</label>
+          <input type="file" id="playlistFile" accept=".m3u,.m3u8">
+        </div>
+      </div>
+      <div class="tab-content" id="pasteTab">
+        <div class="input-group">
+          <label>Paste Raw M3U Content</label>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;IN&quot; group-title=&quot;Star&quot;,Star Plus HD&#10;https://..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
+
+    // Comprehensive starter channels featuring Kantipur, Star, Sony, Zoom, 9X, Goldmines & Global Streams
+    const STARTER_CHANNELS = [
+      /* ========================================================
+         NEPAL CHANNELS (Including Full Kantipur Suite)
+      ======================================================== */
+      {
+        id: "st_np_ktv_hd",
+        name: "Kantipur TV HD",
+        group: "Kantipur",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Kantipur_Television_Logo.png/512px-Kantipur_Television_Logo.png",
+        url: "https://live.kantipurtv.com/hls/stream.m3u8"
+      },
+      {
+        id: "st_np_ktv_cineplex",
+        name: "Kantipur Cineplex HD",
+        group: "Kantipur",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Kantipur_Cineplex.png/512px-Kantipur_Cineplex.png",
+        url: "https://live.kantipurtv.com/cineplex/live.m3u8"
+      },
+      {
+        id: "st_np_ktv_gold",
+        name: "Kantipur Gold",
+        group: "Kantipur",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Kantipur_Television_Logo.png/512px-Kantipur_Television_Logo.png",
+        url: "https://live.kantipurtv.com/gold/stream.m3u8"
+      },
+      {
+        id: "st_np_ktv_samachar",
+        name: "Kantipur Samachar News",
+        group: "Kantipur",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Kantipur_Television_Logo.png/512px-Kantipur_Television_Logo.png",
+        url: "https://live.kantipurtv.com/news/live.m3u8"
+      },
+      {
+        id: "st_np_ntv",
+        name: "Nepal Television (NTV HD)",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Nepal_Television_logo.svg/512px-Nepal_Television_logo.svg.png",
+        url: "https://live.ntv.org.np/hls/ntv.m3u8"
+      },
+      {
+        id: "st_np_ntv_news",
+        name: "NTV News HD",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Nepal_Television_logo.svg/512px-Nepal_Television_logo.svg.png",
+        url: "https://live.ntv.org.np/hls/ntvnews.m3u8"
+      },
+      {
+        id: "st_np_ntv_plus",
+        name: "NTV Plus",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Nepal_Television_logo.svg/512px-Nepal_Television_logo.svg.png",
+        url: "https://live.ntv.org.np/hls/ntvplus.m3u8"
+      },
+      {
+        id: "st_np_ap1",
+        name: "AP1 TV HD Nepal",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/AP1_TV_logo.png/512px-AP1_TV_logo.png",
+        url: "https://live.ap1.tv/hls/live.m3u8"
+      },
+      {
+        id: "st_np_himalaya",
+        name: "Himalaya TV HD",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Himalaya_TV_logo.png/512px-Himalaya_TV_logo.png",
+        url: "https://live.himalayatv.com/hls/stream.m3u8"
+      },
+      {
+        id: "st_np_sagarmatha",
+        name: "Sagarmatha TV",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Sagarmatha_Television_logo.png/512px-Sagarmatha_Television_logo.png",
+        url: "https://stream.sagarmatha.tv/live/index.m3u8"
+      },
+      {
+        id: "st_np_avenues",
+        name: "Avenues Khabar HD",
+        group: "Nepal",
+        country: "Nepal",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Avenues_Television_logo.png/512px-Avenues_Television_logo.png",
+        url: "https://avenues.tv/live/master.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: STAR NETWORK CHANNELS
+      ======================================================== */
+      {
+        id: "st_in_star_plus",
+        name: "Star Plus HD",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Star_Plus_logo_%282020%29.svg/512px-Star_Plus_logo_%282020%29.svg.png",
+        url: "https://starplus-live.akamaized.net/hls/live/starplus/master.m3u8"
+      },
+      {
+        id: "st_in_star_bharat",
+        name: "Star Bharat",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Star_Bharat_logo.svg/512px-Star_Bharat_logo.svg.png",
+        url: "https://starbharat-live.akamaized.net/hls/live/starbharat/master.m3u8"
+      },
+      {
+        id: "st_in_star_gold",
+        name: "Star Gold HD",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Star_Gold_logo.svg/512px-Star_Gold_logo.svg.png",
+        url: "https://stargold-live.akamaized.net/hls/live/stargold/master.m3u8"
+      },
+      {
+        id: "st_in_star_gold2",
+        name: "Star Gold 2",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Star_Gold_logo.svg/512px-Star_Gold_logo.svg.png",
+        url: "https://stargold2-live.akamaized.net/hls/live/stargold2/master.m3u8"
+      },
+      {
+        id: "st_in_star_sports_hindi",
+        name: "Star Sports 1 Hindi",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/Star_Sports_1_Hindi_logo.svg/512px-Star_Sports_1_Hindi_logo.svg.png",
+        url: "https://starsports-live.akamaized.net/hls/live/starsports1/master.m3u8"
+      },
+      {
+        id: "st_in_star_utsav",
+        name: "Star Utsav",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/14/Star_Utsav_logo.svg/512px-Star_Utsav_logo.svg.png",
+        url: "https://starutsav-live.akamaized.net/hls/live/starutsav/master.m3u8"
+      },
+      {
+        id: "st_in_star_utsav_movies",
+        name: "Star Utsav Movies",
+        group: "Star",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/14/Star_Utsav_logo.svg/512px-Star_Utsav_logo.svg.png",
+        url: "https://starutsavmovies-live.akamaized.net/hls/live/utsavmovies/master.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: SONY NETWORK CHANNELS
+      ======================================================== */
+      {
+        id: "st_in_sony_set",
+        name: "Sony Entertainment Television (SET HD)",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Sony_Entertainment_Television_logo.svg/512px-Sony_Entertainment_Television_logo.svg.png",
+        url: "https://set-live.akamaized.net/hls/live/setindia/master.m3u8"
+      },
+      {
+        id: "st_in_sony_sab",
+        name: "Sony SAB HD",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/36/Sony_SAB_logo.svg/512px-Sony_SAB_logo.svg.png",
+        url: "https://sonysab-live.akamaized.net/hls/live/sonysab/master.m3u8"
+      },
+      {
+        id: "st_in_sony_max",
+        name: "Sony MAX HD",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/91/Sony_Max_logo_%282020%29.svg/512px-Sony_Max_logo_%282020%29.svg.png",
+        url: "https://sonymax-live.akamaized.net/hls/live/sonymax/master.m3u8"
+      },
+      {
+        id: "st_in_sony_max2",
+        name: "Sony MAX 2",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/91/Sony_Max_logo_%282020%29.svg/512px-Sony_Max_logo_%282020%29.svg.png",
+        url: "https://sonymax2-live.akamaized.net/hls/live/sonymax2/master.m3u8"
+      },
+      {
+        id: "st_in_sony_pal",
+        name: "Sony Pal",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Sony_Pal_logo.svg/512px-Sony_Pal_logo.svg.png",
+        url: "https://sonypal-live.akamaized.net/hls/live/sonypal/master.m3u8"
+      },
+      {
+        id: "st_in_sony_yay",
+        name: "Sony YAY!",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Sony_YAY%21_logo.svg/512px-Sony_YAY%21_logo.svg.png",
+        url: "https://sonyyay-live.akamaized.net/hls/live/sonyyay/master.m3u8"
+      },
+      {
+        id: "st_in_sony_wah",
+        name: "Sony Wah",
+        group: "Sony",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/91/Sony_Max_logo_%282020%29.svg/512px-Sony_Max_logo_%282020%29.svg.png",
+        url: "https://sonywah-live.akamaized.net/hls/live/sonywah/master.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: ZOOM CHANNELS
+      ======================================================== */
+      {
+        id: "st_in_zoom",
+        name: "Zoom TV HD (Bollywood & Glamour)",
+        group: "Zoom",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Zoom_TV_Logo.png/512px-Zoom_TV_Logo.png",
+        url: "https://zoomtv-live.akamaized.net/hls/live/zoom/master.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: 9X NETWORK (MUSIC)
+      ======================================================== */
+      {
+        id: "st_in_9xm",
+        name: "9XM (Bollywood Hits)",
+        group: "9X",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b3/9XM_logo.svg/512px-9XM_logo.svg.png",
+        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XM/9XM.isml/index.m3u8"
+      },
+      {
+        id: "st_in_9x_jalwa",
+        name: "9X Jalwa (Evergreen Hindi)",
+        group: "9X",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/2/23/9X_Jalwa_logo.svg/512px-9X_Jalwa_logo.svg.png",
+        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XJalwa/9XJalwa.isml/index.m3u8"
+      },
+      {
+        id: "st_in_9x_tashan",
+        name: "9X Tashan (Superhit Punjabi)",
+        group: "9X",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/63/9X_Tashan_logo.svg/512px-9X_Tashan_logo.svg.png",
+        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XTashan/9XTashan.isml/index.m3u8"
+      },
+      {
+        id: "st_in_9x_jhakaas",
+        name: "9X Jhakaas (Marathi Music)",
+        group: "9X",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/7/77/9X_Jhakaas_logo.svg/512px-9X_Jhakaas_logo.svg.png",
+        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XJhakaas/9XJhakaas.isml/index.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: GOLDMINES CHANNELS
+      ======================================================== */
+      {
+        id: "st_in_goldmines_movies",
+        name: "Goldmines HD Movies",
+        group: "Goldmines",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1f/Goldmines_TV_channel_logo.png/512px-Goldmines_TV_channel_logo.png",
+        url: "https://goldmines-live.akamaized.net/hls/live/goldmines/master.m3u8"
+      },
+      {
+        id: "st_in_goldmines_bollywood",
+        name: "Goldmines Bollywood",
+        group: "Goldmines",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1f/Goldmines_TV_channel_logo.png/512px-Goldmines_TV_channel_logo.png",
+        url: "https://goldminesbollywood-live.akamaized.net/hls/live/gmbollywood/master.m3u8"
+      },
+      {
+        id: "st_in_goldmines_action",
+        name: "Goldmines Action (Dhinchaak)",
+        group: "Goldmines",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1f/Goldmines_TV_channel_logo.png/512px-Goldmines_TV_channel_logo.png",
+        url: "https://goldminesaction-live.akamaized.net/hls/live/gmaction/master.m3u8"
+      },
+
+      /* ========================================================
+         INDIA: NATIONAL & NEWS CHANNELS
+      ======================================================== */
+      {
+        id: "st_in_ddnews",
+        name: "DD News Live",
+        group: "News",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DD_News_logo.svg/512px-DD_News_logo.svg.png",
+        url: "https://ddnewsstream.akamaized.net/hls/live/2034177/ddnews/master.m3u8"
+      },
+      {
+        id: "st_in_indiatoday",
+        name: "India Today",
+        group: "News",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/India_Today_logo.svg/512px-India_Today_logo.svg.png",
+        url: "https://feeds.intoday.in/it/live/it_live_master.m3u8"
+      },
+      {
+        id: "st_in_sansad",
+        name: "Sansad TV HD",
+        group: "News",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Sansad_TV_logo.png/512px-Sansad_TV_logo.png",
+        url: "https://sansadtv.akamaized.net/hls/live/2035222/sansadtv/master.m3u8"
+      },
+
+      /* ========================================================
+         INTERNATIONAL STREAMS
+      ======================================================== */
+      {
+        id: "st_movies",
+        name: "Cine Sony (720p)",
+        group: "Movies",
+        country: "International",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
+        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
+      },
+      {
+        id: "st_news",
+        name: "Sky News Live",
+        group: "News",
+        country: "United Kingdom",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/Sky_News_2020.svg/512px-Sky_News_2020.svg.png",
+        url: "https://skynews-live.cdn.skypack.sk/skynews/live/hls/skynews_live.m3u8"
+      },
+      {
+        id: "st_business",
+        name: "Bloomberg TV",
+        group: "Business",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Bloomberg_Television_logo.svg/512px-Bloomberg_Television_logo.svg.png",
+        url: "https://bloomberg-p2p.live-delivery.ooyala.com/out/u/p2p_live.m3u8"
+      },
+      {
+        id: "st_sports",
+        name: "Red Bull TV",
+        group: "Sports",
+        country: "Austria",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_TV_logo.svg/512px-Red_Bull_TV_logo.svg.png",
+        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
+      },
+      {
+        id: "st_kids",
+        name: "PBS Kids Live",
+        group: "Kids",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/PBS_Kids_logo_%282022%29.svg/512px-PBS_Kids_logo_%282022%29.svg.png",
+        url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      }
+    ];
+
+    // Rich Keyword Synonym & Alias Mapping
+    const KEYWORD_SYNONYMS = {
+      "india": ["hindi", "bharat", "indian", "star", "sony", "goldmines", "zoom", "9x"],
+      "nepal": ["nepali", "kantipur", "kathmandu", "ntv"],
+      "kantipur": ["nepal", "cineplex", "ktv", "gold", "samachar"],
+      "star": ["star plus", "star gold", "star bharat", "star sports", "star utsav", "india"],
+      "sony": ["set", "sony sab", "sony max", "sony pal", "sony yay", "india"],
+      "zoom": ["zoom tv", "bollywood", "glamour", "entertainment", "india"],
+      "9x": ["9xm", "9x jalwa", "9x tashan", "9x jhakaas", "music", "india"],
+      "9xm": ["music", "bollywood", "9x"],
+      "goldmines": ["goldmines bollywood", "goldmines action", "movies", "dhinchaak", "india"],
+      "hindi": ["india", "bollywood"],
+      "nepali": ["nepal"],
+      "soccer": ["sports", "football"],
+      "football": ["sports", "soccer"],
+      "cartoons": ["kids", "animation", "anime"],
+      "cinema": ["movies", "film", "bollywood"],
+      "songs": ["music", "radio", "hits"]
+    };
+
+    const COUNTRY_NAMES = {
+      "IN": "India", "IND": "India",
+      "NP": "Nepal", "NPL": "Nepal",
+      "US": "United States", "USA": "United States",
+      "UK": "United Kingdom", "GB": "United Kingdom",
+      "CA": "Canada", "DE": "Germany", "FR": "France",
+      "AU": "Australia", "IT": "Italy", "ES": "Spain",
+      "BR": "Brazil", "MX": "Mexico", "JP": "Japan",
+      "KR": "South Korea", "AT": "Austria", "BD": "Bangladesh", "PK": "Pakistan"
+    };
+
+    const STANDARD_GENRES = ["All", "India", "Nepal", "Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom", "Movies", "News", "Sports", "Kids", "Music", "Business"];
+
+    let allChannels = [...STARTER_CHANNELS];
+    let favorites = new Set();
+    let activeView = "ALL";
+    let selectedCountry = "ALL";
+    let selectedGenre = "All";
+    let activeChannelId = null;
+    let isTheaterMode = false;
+    let hls = null;
+    let fuseIndex = null;
+
+    // DOM Elements
+    const video = document.getElementById('iptvPlayer');
+    const welcomeSplash = document.getElementById('welcomeSplash');
+    const videoWrapper = document.getElementById('videoWrapper');
+    const playerTheater = document.getElementById('playerTheater');
+    const playerHomeBtn = document.getElementById('playerHomeBtn');
+    const playerCloseBtn = document.getElementById('playerCloseBtn');
+    const theaterModeBtn = document.getElementById('theaterModeBtn');
+    const theaterBtnText = document.getElementById('theaterBtnText');
+    const fullScreenBtn = document.getElementById('fullScreenBtn');
+    const fullScreenBtnText = document.getElementById('fullScreenBtnText');
+    const fullScreenIcon = document.getElementById('fullScreenIcon');
+    const channelsGrid = document.getElementById('channelsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const searchClearBtn = document.getElementById('searchClearBtn');
+    const searchBoxContainer = document.getElementById('searchBoxContainer');
+    const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+    const brandLogoBtn = document.getElementById('brandLogoBtn');
+    const currentPlayingTitle = document.getElementById('currentPlayingTitle');
+    const viewHeading = document.getElementById('viewHeading');
+    const channelCountBadge = document.getElementById('channelCountBadge');
+    const countrySelector = document.getElementById('countrySelector');
+    const genrePillsContainer = document.getElementById('genrePillsContainer');
+    const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
+    const sidebarFavBadge = document.getElementById('sidebarFavBadge');
+    const sidebarIndiaBadge = document.getElementById('sidebarIndiaBadge');
+    const sidebarNepalBadge = document.getElementById('sidebarNepalBadge');
+
+    /* ========================================================
+       HOME NAVIGATION CONTROLLER
+    ======================================================== */
+    function goHome() {
+      // 1. Terminate active stream & video playback
+      if (video) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+      }
+      if (hls) {
+        hls.destroy();
+        hls = null;
+      }
+
+      // 2. Hide player, reveal Welcome Discovery Splash
+      videoWrapper.style.display = "none";
+      welcomeSplash.style.display = "flex";
+      activeChannelId = null;
+
+      // 3. Reset theater mode on mobile
+      if (isTheaterMode && window.innerWidth <= 768) {
+        toggleTheaterMode();
+      }
+
+      // 4. Exit native fullscreen if currently active
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+
+      // 5. Reset views & search filters back to default Home view
+      activeView = "ALL";
+      selectedCountry = "ALL";
+      selectedGenre = "All";
+      searchInput.value = "";
+      searchClearBtn.style.display = "none";
+
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      const allNav = document.querySelector('.nav-item[data-view="ALL"]');
+      if (allNav) allNav.classList.add('active');
+
+      setupCountrySelector();
+      setupGenrePills();
+      renderChannels();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Attach goHome to Header Brand Logo, Player Top Brand Button, and Player Top Close Button
+    brandLogoBtn.addEventListener('click', goHome);
+    playerHomeBtn.addEventListener('click', goHome);
+    playerCloseBtn.addEventListener('click', goHome);
+
+    /* ========================================================
+       THEATER MODE CONTROLS
+    ======================================================== */
+    function toggleTheaterMode() {
+      isTheaterMode = !isTheaterMode;
+      playerTheater.classList.toggle('is-theater', isTheaterMode);
+      theaterModeBtn.classList.toggle('active', isTheaterMode);
+
+      if (isTheaterMode) {
+        theaterBtnText.innerText = "Default View";
+        theaterModeBtn.setAttribute('title', 'Exit Theater Mode (T)');
+        const icon = theaterModeBtn.querySelector('i');
+        if (icon) icon.setAttribute('data-lucide', 'minimize-2');
+      } else {
+        theaterBtnText.innerText = "Theater Mode";
+        theaterModeBtn.setAttribute('title', 'Theater Mode (T)');
+        const icon = theaterModeBtn.querySelector('i');
+        if (icon) icon.setAttribute('data-lucide', 'tv');
+      }
+      lucide.createIcons();
+    }
+
+    theaterModeBtn.addEventListener('click', toggleTheaterMode);
+
+    /* ========================================================
+       FULLSCREEN MODE CONTROLS
+    ======================================================== */
+    function toggleFullScreen() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (!isFs) {
+        if (playerTheater.requestFullscreen) {
+          playerTheater.requestFullscreen().catch(() => {
+            if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+          });
+        } else if (playerTheater.webkitRequestFullscreen) {
+          playerTheater.webkitRequestFullscreen();
+        } else if (video.webkitEnterFullscreen) {
+          video.webkitEnterFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    fullScreenBtn.addEventListener('click', toggleFullScreen);
+    video.addEventListener('dblclick', toggleFullScreen);
+
+    function handleFullscreenChange() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (isFs) {
+        fullScreenIcon.setAttribute('data-lucide', 'minimize');
+        fullScreenBtnText.innerText = 'Exit Full Screen';
+        fullScreenBtn.classList.add('active');
+        fullScreenBtn.setAttribute('title', 'Exit Full Screen (Esc / F)');
+      } else {
+        fullScreenIcon.setAttribute('data-lucide', 'maximize');
+        fullScreenBtnText.innerText = 'Full Screen';
+        fullScreenBtn.classList.remove('active');
+        fullScreenBtn.setAttribute('title', 'Full Screen (F)');
+      }
+      lucide.createIcons();
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+    // Keyboard Shortcuts: 'T' for Theater, 'F' for Fullscreen
+    window.addEventListener('keydown', (e) => {
+      const activeEl = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (activeEl === 'input' || activeEl === 'textarea' || activeEl === 'select') return;
+
+      if (e.key === 't' || e.key === 'T') {
+        e.preventDefault();
+        toggleTheaterMode();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullScreen();
+      }
+    });
+
+    /* ========================================================
+       SEARCH & INDEXING
+    ======================================================== */
+    function rebuildSearchIndex() {
+      if (typeof Fuse !== 'undefined') {
+        fuseIndex = new Fuse(allChannels, {
+          keys: [
+            { name: 'name', weight: 0.60 },
+            { name: 'group', weight: 0.25 },
+            { name: 'country', weight: 0.15 }
+          ],
+          threshold: 0.38,
+          ignoreLocation: true,
+          minMatchCharLength: 2
+        });
+      }
+    }
+
+    function debounce(fn, delay = 160) {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+
+      mobileSearchToggle.addEventListener('click', () => {
+        searchBoxContainer.classList.toggle('open');
+        if (searchBoxContainer.classList.contains('open')) {
+          searchInput.focus();
+        }
+      });
+
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = "";
+        searchClearBtn.style.display = "none";
+        renderChannels();
+        searchInput.focus();
+      });
+
+      // Quick discovery chips in the welcome splash
+      document.querySelectorAll('.quick-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const category = chip.getAttribute('data-category');
+          const query = chip.getAttribute('data-query');
+
+          if (category === "India" || category === "Nepal") {
+            selectedCountry = category;
+            selectedGenre = "All";
+            searchInput.value = "";
+            searchClearBtn.style.display = "none";
+            setupCountrySelector();
+            setupGenrePills();
+            renderChannels();
+          } else if (query) {
+            searchInput.value = query;
+            searchClearBtn.style.display = "flex";
+            renderChannels();
+          }
+        });
+      });
+
+      initializeData();
+      loadPlaylist(DEFAULT_PLAYLIST_URL);
+    });
+
+    /* ========================================================
+       M3U PLAYLIST PARSER
+    ======================================================== */
+    function parseM3U(content) {
+      const lines = content.split(/\r?\n/);
+      const parsed = [];
+      let item = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        if (line.startsWith('#EXTINF:')) {
+          item = {
+            id: Math.random().toString(36).substring(2, 11),
+            name: "Channel",
+            group: "General",
+            country: "International",
+            logo: "",
+            url: ""
+          };
+
+          const groupMatch = line.match(/group-title="([^"]+)"/i);
+          if (groupMatch) item.group = groupMatch[1].trim();
+
+          const countryMatch = line.match(/tvg-country="([^"]+)"/i) || line.match(/country="([^"]+)"/i);
+          if (countryMatch) {
+            const rawCode = countryMatch[1].trim().toUpperCase();
+            item.country = COUNTRY_NAMES[rawCode] || rawCode;
+          } else {
+            // Heuristic country tagging for India & Nepal
+            const lowerGroup = (item.group || "").toLowerCase();
+            const lowerName = line.toLowerCase();
+            if (lowerGroup.includes("india") || lowerName.includes("india") || lowerName.includes("hindi") || lowerGroup.includes("star") || lowerGroup.includes("sony") || lowerGroup.includes("goldmines") || lowerGroup.includes("9x")) {
+              item.country = "India";
+            } else if (lowerGroup.includes("nepal") || lowerName.includes("nepal") || lowerName.includes("kantipur") || lowerName.includes("nepali")) {
+              item.country = "Nepal";
+            }
+          }
+
+          const logoMatch = line.match(/tvg-logo="([^"]+)"/i);
+          if (logoMatch) item.logo = logoMatch[1].trim();
+
+          const commaIndex = line.lastIndexOf(',');
+          if (commaIndex !== -1) {
+            item.name = line.substring(commaIndex + 1).trim();
+          }
+        } else if (!line.startsWith('#') && item) {
+          item.url = line;
+          parsed.push(item);
+          item = null;
+        }
+      }
+      return parsed;
+    }
+
+    async function loadPlaylist(url) {
+      let text = "";
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Direct fetch failed");
+        text = await res.text();
+      } catch (e) {
+        try {
+          const proxyRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+          text = await proxyRes.text();
+        } catch (proxyError) {
+          return;
+        }
+      }
+
+      const parsed = parseM3U(text);
+      if (parsed.length > 0) {
+        allChannels = [...STARTER_CHANNELS, ...parsed];
+        initializeData();
+      }
+    }
+
+    function initializeData() {
+      rebuildSearchIndex();
+      setupCountrySelector();
+      setupGenrePills();
+      updateBadges();
+      renderChannels();
+    }
+
+    function updateBadges() {
+      if (sidebarTotalBadge) sidebarTotalBadge.innerText = allChannels.length;
+      if (sidebarFavBadge) sidebarFavBadge.innerText = favorites.size;
+      if (sidebarIndiaBadge) {
+        sidebarIndiaBadge.innerText = allChannels.filter(c => c.country === "India" || (c.group && ["star", "sony", "zoom", "9x", "goldmines", "india"].some(x => c.group.toLowerCase().includes(x)))).length;
+      }
+      if (sidebarNepalBadge) {
+        sidebarNepalBadge.innerText = allChannels.filter(c => c.country === "Nepal" || (c.group && ["kantipur", "nepal"].some(x => c.group.toLowerCase().includes(x)))).length;
+      }
+    }
+
+    /* ========================================================
+       FILTERS & DROPDOWNS
+    ======================================================== */
+    function setupCountrySelector() {
+      const countries = new Set();
+      allChannels.forEach(ch => {
+        if (ch.country && ch.country !== "International") countries.add(ch.country);
+      });
+
+      const priorityCountries = ["India", "Nepal", "United States", "United Kingdom", "International"];
+      const sortedOtherCountries = Array.from(countries).filter(c => !priorityCountries.includes(c)).sort();
+
+      countrySelector.innerHTML = `<option value="ALL">All Countries (${allChannels.length})</option>` +
+        priorityCountries.map(c => {
+          const count = allChannels.filter(x => x.country === c || (c === "India" && x.group && ["star", "sony", "zoom", "9x", "goldmines"].some(k => x.group.toLowerCase().includes(k))) || (c === "Nepal" && x.group && x.group.toLowerCase().includes("kantipur"))).length;
+          const flag = c === "India" ? "🇮🇳 " : c === "Nepal" ? "🇳🇵 " : "";
+          return `<option value="${c}">${flag}${c} (${count})</option>`;
+        }).join('') +
+        sortedOtherCountries.map(c => {
+          const count = allChannels.filter(x => x.country === c).length;
+          return `<option value="${c}">${c} (${count})</option>`;
+        }).join('');
+
+      countrySelector.value = selectedCountry;
+      countrySelector.onchange = (e) => {
+        selectedCountry = e.target.value;
+        setupGenrePills();
+        renderChannels();
+      };
+    }
+
+    function setupGenrePills() {
+      let scoped = allChannels;
+      if (selectedCountry !== "ALL") {
+        scoped = scoped.filter(c => c.country === selectedCountry || (selectedCountry === "India" && c.group && ["star", "sony", "zoom", "9x", "goldmines"].some(k => c.group.toLowerCase().includes(k))) || (selectedCountry === "Nepal" && c.group && c.group.toLowerCase().includes("kantipur")));
+      }
+
+      const availableGenres = new Set();
+      scoped.forEach(ch => {
+        if (ch.group) availableGenres.add(ch.group);
+      });
+
+      const mergedGenres = ["All"];
+      STANDARD_GENRES.slice(1).forEach(g => {
+        if (g === "India" || g === "Nepal") {
+          if (selectedCountry === "ALL") mergedGenres.push(g);
+        } else if (Array.from(availableGenres).some(ag => ag.toLowerCase().includes(g.toLowerCase())) || ["Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom"].includes(g)) {
+          mergedGenres.push(g);
+        }
+      });
+
+      if (!mergedGenres.includes(selectedGenre)) {
+        selectedGenre = "All";
+      }
+
+      genrePillsContainer.innerHTML = mergedGenres.map(g => {
+        const flag = g === "India" ? "🇮🇳 " : g === "Nepal" ? "🇳🇵 " : "";
+        return `
+          <button class="pill ${selectedGenre === g ? 'active' : ''}" data-genre="${g}">
+            ${flag}${g}
+          </button>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.genre-pills .pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const g = btn.getAttribute('data-genre');
+          if (g === "India" || g === "Nepal") {
+            selectedCountry = g;
+            selectedGenre = "All";
+            setupCountrySelector();
+          } else {
+            selectedGenre = g;
+          }
+          setupGenrePills();
+          renderChannels();
+        });
+      });
+    }
+
+    /* ========================================================
+       MEDIA PLAYBACK
+    ======================================================== */
+    function playChannel(channel) {
+      activeChannelId = channel.id;
+      currentPlayingTitle.innerText = channel.name;
+
+      welcomeSplash.style.display = "none";
+      videoWrapper.style.display = "flex";
+
+      if (Hls.isSupported() && (channel.url.includes('.m3u8') || channel.url.includes('m3u') || channel.url.includes('live'))) {
+        if (hls) hls.destroy();
+        hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hls.loadSource(channel.url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                hls.destroy();
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = channel.url;
+        video.play().catch(() => {});
+      } else {
+        video.src = channel.url;
+        video.play().catch(() => {});
+      }
+
+      if (window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      renderChannels();
+    }
+
+    /* ========================================================
+       GRID RENDERING & SEARCH
+    ======================================================== */
+    function renderChannels() {
+      const rawQuery = searchInput.value.trim().toLowerCase();
+      searchClearBtn.style.display = rawQuery.length > 0 ? "flex" : "none";
+
+      let list = activeView === "FAV"
+        ? allChannels.filter(c => favorites.has(c.id))
+        : [...allChannels];
+
+      // Country Scope Filter
+      if (selectedCountry !== "ALL") {
+        if (selectedCountry === "India") {
+          list = list.filter(c => c.country === "India" || (c.group && ["star", "sony", "zoom", "9x", "goldmines", "india"].some(k => c.group.toLowerCase().includes(k))));
+        } else if (selectedCountry === "Nepal") {
+          list = list.filter(c => c.country === "Nepal" || (c.group && ["kantipur", "nepal"].some(k => c.group.toLowerCase().includes(k))));
+        } else {
+          list = list.filter(c => c.country === selectedCountry);
+        }
+      }
+
+      // Genre Scope Filter
+      if (selectedGenre !== "All") {
+        list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
+      }
+
+      // Enhanced Search Pipeline
+      if (rawQuery) {
+        const terms = [rawQuery];
+        if (KEYWORD_SYNONYMS[rawQuery]) {
+          terms.push(...KEYWORD_SYNONYMS[rawQuery]);
+        }
+
+        if (fuseIndex && list.length > 0) {
+          const fuzzyResults = fuseIndex.search(rawQuery).map(r => r.item);
+          
+          const aliasMatches = list.filter(c => {
+            return terms.some(term =>
+              (c.name && c.name.toLowerCase().includes(term)) ||
+              (c.group && c.group.toLowerCase().includes(term)) ||
+              (c.country && c.country.toLowerCase().includes(term))
+            );
+          });
+
+          const seen = new Set();
+          const combined = [];
+          [...fuzzyResults, ...aliasMatches].forEach(item => {
+            if (!seen.has(item.id)) {
+              seen.add(item.id);
+              const matchCountry = selectedCountry === "ALL" || 
+                (selectedCountry === "India" ? (item.country === "India" || (item.group && ["star", "sony", "zoom", "9x", "goldmines"].some(k => item.group.toLowerCase().includes(k)))) :
+                 selectedCountry === "Nepal" ? (item.country === "Nepal" || (item.group && item.group.toLowerCase().includes("kantipur"))) :
+                 item.country === selectedCountry);
+              const matchGenre = selectedGenre === "All" || (item.group && item.group.toLowerCase().includes(selectedGenre.toLowerCase()));
+              if (matchCountry && matchGenre) {
+                combined.push(item);
+              }
+            }
+          });
+          list = combined;
+        } else {
+          list = list.filter(c => {
+            return terms.some(term =>
+              (c.name && c.name.toLowerCase().includes(term)) ||
+              (c.group && c.group.toLowerCase().includes(term)) ||
+              (c.country && c.country.toLowerCase().includes(term))
+            );
+          });
+        }
+      }
+
+      // Heading setup
+      let heading = "All Channels";
+      if (activeView === "FAV") heading = "Favorite Channels";
+      else if (selectedCountry === "India") heading = "🇮🇳 India Live TV";
+      else if (selectedCountry === "Nepal") heading = "🇳🇵 Nepal Live TV";
+      else if (selectedCountry !== "ALL") heading = `${selectedCountry} Channels`;
+
+      if (selectedGenre !== "All") heading += ` • ${selectedGenre}`;
+      viewHeading.innerText = heading;
+      channelCountBadge.innerText = `${list.length} channels`;
+
+      if (list.length === 0) {
+        channelsGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+            <i data-lucide="search-x" style="width: 42px; height: 42px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
+            <p style="font-weight: 700; color: #fff;">No channels found for "${rawQuery || selectedCountry}"</p>
+            <p style="font-size: 0.8rem; margin-top: 0.3rem;">Try searching for "Star", "Sony", "Kantipur", "Goldmines", or "9X".</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      const displayChannels = list.slice(0, 100);
+
+      channelsGrid.innerHTML = displayChannels.map(c => {
+        const isFav = favorites.has(c.id);
+        const isActive = c.id === activeChannelId;
+        const logo = c.logo || `https://dummyimage.com/150x150/141824/ff4757&text=${encodeURIComponent(c.name.slice(0, 3))}`;
+
+        return `
+          <div class="channel-card ${isActive ? 'active' : ''}" data-id="${c.id}">
+            <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${c.id}">
+              <i data-lucide="star" style="width: 14px; height: 14px; fill: ${isFav ? 'currentColor' : 'none'}"></i>
+            </button>
+            <div class="channel-thumb-box">
+              <img src="${logo}" alt="${c.name}" onerror="this.src='https://dummyimage.com/150x150/141824/ff4757&text=TV'">
+            </div>
+            <div class="channel-name" title="${c.name}">${c.name}</div>
+            <div class="channel-meta-tags">
+              <span>${c.country || "INT"}</span>
+              <span>•</span>
+              <span>${c.group || "General"}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+
+      document.querySelectorAll('.channel-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.fav-btn')) return;
+          const target = allChannels.find(x => x.id === card.getAttribute('data-id'));
+          if (target) playChannel(target);
+        });
+      });
+
+      document.querySelectorAll('.fav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-fav');
+          if (favorites.has(id)) favorites.delete(id);
+          else favorites.add(id);
+          updateBadges();
+          renderChannels();
+        });
+      });
+    }
+
+    const debouncedSearch = debounce(renderChannels, 160);
+    searchInput.addEventListener('input', debouncedSearch);
+    searchInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') renderChannels();
+    });
+
+    /* ========================================================
+       SIDEBAR NAVIGATION
+    ======================================================== */
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+        activeView = item.getAttribute('data-view');
+
+        if (activeView === "INDIA") {
+          selectedCountry = "India";
+          selectedGenre = "All";
+        } else if (activeView === "NEPAL") {
+          selectedCountry = "Nepal";
+          selectedGenre = "All";
+        } else if (activeView.startsWith("GENRE_")) {
+          selectedCountry = "ALL";
+          selectedGenre = activeView.replace("GENRE_", "");
+        } else {
+          selectedCountry = "ALL";
+          selectedGenre = "All";
+        }
+
+        setupCountrySelector();
+        setupGenrePills();
+        renderChannels();
+      });
+    });
+
+    /* ========================================================
+       MODALS
+    ======================================================== */
+    const disclaimerModal = document.getElementById('disclaimerModal');
+    const openDisclaimer = () => disclaimerModal.classList.add('open');
+    const closeDisclaimer = () => disclaimerModal.classList.remove('open');
+
+    document.getElementById('openDisclaimerBtn').addEventListener('click', openDisclaimer);
+    document.getElementById('footerDisclaimerLink').addEventListener('click', openDisclaimer);
+    document.getElementById('closeDisclaimerBtn').addEventListener('click', closeDisclaimer);
+    document.getElementById('acknowledgeDisclaimerBtn').addEventListener('click', closeDisclaimer);
+
+    const importModal = document.getElementById('importModal');
+    document.getElementById('openImportBtn').addEventListener('click', () => importModal.classList.add('open'));
+    document.getElementById('closeModalBtn').addEventListener('click', () => importModal.classList.remove('open'));
+
+    document.querySelectorAll('.modal-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+      });
+    });
+
+    function saveAndApply(newChannels) {
+      if (!newChannels.length) {
+        alert('No valid channels found in the playlist.');
+        return;
+      }
+      allChannels = [...STARTER_CHANNELS, ...newChannels];
+      importModal.classList.remove('open');
+      initializeData();
+    }
+
+    document.getElementById('loadUrlBtn').addEventListener('click', async () => {
+      const url = document.getElementById('playlistUrl').value.trim();
+      if (!url) return;
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        saveAndApply(parseM3U(text));
+      } catch (err) {
+        alert("Failed to fetch playlist directly. Use upload or paste tab to avoid CORS blocks.");
+      }
+    });
+
+    document.getElementById('playlistFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => saveAndApply(parseM3U(event.target.result));
+      reader.readAsText(file);
+    });
+
+    document.getElementById('loadRawBtn').addEventListener('click', () => {
+      const text = document.getElementById('playlistRaw').value;
+      saveAndApply(parseM3U(text));
+    });
+  </script>
+</body>
+</html>
