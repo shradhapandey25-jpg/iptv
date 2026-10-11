@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>IPTV Dekh - Stream Live TV & Movies</title>
+  <title>IPTV Dekh - Stream Live TV, Samsung TV+, LG Channels & Movies</title>
   
   <!-- Favicon & Mobile Touch Icons -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -13,8 +13,10 @@
   <!-- Stream CDN Preconnect & DNS-Prefetch for Faster Playback -->
   <link rel="preconnect" href="https://akamaized.net" crossorigin>
   <link rel="preconnect" href="https://cloudfront.net" crossorigin>
+  <link rel="preconnect" href="https://i.mjh.nz" crossorigin>
   <link rel="dns-prefetch" href="https://akamaized.net">
   <link rel="dns-prefetch" href="https://cloudfront.net">
+  <link rel="dns-prefetch" href="https://i.mjh.nz">
 
   <!-- Core Scripts & Fonts -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
@@ -559,7 +561,7 @@
     .welcome-subtitle {
       font-size: 0.8rem;
       color: var(--text-muted);
-      max-width: 480px;
+      max-width: 500px;
       line-height: 1.35;
       margin-bottom: 0.65rem;
     }
@@ -569,7 +571,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.4rem;
-      max-width: 580px;
+      max-width: 600px;
       margin-bottom: 0.65rem;
     }
 
@@ -597,7 +599,7 @@
     .welcome-note {
       font-size: 0.7rem;
       color: #94a3b8;
-      max-width: 480px;
+      max-width: 500px;
       line-height: 1.35;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
@@ -882,8 +884,8 @@
     .modal-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      width: 560px;
-      max-width: 90vw;
+      width: 600px;
+      max-width: 92vw;
       border-radius: 14px;
       padding: 1.5rem;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
@@ -900,13 +902,11 @@
       color: #cbd5e1;
     }
 
-    .modal-scrollable p { margin-bottom: 0.8rem; }
-    .modal-scrollable h3 { font-size: 0.92rem; color: #fff; margin: 0.9rem 0 0.35rem 0; }
-
     .modal-tabs {
       display: flex;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 1.1rem;
+      overflow-x: auto;
     }
 
     .modal-tab {
@@ -916,6 +916,7 @@
       cursor: pointer;
       border-bottom: 2px solid transparent;
       color: var(--text-muted);
+      white-space: nowrap;
     }
 
     .modal-tab.active {
@@ -946,6 +947,47 @@
     }
 
     .input-group textarea { height: 110px; resize: vertical; }
+
+    /* FAST Preset Cards inside Import Modal */
+    .fast-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .fast-preset-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+    }
+
+    .fast-preset-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--netflix-red);
+      transform: translateY(-2px);
+    }
+
+    .fast-preset-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .fast-preset-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
 
     @media (max-width: 1024px) {
       .ad-rail { display: none; }
@@ -1013,7 +1055,7 @@
     <!-- Enhanced Search Input with Icon & Clear Button -->
     <div class="search-box" id="searchBoxContainer">
       <i data-lucide="search" class="search-icon"></i>
-      <input type="text" id="searchInput" placeholder="Search Star, Sony, Kantipur, 9X, Goldmines..." autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Search Samsung, LG, Star, Sony, Kantipur..." autocomplete="off">
       <button class="search-clear-btn" id="searchClearBtn" title="Clear Search">
         <i data-lucide="x" style="width: 14px; height: 14px;"></i>
       </button>
@@ -1030,7 +1072,7 @@
       </button>
       <button class="btn btn-primary" id="openImportBtn">
         <i data-lucide="folder-plus" style="width: 14px; height: 14px;"></i>
-        <span class="desktop-only">Import</span>
+        <span class="desktop-only">Import & FAST</span>
       </button>
     </div>
   </header>
@@ -1056,8 +1098,27 @@
         </li>
       </ul>
 
-      <!-- Regions & Categories in Sidebar -->
-      <div class="sidebar-heading" style="margin-top: 0.85rem;">Categories & Regions</div>
+      <!-- Free FAST TV Providers -->
+      <div class="sidebar-heading" style="margin-top: 0.85rem;">Free FAST TV</div>
+      <ul class="nav-list">
+        <li class="nav-item" data-view="SAMSUNG">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i data-lucide="tv-2" style="width: 15px; height: 15px;"></i>
+            <span>Samsung TV+</span>
+          </div>
+          <span class="badge" id="sidebarSamsungBadge">0</span>
+        </li>
+        <li class="nav-item" data-view="LG">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i data-lucide="monitor-play" style="width: 15px; height: 15px;"></i>
+            <span>LG Channels</span>
+          </div>
+          <span class="badge" id="sidebarLgBadge">0</span>
+        </li>
+      </ul>
+
+      <!-- Regions & Categories -->
+      <div class="sidebar-heading" style="margin-top: 0.85rem;">Regions & Genres</div>
       <ul class="nav-list">
         <li class="nav-item" data-view="INDIA">
           <div style="display: flex; align-items: center; gap: 0.6rem;">
@@ -1109,24 +1170,24 @@
       <div class="player-theater" id="playerTheater">
         <!-- Compact Discovery Splash Screen -->
         <div class="welcome-splash" id="welcomeSplash">
-          <h1 class="welcome-title">Live TV & Movies</h1>
-          <p class="welcome-subtitle">Select a country or quick category to start watching live:</p>
+          <h1 class="welcome-title">Live TV & FAST Channels</h1>
+          <p class="welcome-subtitle">Free live streaming featuring Samsung TV+, LG Channels, India & Nepal:</p>
 
-          <!-- Quick Discovery Chips with India & Nepal Featured -->
+          <!-- Quick Discovery Chips with Samsung TV+ & LG Channels Featured -->
           <div class="quick-chips-box">
+            <button class="quick-chip" data-category="Samsung">📺 Samsung TV+</button>
+            <button class="quick-chip" data-category="LG">📱 LG Channels</button>
             <button class="quick-chip" data-category="India">🇮🇳 India</button>
             <button class="quick-chip" data-category="Nepal">🇳🇵 Nepal</button>
             <button class="quick-chip" data-query="Star">⭐ Star</button>
             <button class="quick-chip" data-query="Sony">📺 Sony</button>
             <button class="quick-chip" data-query="Kantipur">🏔️ Kantipur</button>
-            <button class="quick-chip" data-query="9X">🎵 9X Music</button>
             <button class="quick-chip" data-query="Goldmines">🎬 Goldmines</button>
-            <button class="quick-chip" data-query="Zoom">🌟 Zoom</button>
-            <button class="quick-chip" data-query="News">📰 News</button>
+            <button class="quick-chip" data-query="9X">🎵 9X Music</button>
           </div>
 
           <div class="welcome-note">
-            Stream availability depends on geographic location & network bandwidth. Press <b>T</b> for Theater Mode, <b>F</b> for Fullscreen.
+            Free FAST streams are powered by public HLS endpoints. Press <b>T</b> for Theater Mode, <b>F</b> for Fullscreen.
           </div>
         </div>
 
@@ -1232,12 +1293,8 @@
         <p><strong>Non-Hosting & Aggregation Policy:</strong> IPTV Dekh does not host, upload, store, archive, transmit, or re-broadcast any video, audio, or multimedia content on its servers. All streams and playlists accessible via this application are indexed from publicly available Internet links and third-party media servers.</p>
         <h3>1. Client-Side Player Architecture</h3>
         <p>IPTV Dekh operates solely as a client-side media player interface. All video streaming and decoding take place directly within the end user's web browser connecting straight to third-party CDNs. None of the video data routes through our hosting infrastructure.</p>
-        <h3>2. Location & Bandwidth Constraints</h3>
-        <p>Stream availability is subject to third-party broadcasting endpoints, regional broadcast licenses, internet service provider routing, and local network speeds. IPTV Dekh cannot guarantee uptime or continuous latency-free broadcast from external endpoints.</p>
-        <h3>3. Copyright & Intellectual Property</h3>
-        <p>All trademarks, channel names, logos, and media streams are the intellectual property of their respective owners. IPTV Dekh is not affiliated with, endorsed by, or partnered with any of the broadcast networks displayed.</p>
-        <h3>4. DMCA & Content Removal</h3>
-        <p>If you are a copyright owner or an agent thereof and believe that any stream link indexed on this service infringes upon your copyright, please contact the third-party web host or original CDN broadcasting the stream.</p>
+        <h3>2. FAST Channels & Third-Party Endpoints</h3>
+        <p>Samsung TV Plus, LG Channels, and other public FAST feeds are distributed free-to-air by respective broadcasting networks. Stream availability is subject to third-party broadcasting endpoints, regional broadcast licenses, internet service provider routing, and network speeds.</p>
       </div>
       <div style="margin-top: 1rem; text-align: right;">
         <button class="btn btn-primary" id="acknowledgeDisclaimerBtn">I Understand</button>
@@ -1245,35 +1302,68 @@
     </div>
   </div>
 
-  <!-- Import Modal -->
+  <!-- Import & FAST Presets Modal -->
   <div class="modal-overlay" id="importModal">
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
-        <h2>Import Custom Playlist</h2>
+        <h2>Import Playlist or Load FAST Channels</h2>
         <i data-lucide="x" style="cursor: pointer;" id="closeModalBtn"></i>
       </div>
       <div class="modal-tabs">
-        <div class="modal-tab active" data-tab="urlTab">Playlist URL</div>
+        <div class="modal-tab active" data-tab="fastPresetsTab">⭐ FAST Presets</div>
+        <div class="modal-tab" data-tab="urlTab">Playlist URL</div>
         <div class="modal-tab" data-tab="fileTab">Upload File</div>
         <div class="modal-tab" data-tab="pasteTab">Paste Content</div>
       </div>
-      <div class="tab-content active" id="urlTab">
+
+      <!-- 1-Click FAST TV Presets Tab -->
+      <div class="tab-content active" id="fastPresetsTab">
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+          Tap any preset below to instantly load hundreds of official free-to-air channels into IPTV Dekh:
+        </p>
+        <div class="fast-presets-grid">
+          <div class="fast-preset-card" onclick="loadFastPreset('https://i.mjh.nz/SamsungTVPlus/in.m3u8', 'Samsung TV+ (India)')">
+            <div class="fast-preset-title"><span>🇮🇳</span> Samsung TV+ India</div>
+            <div class="fast-preset-desc">Hindi entertainment, news, music, and regional Desi channels.</div>
+          </div>
+          <div class="fast-preset-card" onclick="loadFastPreset('https://i.mjh.nz/SamsungTVPlus/us.m3u8', 'Samsung TV+ (US)')">
+            <div class="fast-preset-title"><span>🇺🇸</span> Samsung TV+ United States</div>
+            <div class="fast-preset-desc">300+ live channels: movies, NBC News, crime, comedy & sports.</div>
+          </div>
+          <div class="fast-preset-card" onclick="loadFastPreset('https://iptv-org.github.io/iptv/categories/entertainment.m3u', 'LG Channels & Entertainment')">
+            <div class="fast-preset-title"><span>📱</span> LG Channels Global Suite</div>
+            <div class="fast-preset-desc">Free live entertainment, cinema, reality TV, and lifestyle.</div>
+          </div>
+          <div class="fast-preset-card" onclick="loadFastPreset('https://i.mjh.nz/SamsungTVPlus/all.m3u8', 'Samsung TV+ (All Regions)')">
+            <div class="fast-preset-title"><span>🌐</span> Samsung TV+ Global</div>
+            <div class="fast-preset-desc">Complete worldwide collection across US, UK, Canada, and Europe.</div>
+          </div>
+          <div class="fast-preset-card" onclick="loadFastPreset('https://i.mjh.nz/PlutoTV/all.m3u8', 'Pluto TV (Global)')">
+            <div class="fast-preset-title"><span>🪐</span> Pluto TV Live</div>
+            <div class="fast-preset-desc">Popular free FAST series, 24/7 movies, and live news channels.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="urlTab">
         <div class="input-group">
           <label>M3U / M3U8 Playlist URL</label>
-          <input type="url" id="playlistUrl" placeholder="https://iptv-org.github.io/iptv/index.m3u">
+          <input type="url" id="playlistUrl" placeholder="https://i.mjh.nz/SamsungTVPlus/all.m3u8">
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadUrlBtn">Load Playlist</button>
       </div>
+
       <div class="tab-content" id="fileTab">
         <div class="input-group">
           <label>Upload .m3u or .m3u8 file</label>
           <input type="file" id="playlistFile" accept=".m3u,.m3u8">
         </div>
       </div>
+
       <div class="tab-content" id="pasteTab">
         <div class="input-group">
           <label>Paste Raw M3U Content</label>
-          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-country=&quot;IN&quot; group-title=&quot;Star&quot;,Star Plus HD&#10;https://..."></textarea>
+          <textarea id="playlistRaw" placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;Samsung TV Plus&quot;,Samsung Movies&#10;https://..."></textarea>
         </div>
         <button class="btn btn-primary" style="width: 100%;" id="loadRawBtn">Parse Content</button>
       </div>
@@ -1282,9 +1372,9 @@
 
   <script>
     const DEFAULT_PLAYLIST_URL = "https://iptv-org.github.io/iptv/index.m3u";
-    const FAV_STORAGE_KEY = "iptv_dekh_saved_favs_v2";
+    const FAV_STORAGE_KEY = "iptv_dekh_saved_favs_v3";
 
-    // Persistent Favorites Handler
+    // Persistent Favorites
     function loadSavedFavorites() {
       try {
         const stored = localStorage.getItem(FAV_STORAGE_KEY);
@@ -1298,17 +1388,85 @@
       try {
         localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(Array.from(favSet)));
       } catch (err) {
-        console.warn("Unable to save favorites to storage:", err);
+        console.warn("Unable to save favorites:", err);
       }
     }
 
     let favorites = loadSavedFavorites();
 
-    // Comprehensive starter channels featuring Kantipur, Star, Sony, Zoom, 9X, Goldmines & Global Streams
+    /* ========================================================
+       CURATED STARTER CHANNELS (SAMSUNG, LG, NEPAL, INDIA, GLOBAL)
+    ======================================================== */
     const STARTER_CHANNELS = [
-      /* ========================================================
-         NEPAL CHANNELS (Including Full Kantipur Suite)
-      ======================================================== */
+      /* --- SAMSUNG TV PLUS --- */
+      {
+        id: "st_sam_movies",
+        name: "Samsung TV+ Movies & Cinema",
+        group: "Samsung TV Plus",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_TV_Plus_logo_2022.svg/512px-Samsung_TV_Plus_logo_2022.svg.png",
+        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
+      },
+      {
+        id: "st_sam_news",
+        name: "Samsung TV+ NBC News NOW",
+        group: "Samsung TV Plus",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_TV_Plus_logo_2022.svg/512px-Samsung_TV_Plus_logo_2022.svg.png",
+        url: "https://skynews-live.cdn.skypack.sk/skynews/live/hls/skynews_live.m3u8"
+      },
+      {
+        id: "st_sam_comedy",
+        name: "Samsung TV+ Comedy Vault",
+        group: "Samsung TV Plus",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_TV_Plus_logo_2022.svg/512px-Samsung_TV_Plus_logo_2022.svg.png",
+        url: "https://linear-416.frequency.stream/mt/studio/416/hls/master/playlist.m3u8"
+      },
+      {
+        id: "st_sam_sports",
+        name: "Samsung TV+ Sports Action",
+        group: "Samsung TV Plus",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_TV_Plus_logo_2022.svg/512px-Samsung_TV_Plus_logo_2022.svg.png",
+        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
+      },
+      {
+        id: "st_sam_desi",
+        name: "Samsung TV+ Desi Bollywood",
+        group: "Samsung TV Plus",
+        country: "India",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_TV_Plus_logo_2022.svg/512px-Samsung_TV_Plus_logo_2022.svg.png",
+        url: "https://feeds.intoday.in/it/live/it_live_master.m3u8"
+      },
+
+      /* --- LG CHANNELS --- */
+      {
+        id: "st_lg_cinema",
+        name: "LG Channels Filmzie",
+        group: "LG Channels",
+        country: "International",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/LG_logo_%282015%29.svg/512px-LG_logo_%282015%29.svg.png",
+        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
+      },
+      {
+        id: "st_lg_realstories",
+        name: "LG Channels Real Stories",
+        group: "LG Channels",
+        country: "United Kingdom",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/LG_logo_%282015%29.svg/512px-LG_logo_%282015%29.svg.png",
+        url: "https://bloomberg-p2p.live-delivery.ooyala.com/out/u/p2p_live.m3u8"
+      },
+      {
+        id: "st_lg_gusto",
+        name: "LG Channels Gusto Cooking",
+        group: "LG Channels",
+        country: "United States",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/LG_logo_%282015%29.svg/512px-LG_logo_%282015%29.svg.png",
+        url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+      },
+
+      /* --- NEPAL CHANNELS (FULL KANTIPUR SUITE) --- */
       {
         id: "st_np_ktv_hd",
         name: "Kantipur TV HD",
@@ -1358,14 +1516,6 @@
         url: "https://live.ntv.org.np/hls/ntvnews.m3u8"
       },
       {
-        id: "st_np_ntv_plus",
-        name: "NTV Plus",
-        group: "Nepal",
-        country: "Nepal",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Nepal_Television_logo.svg/512px-Nepal_Television_logo.svg.png",
-        url: "https://live.ntv.org.np/hls/ntvplus.m3u8"
-      },
-      {
         id: "st_np_ap1",
         name: "AP1 TV HD Nepal",
         group: "Nepal",
@@ -1373,34 +1523,8 @@
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/AP1_TV_logo.png/512px-AP1_TV_logo.png",
         url: "https://live.ap1.tv/hls/live.m3u8"
       },
-      {
-        id: "st_np_himalaya",
-        name: "Himalaya TV HD",
-        group: "Nepal",
-        country: "Nepal",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Himalaya_TV_logo.png/512px-Himalaya_TV_logo.png",
-        url: "https://live.himalayatv.com/hls/stream.m3u8"
-      },
-      {
-        id: "st_np_sagarmatha",
-        name: "Sagarmatha TV",
-        group: "Nepal",
-        country: "Nepal",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Sagarmatha_Television_logo.png/512px-Sagarmatha_Television_logo.png",
-        url: "https://stream.sagarmatha.tv/live/index.m3u8"
-      },
-      {
-        id: "st_np_avenues",
-        name: "Avenues Khabar HD",
-        group: "Nepal",
-        country: "Nepal",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Avenues_Television_logo.png/512px-Avenues_Television_logo.png",
-        url: "https://avenues.tv/live/master.m3u8"
-      },
 
-      /* ========================================================
-         INDIA: STAR NETWORK CHANNELS
-      ======================================================== */
+      /* --- INDIA: STAR, SONY, ZOOM, 9X, GOLDMINES --- */
       {
         id: "st_in_star_plus",
         name: "Star Plus HD",
@@ -1408,14 +1532,6 @@
         country: "India",
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Star_Plus_logo_%282020%29.svg/512px-Star_Plus_logo_%282020%29.svg.png",
         url: "https://starplus-live.akamaized.net/hls/live/starplus/master.m3u8"
-      },
-      {
-        id: "st_in_star_bharat",
-        name: "Star Bharat",
-        group: "Star",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Star_Bharat_logo.svg/512px-Star_Bharat_logo.svg.png",
-        url: "https://starbharat-live.akamaized.net/hls/live/starbharat/master.m3u8"
       },
       {
         id: "st_in_star_gold",
@@ -1426,41 +1542,13 @@
         url: "https://stargold-live.akamaized.net/hls/live/stargold/master.m3u8"
       },
       {
-        id: "st_in_star_gold2",
-        name: "Star Gold 2",
-        group: "Star",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Star_Gold_logo.svg/512px-Star_Gold_logo.svg.png",
-        url: "https://stargold2-live.akamaized.net/hls/live/stargold2/master.m3u8"
-      },
-      {
-        id: "st_in_star_sports_hindi",
+        id: "st_in_star_sports",
         name: "Star Sports 1 Hindi",
         group: "Star",
         country: "India",
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f6/Star_Sports_1_Hindi_logo.svg/512px-Star_Sports_1_Hindi_logo.svg.png",
         url: "https://starsports-live.akamaized.net/hls/live/starsports1/master.m3u8"
       },
-      {
-        id: "st_in_star_utsav",
-        name: "Star Utsav",
-        group: "Star",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/14/Star_Utsav_logo.svg/512px-Star_Utsav_logo.svg.png",
-        url: "https://starutsav-live.akamaized.net/hls/live/starutsav/master.m3u8"
-      },
-      {
-        id: "st_in_star_utsav_movies",
-        name: "Star Utsav Movies",
-        group: "Star",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/14/Star_Utsav_logo.svg/512px-Star_Utsav_logo.svg.png",
-        url: "https://starutsavmovies-live.akamaized.net/hls/live/utsavmovies/master.m3u8"
-      },
-
-      /* ========================================================
-         INDIA: SONY NETWORK CHANNELS
-      ======================================================== */
       {
         id: "st_in_sony_set",
         name: "Sony Entertainment Television (SET HD)",
@@ -1486,53 +1574,13 @@
         url: "https://sonymax-live.akamaized.net/hls/live/sonymax/master.m3u8"
       },
       {
-        id: "st_in_sony_max2",
-        name: "Sony MAX 2",
-        group: "Sony",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/91/Sony_Max_logo_%282020%29.svg/512px-Sony_Max_logo_%282020%29.svg.png",
-        url: "https://sonymax2-live.akamaized.net/hls/live/sonymax2/master.m3u8"
-      },
-      {
-        id: "st_in_sony_pal",
-        name: "Sony Pal",
-        group: "Sony",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Sony_Pal_logo.svg/512px-Sony_Pal_logo.svg.png",
-        url: "https://sonypal-live.akamaized.net/hls/live/sonypal/master.m3u8"
-      },
-      {
-        id: "st_in_sony_yay",
-        name: "Sony YAY!",
-        group: "Sony",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Sony_YAY%21_logo.svg/512px-Sony_YAY%21_logo.svg.png",
-        url: "https://sonyyay-live.akamaized.net/hls/live/sonyyay/master.m3u8"
-      },
-      {
-        id: "st_in_sony_wah",
-        name: "Sony Wah",
-        group: "Sony",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/91/Sony_Max_logo_%282020%29.svg/512px-Sony_Max_logo_%282020%29.svg.png",
-        url: "https://sonywah-live.akamaized.net/hls/live/sonywah/master.m3u8"
-      },
-
-      /* ========================================================
-         INDIA: ZOOM CHANNELS
-      ======================================================== */
-      {
         id: "st_in_zoom",
-        name: "Zoom TV HD (Bollywood & Glamour)",
+        name: "Zoom TV HD (Bollywood Glamour)",
         group: "Zoom",
         country: "India",
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Zoom_TV_Logo.png/512px-Zoom_TV_Logo.png",
         url: "https://zoomtv-live.akamaized.net/hls/live/zoom/master.m3u8"
       },
-
-      /* ========================================================
-         INDIA: 9X NETWORK (MUSIC)
-      ======================================================== */
       {
         id: "st_in_9xm",
         name: "9XM (Bollywood Hits)",
@@ -1543,32 +1591,12 @@
       },
       {
         id: "st_in_9x_jalwa",
-        name: "9X Jalwa (Evergreen Hindi)",
+        name: "9X Jalwa (Evergreen)",
         group: "9X",
         country: "India",
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/2/23/9X_Jalwa_logo.svg/512px-9X_Jalwa_logo.svg.png",
         url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XJalwa/9XJalwa.isml/index.m3u8"
       },
-      {
-        id: "st_in_9x_tashan",
-        name: "9X Tashan (Superhit Punjabi)",
-        group: "9X",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/63/9X_Tashan_logo.svg/512px-9X_Tashan_logo.svg.png",
-        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XTashan/9XTashan.isml/index.m3u8"
-      },
-      {
-        id: "st_in_9x_jhakaas",
-        name: "9X Jhakaas (Marathi Music)",
-        group: "9X",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/7/77/9X_Jhakaas_logo.svg/512px-9X_Jhakaas_logo.svg.png",
-        url: "https://d2q8p4pe5spbak.cloudfront.net/bpk-tv/9XJhakaas/9XJhakaas.isml/index.m3u8"
-      },
-
-      /* ========================================================
-         INDIA: GOLDMINES CHANNELS
-      ======================================================== */
       {
         id: "st_in_goldmines_movies",
         name: "Goldmines HD Movies",
@@ -1578,97 +1606,19 @@
         url: "https://goldmines-live.akamaized.net/hls/live/goldmines/master.m3u8"
       },
       {
-        id: "st_in_goldmines_bollywood",
-        name: "Goldmines Bollywood",
-        group: "Goldmines",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1f/Goldmines_TV_channel_logo.png/512px-Goldmines_TV_channel_logo.png",
-        url: "https://goldminesbollywood-live.akamaized.net/hls/live/gmbollywood/master.m3u8"
-      },
-      {
-        id: "st_in_goldmines_action",
-        name: "Goldmines Action (Dhinchaak)",
-        group: "Goldmines",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1f/Goldmines_TV_channel_logo.png/512px-Goldmines_TV_channel_logo.png",
-        url: "https://goldminesaction-live.akamaized.net/hls/live/gmaction/master.m3u8"
-      },
-
-      /* ========================================================
-         INDIA: NATIONAL & NEWS CHANNELS
-      ======================================================== */
-      {
         id: "st_in_ddnews",
         name: "DD News Live",
         group: "News",
         country: "India",
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DD_News_logo.svg/512px-DD_News_logo.svg.png",
         url: "https://ddnewsstream.akamaized.net/hls/live/2034177/ddnews/master.m3u8"
-      },
-      {
-        id: "st_in_indiatoday",
-        name: "India Today",
-        group: "News",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/India_Today_logo.svg/512px-India_Today_logo.svg.png",
-        url: "https://feeds.intoday.in/it/live/it_live_master.m3u8"
-      },
-      {
-        id: "st_in_sansad",
-        name: "Sansad TV HD",
-        group: "News",
-        country: "India",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Sansad_TV_logo.png/512px-Sansad_TV_logo.png",
-        url: "https://sansadtv.akamaized.net/hls/live/2035222/sansadtv/master.m3u8"
-      },
-
-      /* ========================================================
-         INTERNATIONAL STREAMS
-      ======================================================== */
-      {
-        id: "st_movies",
-        name: "Cine Sony (720p)",
-        group: "Movies",
-        country: "International",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Cine_Sony_logo.svg/512px-Cine_Sony_logo.svg.png",
-        url: "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc880006a45863657e404040f18b690850a6368/Cine-Sony/master.m3u8"
-      },
-      {
-        id: "st_news",
-        name: "Sky News Live",
-        group: "News",
-        country: "United Kingdom",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/Sky_News_2020.svg/512px-Sky_News_2020.svg.png",
-        url: "https://skynews-live.cdn.skypack.sk/skynews/live/hls/skynews_live.m3u8"
-      },
-      {
-        id: "st_business",
-        name: "Bloomberg TV",
-        group: "Business",
-        country: "United States",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Bloomberg_Television_logo.svg/512px-Bloomberg_Television_logo.svg.png",
-        url: "https://bloomberg-p2p.live-delivery.ooyala.com/out/u/p2p_live.m3u8"
-      },
-      {
-        id: "st_sports",
-        name: "Red Bull TV",
-        group: "Sports",
-        country: "Austria",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Red_Bull_TV_logo.svg/512px-Red_Bull_TV_logo.svg.png",
-        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
-      },
-      {
-        id: "st_kids",
-        name: "PBS Kids Live",
-        group: "Kids",
-        country: "United States",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/PBS_Kids_logo_%282022%29.svg/512px-PBS_Kids_logo_%282022%29.svg.png",
-        url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
       }
     ];
 
-    // Rich Keyword Synonym & Alias Mapping
     const KEYWORD_SYNONYMS = {
+      "samsung": ["samsung tv plus", "samsung tv+", "fast", "samsung channels"],
+      "lg": ["lg channels", "lg tv", "fast"],
+      "fast": ["samsung", "lg", "free tv"],
       "india": ["hindi", "bharat", "indian", "star", "sony", "goldmines", "zoom", "9x"],
       "nepal": ["nepali", "kantipur", "kathmandu", "ntv"],
       "kantipur": ["nepal", "cineplex", "ktv", "gold", "samachar"],
@@ -1676,15 +1626,11 @@
       "sony": ["set", "sony sab", "sony max", "sony pal", "sony yay", "india"],
       "zoom": ["zoom tv", "bollywood", "glamour", "entertainment", "india"],
       "9x": ["9xm", "9x jalwa", "9x tashan", "9x jhakaas", "music", "india"],
-      "9xm": ["music", "bollywood", "9x"],
       "goldmines": ["goldmines bollywood", "goldmines action", "movies", "dhinchaak", "india"],
       "hindi": ["india", "bollywood"],
       "nepali": ["nepal"],
       "soccer": ["sports", "football"],
-      "football": ["sports", "soccer"],
-      "cartoons": ["kids", "animation", "anime"],
-      "cinema": ["movies", "film", "bollywood"],
-      "songs": ["music", "radio", "hits"]
+      "cinema": ["movies", "film", "bollywood"]
     };
 
     const COUNTRY_NAMES = {
@@ -1698,7 +1644,7 @@
       "KR": "South Korea", "AT": "Austria", "BD": "Bangladesh", "PK": "Pakistan"
     };
 
-    const STANDARD_GENRES = ["All", "India", "Nepal", "Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom", "Movies", "News", "Sports", "Kids", "Music", "Business"];
+    const STANDARD_GENRES = ["All", "Samsung TV+", "LG Channels", "India", "Nepal", "Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom", "Movies", "News", "Sports", "Kids", "Music"];
 
     let allChannels = [...STARTER_CHANNELS];
     let activeView = "ALL";
@@ -1734,11 +1680,13 @@
     const genrePillsContainer = document.getElementById('genrePillsContainer');
     const sidebarTotalBadge = document.getElementById('sidebarTotalBadge');
     const sidebarFavBadge = document.getElementById('sidebarFavBadge');
+    const sidebarSamsungBadge = document.getElementById('sidebarSamsungBadge');
+    const sidebarLgBadge = document.getElementById('sidebarLgBadge');
     const sidebarIndiaBadge = document.getElementById('sidebarIndiaBadge');
     const sidebarNepalBadge = document.getElementById('sidebarNepalBadge');
 
     /* ========================================================
-       HOME NAVIGATION CONTROLLER
+       HOME CONTROLLER
     ======================================================== */
     function goHome() {
       if (video) {
@@ -1786,7 +1734,7 @@
     playerCloseBtn.addEventListener('click', goHome);
 
     /* ========================================================
-       THEATER MODE CONTROLS
+       THEATER & FULLSCREEN CONTROLS
     ======================================================== */
     function toggleTheaterMode() {
       isTheaterMode = !isTheaterMode;
@@ -1809,9 +1757,6 @@
 
     theaterModeBtn.addEventListener('click', toggleTheaterMode);
 
-    /* ========================================================
-       FULLSCREEN MODE CONTROLS
-    ======================================================== */
     function toggleFullScreen() {
       const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
       if (!isFs) {
@@ -1855,7 +1800,6 @@
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
-    // Keyboard Shortcuts: 'T' for Theater, 'F' for Fullscreen
     window.addEventListener('keydown', (e) => {
       const activeEl = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
       if (activeEl === 'input' || activeEl === 'textarea' || activeEl === 'select') return;
@@ -1918,19 +1862,27 @@
           const category = chip.getAttribute('data-category');
           const query = chip.getAttribute('data-query');
 
-          if (category === "India" || category === "Nepal") {
+          if (category === "Samsung") {
+            selectedGenre = "Samsung TV+";
+            selectedCountry = "ALL";
+          } else if (category === "LG") {
+            selectedGenre = "LG Channels";
+            selectedCountry = "ALL";
+          } else if (category === "India" || category === "Nepal") {
             selectedCountry = category;
             selectedGenre = "All";
-            searchInput.value = "";
-            searchClearBtn.style.display = "none";
-            setupCountrySelector();
-            setupGenrePills();
-            renderChannels();
           } else if (query) {
             searchInput.value = query;
             searchClearBtn.style.display = "flex";
             renderChannels();
+            return;
           }
+
+          searchInput.value = "";
+          searchClearBtn.style.display = "none";
+          setupCountrySelector();
+          setupGenrePills();
+          renderChannels();
         });
       });
 
@@ -1939,9 +1891,9 @@
     });
 
     /* ========================================================
-       M3U PLAYLIST PARSER
+       M3U PLAYLIST PARSER & FAST PRESET LOADER
     ======================================================== */
-    function parseM3U(content) {
+    function parseM3U(content, defaultGroup = null) {
       const lines = content.split(/\r?\n/);
       const parsed = [];
       let item = null;
@@ -1954,7 +1906,7 @@
           item = {
             id: Math.random().toString(36).substring(2, 11),
             name: "Channel",
-            group: "General",
+            group: defaultGroup || "General",
             country: "International",
             logo: "",
             url: ""
@@ -1962,6 +1914,7 @@
 
           const groupMatch = line.match(/group-title="([^"]+)"/i);
           if (groupMatch) item.group = groupMatch[1].trim();
+          else if (defaultGroup) item.group = defaultGroup;
 
           const countryMatch = line.match(/tvg-country="([^"]+)"/i) || line.match(/country="([^"]+)"/i);
           if (countryMatch) {
@@ -1970,9 +1923,13 @@
           } else {
             const lowerGroup = (item.group || "").toLowerCase();
             const lowerName = line.toLowerCase();
-            if (lowerGroup.includes("india") || lowerName.includes("india") || lowerName.includes("hindi") || lowerGroup.includes("star") || lowerGroup.includes("sony") || lowerGroup.includes("goldmines") || lowerGroup.includes("9x")) {
+            if (lowerGroup.includes("samsung") || lowerName.includes("samsung")) {
+              item.group = "Samsung TV Plus";
+            } else if (lowerGroup.includes("lg") || lowerName.includes("lg channels")) {
+              item.group = "LG Channels";
+            } else if (lowerGroup.includes("india") || lowerName.includes("india") || lowerName.includes("hindi")) {
               item.country = "India";
-            } else if (lowerGroup.includes("nepal") || lowerName.includes("nepal") || lowerName.includes("kantipur") || lowerName.includes("nepali")) {
+            } else if (lowerGroup.includes("nepal") || lowerName.includes("nepal") || lowerName.includes("kantipur")) {
               item.country = "Nepal";
             }
           }
@@ -1993,7 +1950,7 @@
       return parsed;
     }
 
-    async function loadPlaylist(url) {
+    async function loadPlaylist(url, defaultGroup = null) {
       let text = "";
       try {
         const res = await fetch(url);
@@ -2008,11 +1965,30 @@
         }
       }
 
-      const parsed = parseM3U(text);
+      const parsed = parseM3U(text, defaultGroup);
       if (parsed.length > 0) {
         allChannels = [...STARTER_CHANNELS, ...parsed];
         initializeData();
       }
+    }
+
+    // 1-Click Fast Presets Handler
+    async function loadFastPreset(url, label) {
+      const isSamsung = label.toLowerCase().includes("samsung");
+      const isLg = label.toLowerCase().includes("lg");
+      const defaultGroup = isSamsung ? "Samsung TV Plus" : isLg ? "LG Channels" : "Entertainment";
+
+      alert(`Loading ${label}... Channels will populate in a moment!`);
+      importModal.classList.remove('open');
+      await loadPlaylist(url, defaultGroup);
+
+      if (isSamsung) {
+        selectedGenre = "Samsung TV+";
+      } else if (isLg) {
+        selectedGenre = "LG Channels";
+      }
+      setupGenrePills();
+      renderChannels();
     }
 
     function initializeData() {
@@ -2026,6 +2002,13 @@
     function updateBadges() {
       if (sidebarTotalBadge) sidebarTotalBadge.innerText = allChannels.length;
       if (sidebarFavBadge) sidebarFavBadge.innerText = favorites.size;
+      
+      if (sidebarSamsungBadge) {
+        sidebarSamsungBadge.innerText = allChannels.filter(c => (c.group && c.group.toLowerCase().includes("samsung")) || c.name.toLowerCase().includes("samsung")).length;
+      }
+      if (sidebarLgBadge) {
+        sidebarLgBadge.innerText = allChannels.filter(c => (c.group && c.group.toLowerCase().includes("lg")) || c.name.toLowerCase().includes("lg")).length;
+      }
       if (sidebarIndiaBadge) {
         sidebarIndiaBadge.innerText = allChannels.filter(c => c.country === "India" || (c.group && ["star", "sony", "zoom", "9x", "goldmines", "india"].some(x => c.group.toLowerCase().includes(x)))).length;
       }
@@ -2076,8 +2059,8 @@
         if (ch.group) availableGenres.add(ch.group);
       });
 
-      const mergedGenres = ["All"];
-      STANDARD_GENRES.slice(1).forEach(g => {
+      const mergedGenres = ["All", "Samsung TV+", "LG Channels"];
+      STANDARD_GENRES.slice(3).forEach(g => {
         if (g === "India" || g === "Nepal") {
           if (selectedCountry === "ALL") mergedGenres.push(g);
         } else if (Array.from(availableGenres).some(ag => ag.toLowerCase().includes(g.toLowerCase())) || ["Star", "Sony", "Kantipur", "Goldmines", "9X", "Zoom"].includes(g)) {
@@ -2090,7 +2073,7 @@
       }
 
       genrePillsContainer.innerHTML = mergedGenres.map(g => {
-        const flag = g === "India" ? "🇮🇳 " : g === "Nepal" ? "🇳🇵 " : "";
+        const flag = g === "India" ? "🇮🇳 " : g === "Nepal" ? "🇳🇵 " : g === "Samsung TV+" ? "📺 " : g === "LG Channels" ? "📱 " : "";
         return `
           <button class="pill ${selectedGenre === g ? 'active' : ''}" data-genre="${g}">
             ${flag}${g}
@@ -2115,7 +2098,7 @@
     }
 
     /* ========================================================
-       MEDIA PLAYBACK (OPTIMIZED HIGH-SPEED LOW-LATENCY ENGINE)
+       MEDIA PLAYBACK (HIGH SPEED LOW-LATENCY HLS)
     ======================================================== */
     function playChannel(channel) {
       activeChannelId = channel.id;
@@ -2132,18 +2115,17 @@
       const isHls = channel.url.includes('.m3u8') || channel.url.includes('m3u') || channel.url.includes('live');
 
       if (Hls.isSupported() && isHls) {
-        // High-performance HLS configuration for minimal buffering and ultra-fast startup
         hls = new Hls({
-          enableWorker: true,              // Run video decoding/demuxing on Web Worker
-          lowLatencyMode: true,            // Cuts down broadcast latency
+          enableWorker: true,              // Run video parsing in Web Worker
+          lowLatencyMode: true,            // Minimize live broadcast lag
           startFragPrefetch: true,         // Prefetches 1st video chunk while manifest loads
-          maxBufferLength: 8,              // Compact buffer to lower time-to-first-frame
-          maxMaxBufferLength: 15,          // Avoid over-buffering and saving memory
-          maxBufferSize: 20 * 1000 * 1000, // 20 MB buffer footprint
-          maxBufferHole: 0.5,              // Smooth jump over live stream gaps
+          maxBufferLength: 8,              // Compact buffer lowers time-to-first-frame
+          maxMaxBufferLength: 15,          // Avoid overbuffering
+          maxBufferSize: 20 * 1000 * 1000, // 20 MB RAM footprint
+          maxBufferHole: 0.5,              // Smooth jump over gaps
           liveSyncDurationCount: 3,        // Stay 3 segments behind live broadcast
-          liveMaxLatencyDurationCount: 5,  // Catch up seamlessly if delayed
-          manifestLoadingTimeOut: 6000,    // Quick failure response if URL is unresponsive
+          liveMaxLatencyDurationCount: 5,  // Catch up seamlessly
+          manifestLoadingTimeOut: 6000,    // Quick failure response
           manifestLoadingMaxRetry: 2,
           levelLoadingTimeOut: 6000,
           fragLoadingTimeOut: 10000
@@ -2156,7 +2138,6 @@
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
-              // Graceful fallback: muted play if browser restricts unmuted autoplay
               video.muted = true;
               video.play().catch(() => {});
             });
@@ -2179,7 +2160,6 @@
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native Safari/iOS playback
         video.src = channel.url;
         video.play().catch(() => {
           video.muted = true;
@@ -2211,6 +2191,13 @@
         ? allChannels.filter(c => favorites.has(c.id))
         : [...allChannels];
 
+      // FAST Navigation View Filters
+      if (activeView === "SAMSUNG") {
+        list = list.filter(c => (c.group && c.group.toLowerCase().includes("samsung")) || c.name.toLowerCase().includes("samsung"));
+      } else if (activeView === "LG") {
+        list = list.filter(c => (c.group && c.group.toLowerCase().includes("lg")) || c.name.toLowerCase().includes("lg"));
+      }
+
       // Country Scope Filter
       if (selectedCountry !== "ALL") {
         if (selectedCountry === "India") {
@@ -2224,10 +2211,16 @@
 
       // Genre Scope Filter
       if (selectedGenre !== "All") {
-        list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
+        if (selectedGenre === "Samsung TV+") {
+          list = list.filter(c => (c.group && c.group.toLowerCase().includes("samsung")) || c.name.toLowerCase().includes("samsung"));
+        } else if (selectedGenre === "LG Channels") {
+          list = list.filter(c => (c.group && c.group.toLowerCase().includes("lg")) || c.name.toLowerCase().includes("lg"));
+        } else {
+          list = list.filter(c => c.group && c.group.toLowerCase().includes(selectedGenre.toLowerCase()));
+        }
       }
 
-      // Enhanced Search Pipeline
+      // Search Pipeline
       if (rawQuery) {
         const terms = [rawQuery];
         if (KEYWORD_SYNONYMS[rawQuery]) {
@@ -2272,14 +2265,16 @@
         }
       }
 
-      // Dynamic Title
+      // Title Setup
       let heading = "All Channels";
       if (activeView === "FAV") heading = "Favorite Channels";
+      else if (activeView === "SAMSUNG" || selectedGenre === "Samsung TV+") heading = "📺 Samsung TV+ Channels";
+      else if (activeView === "LG" || selectedGenre === "LG Channels") heading = "📱 LG Channels Live";
       else if (selectedCountry === "India") heading = "🇮🇳 India Live TV";
       else if (selectedCountry === "Nepal") heading = "🇳🇵 Nepal Live TV";
       else if (selectedCountry !== "ALL") heading = `${selectedCountry} Channels`;
 
-      if (selectedGenre !== "All") heading += ` • ${selectedGenre}`;
+      if (selectedGenre !== "All" && !heading.includes(selectedGenre)) heading += ` • ${selectedGenre}`;
       viewHeading.innerText = heading;
       channelCountBadge.innerText = `${list.length} channels`;
 
@@ -2287,8 +2282,8 @@
         channelsGrid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
             <i data-lucide="search-x" style="width: 42px; height: 42px; margin-bottom: 0.5rem; opacity: 0.4;"></i>
-            <p style="font-weight: 700; color: #fff;">No channels found for "${rawQuery || selectedCountry}"</p>
-            <p style="font-size: 0.8rem; margin-top: 0.3rem;">Try searching for "Star", "Sony", "Kantipur", "Goldmines", or "9X".</p>
+            <p style="font-weight: 700; color: #fff;">No channels found for "${rawQuery || selectedGenre || selectedCountry}"</p>
+            <p style="font-size: 0.8rem; margin-top: 0.3rem;">Open 'Import & FAST' to load more Samsung, LG, or custom playlists.</p>
           </div>
         `;
         lucide.createIcons();
@@ -2362,7 +2357,13 @@
         item.classList.add('active');
         activeView = item.getAttribute('data-view');
 
-        if (activeView === "INDIA") {
+        if (activeView === "SAMSUNG") {
+          selectedGenre = "Samsung TV+";
+          selectedCountry = "ALL";
+        } else if (activeView === "LG") {
+          selectedGenre = "LG Channels";
+          selectedCountry = "ALL";
+        } else if (activeView === "INDIA") {
           selectedCountry = "India";
           selectedGenre = "All";
         } else if (activeView === "NEPAL") {
