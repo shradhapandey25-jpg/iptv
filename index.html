@@ -947,17 +947,320 @@
     };
 
     const COUNTRY_NAMES = {
-      "IN": "India", "IND": "India",
-      "NP": "Nepal", "NPL": "Nepal",
-      "US": "United States", "USA": "United States",
-      "UK": "United Kingdom", "GB": "United Kingdom",
-      "CA": "Canada", "DE": "Germany", "FR": "France",
-      "AU": "Australia", "IT": "Italy", "ES": "Spain",
-      "BR": "Brazil", "MX": "Mexico", "JP": "Japan",
-      "KR": "South Korea", "AT": "Austria", "BD": "Bangladesh", "PK": "Pakistan"
+      "AD": "Andorra",
+      "AE": "United Arab Emirates",
+      "AF": "Afghanistan",
+      "AG": "Antigua and Barbuda",
+      "AI": "Anguilla",
+      "AL": "Albania",
+      "AM": "Armenia",
+      "AO": "Angola",
+      "AQ": "Antarctica",
+      "AR": "Argentina",
+      "AS": "American Samoa",
+      "AT": "Austria",
+      "AU": "Australia",
+      "AW": "Aruba",
+      "AX": "Åland Islands",
+      "AZ": "Azerbaijan",
+      "BA": "Bosnia and Herzegovina",
+      "BB": "Barbados",
+      "BD": "Bangladesh",
+      "BE": "Belgium",
+      "BF": "Burkina Faso",
+      "BG": "Bulgaria",
+      "BH": "Bahrain",
+      "BI": "Burundi",
+      "BJ": "Benin",
+      "BL": "Saint Barthélemy",
+      "BM": "Bermuda",
+      "BN": "Brunei",
+      "BO": "Bolivia",
+      "BQ": "Caribbean Netherlands",
+      "BR": "Brazil",
+      "BS": "Bahamas",
+      "BT": "Bhutan",
+      "BV": "Bouvet Island",
+      "BW": "Botswana",
+      "BY": "Belarus",
+      "BZ": "Belize",
+      "CA": "Canada",
+      "CC": "Cocos (Keeling) Islands",
+      "CD": "DR Congo",
+      "CF": "Central African Republic",
+      "CG": "Republic of the Congo",
+      "CH": "Switzerland",
+      "CI": "Côte d'Ivoire (Ivory Coast)",
+      "CK": "Cook Islands",
+      "CL": "Chile",
+      "CM": "Cameroon",
+      "CN": "China",
+      "CO": "Colombia",
+      "CR": "Costa Rica",
+      "CU": "Cuba",
+      "CV": "Cape Verde",
+      "CW": "Curaçao",
+      "CX": "Christmas Island",
+      "CY": "Cyprus",
+      "CZ": "Czechia",
+      "DE": "Germany",
+      "DJ": "Djibouti",
+      "DK": "Denmark",
+      "DM": "Dominica",
+      "DO": "Dominican Republic",
+      "DZ": "Algeria",
+      "EC": "Ecuador",
+      "EE": "Estonia",
+      "EG": "Egypt",
+      "EH": "Western Sahara",
+      "ER": "Eritrea",
+      "ES": "Spain",
+      "ET": "Ethiopia",
+      "EU": "European Union",
+      "FI": "Finland",
+      "FJ": "Fiji",
+      "FK": "Falkland Islands",
+      "FM": "Micronesia",
+      "FO": "Faroe Islands",
+      "FR": "France",
+      "GA": "Gabon",
+      "GB": "United Kingdom",
+      "GB-ENG": "England",
+      "GB-NIR": "Northern Ireland",
+      "GB-SCT": "Scotland",
+      "GB-WLS": "Wales",
+      "GD": "Grenada",
+      "GE": "Georgia",
+      "GF": "French Guiana",
+      "GG": "Guernsey",
+      "GH": "Ghana",
+      "GI": "Gibraltar",
+      "GL": "Greenland",
+      "GM": "Gambia",
+      "GN": "Guinea",
+      "GP": "Guadeloupe",
+      "GQ": "Equatorial Guinea",
+      "GR": "Greece",
+      "GS": "South Georgia",
+      "GT": "Guatemala",
+      "GU": "Guam",
+      "GW": "Guinea-Bissau",
+      "GY": "Guyana",
+      "HK": "Hong Kong",
+      "HM": "Heard Island and McDonald Islands",
+      "HN": "Honduras",
+      "HR": "Croatia",
+      "HT": "Haiti",
+      "HU": "Hungary",
+      "ID": "Indonesia",
+      "IE": "Ireland",
+      "IL": "Israel",
+      "IM": "Isle of Man",
+      "IN": "India",
+      "IO": "British Indian Ocean Territory",
+      "IQ": "Iraq",
+      "IR": "Iran",
+      "IS": "Iceland",
+      "IT": "Italy",
+      "JE": "Jersey",
+      "JM": "Jamaica",
+      "JO": "Jordan",
+      "JP": "Japan",
+      "KE": "Kenya",
+      "KG": "Kyrgyzstan",
+      "KH": "Cambodia",
+      "KI": "Kiribati",
+      "KM": "Comoros",
+      "KN": "Saint Kitts and Nevis",
+      "KP": "North Korea",
+      "KR": "South Korea",
+      "KW": "Kuwait",
+      "KY": "Cayman Islands",
+      "KZ": "Kazakhstan",
+      "LA": "Laos",
+      "LB": "Lebanon",
+      "LC": "Saint Lucia",
+      "LI": "Liechtenstein",
+      "LK": "Sri Lanka",
+      "LR": "Liberia",
+      "LS": "Lesotho",
+      "LT": "Lithuania",
+      "LU": "Luxembourg",
+      "LV": "Latvia",
+      "LY": "Libya",
+      "MA": "Morocco",
+      "MC": "Monaco",
+      "MD": "Moldova",
+      "ME": "Montenegro",
+      "MF": "Saint Martin",
+      "MG": "Madagascar",
+      "MH": "Marshall Islands",
+      "MK": "North Macedonia",
+      "ML": "Mali",
+      "MM": "Myanmar",
+      "MN": "Mongolia",
+      "MO": "Macau",
+      "MP": "Northern Mariana Islands",
+      "MQ": "Martinique",
+      "MR": "Mauritania",
+      "MS": "Montserrat",
+      "MT": "Malta",
+      "MU": "Mauritius",
+      "MV": "Maldives",
+      "MW": "Malawi",
+      "MX": "Mexico",
+      "MY": "Malaysia",
+      "MZ": "Mozambique",
+      "NA": "Namibia",
+      "NC": "New Caledonia",
+      "NE": "Niger",
+      "NF": "Norfolk Island",
+      "NG": "Nigeria",
+      "NI": "Nicaragua",
+      "NL": "Netherlands",
+      "NO": "Norway",
+      "NP": "Nepal",
+      "NR": "Nauru",
+      "NU": "Niue",
+      "NZ": "New Zealand",
+      "OM": "Oman",
+      "PA": "Panama",
+      "PE": "Peru",
+      "PF": "French Polynesia",
+      "PG": "Papua New Guinea",
+      "PH": "Philippines",
+      "PK": "Pakistan",
+      "PL": "Poland",
+      "PM": "Saint Pierre and Miquelon",
+      "PN": "Pitcairn Islands",
+      "PR": "Puerto Rico",
+      "PS": "Palestine",
+      "PT": "Portugal",
+      "PW": "Palau",
+      "PY": "Paraguay",
+      "QA": "Qatar",
+      "RE": "Réunion",
+      "RO": "Romania",
+      "RS": "Serbia",
+      "RU": "Russia",
+      "RW": "Rwanda",
+      "SA": "Saudi Arabia",
+      "SB": "Solomon Islands",
+      "SC": "Seychelles",
+      "SD": "Sudan",
+      "SE": "Sweden",
+      "SG": "Singapore",
+      "SH": "Saint Helena, Ascension and Tristan da Cunha",
+      "SI": "Slovenia",
+      "SJ": "Svalbard and Jan Mayen",
+      "SK": "Slovakia",
+      "SL": "Sierra Leone",
+      "SM": "San Marino",
+      "SN": "Senegal",
+      "SO": "Somalia",
+      "SR": "Suriname",
+      "SS": "South Sudan",
+      "ST": "São Tomé and Príncipe",
+      "SV": "El Salvador",
+      "SX": "Sint Maarten",
+      "SY": "Syria",
+      "SZ": "Eswatini (Swaziland)",
+      "TC": "Turks and Caicos Islands",
+      "TD": "Chad",
+      "TF": "French Southern and Antarctic Lands",
+      "TG": "Togo",
+      "TH": "Thailand",
+      "TJ": "Tajikistan",
+      "TK": "Tokelau",
+      "TL": "Timor-Leste",
+      "TM": "Turkmenistan",
+      "TN": "Tunisia",
+      "TO": "Tonga",
+      "TR": "Turkey",
+      "TT": "Trinidad and Tobago",
+      "TV": "Tuvalu",
+      "TW": "Taiwan",
+      "TZ": "Tanzania",
+      "UA": "Ukraine",
+      "UG": "Uganda",
+      "UM": "United States Minor Outlying Islands",
+      "UN": "United Nations",
+      "US": "United States",
+      "US-AK": "Alaska",
+      "US-AL": "Alabama",
+      "US-AR": "Arkansas",
+      "US-AZ": "Arizona",
+      "US-CA": "California",
+      "US-CO": "Colorado",
+      "US-CT": "Connecticut",
+      "US-DE": "Delaware",
+      "US-FL": "Florida",
+      "US-GA": "Georgia",
+      "US-HI": "Hawaii",
+      "US-IA": "Iowa",
+      "US-ID": "Idaho",
+      "US-IL": "Illinois",
+      "US-IN": "Indiana",
+      "US-KS": "Kansas",
+      "US-KY": "Kentucky",
+      "US-LA": "Louisiana",
+      "US-MA": "Massachusetts",
+      "US-MD": "Maryland",
+      "US-ME": "Maine",
+      "US-MI": "Michigan",
+      "US-MN": "Minnesota",
+      "US-MO": "Missouri",
+      "US-MS": "Mississippi",
+      "US-MT": "Montana",
+      "US-NC": "North Carolina",
+      "US-ND": "North Dakota",
+      "US-NE": "Nebraska",
+      "US-NH": "New Hampshire",
+      "US-NJ": "New Jersey",
+      "US-NM": "New Mexico",
+      "US-NV": "Nevada",
+      "US-NY": "New York",
+      "US-OH": "Ohio",
+      "US-OK": "Oklahoma",
+      "US-OR": "Oregon",
+      "US-PA": "Pennsylvania",
+      "US-RI": "Rhode Island",
+      "US-SC": "South Carolina",
+      "US-SD": "South Dakota",
+      "US-TN": "Tennessee",
+      "US-TX": "Texas",
+      "US-UT": "Utah",
+      "US-VA": "Virginia",
+      "US-VT": "Vermont",
+      "US-WA": "Washington",
+      "US-WI": "Wisconsin",
+      "US-WV": "West Virginia",
+      "US-WY": "Wyoming",
+      "UY": "Uruguay",
+      "UZ": "Uzbekistan",
+      "VA": "Vatican City (Holy See)",
+      "VC": "Saint Vincent and the Grenadines",
+      "VE": "Venezuela",
+      "VG": "British Virgin Islands",
+      "VI": "United States Virgin Islands",
+      "VN": "Vietnam",
+      "VU": "Vanuatu",
+      "WF": "Wallis and Futuna",
+      "WS": "Samoa",
+      "XK": "Kosovo",
+      "YE": "Yemen",
+      "YT": "Mayotte",
+      "ZA": "South Africa",
+      "ZM": "Zambia",
+      "ZW": "Zimbabwe",
+      "UK": "United Kingdom",
+      "IND": "India",
+      "NPL": "Nepal",
+      "USA": "United States",
+      "XK": "Kosovo",
     };
 
-    const STANDARD_GENRES = ["All", "India", "Nepal", "Movies", "News", "Sports", "Kids", "Music", "Business", "Entertainment", "Documentary"];
+    const STANDARD_GENRES = ["All", "India", "Nepal", "United States", "Movies", "News", "Sports", "Kids", "Music", "Business", "Entertainment", "Documentary", "Religious", "Series", "Animation", "Education", "Comedy", "Culture", "Lifestyle"];
 
     // Featured hero rotation (curated from the starter channels)
     const HERO_FEATURES = [
@@ -1070,22 +1373,35 @@
         if (!line) continue;
         if (line.startsWith("#EXTINF:")) {
           item = { id: "", name: "Channel", group: "General", country: "International", logo: "", url: "" };
+          const commaIndex = line.lastIndexOf(",");
+          if (commaIndex !== -1) item.name = line.substring(commaIndex + 1).trim();
           const groupMatch = line.match(/group-title="([^"]+)"/i);
           if (groupMatch) item.group = groupMatch[1].trim();
+          if (!item.group || item.group.toLowerCase() === "undefined") item.group = "General";
+          const logoMatch = line.match(/tvg-logo="([^"]+)"/i);
+          if (logoMatch) item.logo = logoMatch[1].trim();
+          // Country: explicit tvg-country attr first, then Nepal/India name
+          // keywords (catches e.g. "Nepal 1", tvg-id Nepal1.in), then the
+          // country code in the tvg-id (Name.cc@quality, e.g. .np@SD).
           const countryMatch = line.match(/tvg-country="([^"]+)"/i) || line.match(/country="([^"]+)"/i);
+          const nameGroup = ((item.name || "") + " " + (item.group || "")).toLowerCase();
           if (countryMatch) {
             const rawCode = countryMatch[1].trim().toUpperCase();
             item.country = COUNTRY_NAMES[rawCode] || rawCode;
+          } else if (/\bnepal\b|\bnepali\b/.test(nameGroup)) {
+            item.country = "Nepal";
+          } else if (/\bindia\b|\bhindi\b/.test(nameGroup)) {
+            item.country = "India";
           } else {
-            const lowerGroup = (item.group || "").toLowerCase();
-            const lowerName = line.toLowerCase();
-            if (lowerGroup.includes("india") || lowerName.includes("india") || lowerName.includes("hindi")) item.country = "India";
-            else if (lowerGroup.includes("nepal") || lowerName.includes("nepal") || lowerName.includes("nepali")) item.country = "Nepal";
+            const tvgMatch = line.match(/tvg-id="([^"]+)"/i);
+            if (tvgMatch) {
+              const codeMatch = tvgMatch[1].match(/\.([A-Za-z]{2})(?:@|$)/);
+              if (codeMatch) {
+                const code = codeMatch[1].toUpperCase();
+                if (COUNTRY_NAMES[code]) item.country = COUNTRY_NAMES[code];
+              }
+            }
           }
-          const logoMatch = line.match(/tvg-logo="([^"]+)"/i);
-          if (logoMatch) item.logo = logoMatch[1].trim();
-          const commaIndex = line.lastIndexOf(",");
-          if (commaIndex !== -1) item.name = line.substring(commaIndex + 1).trim();
         } else if (!line.startsWith("#") && item) {
           item.url = line;
           item.id = stableId(line);
@@ -1345,11 +1661,19 @@
       { key: "live", title: "Live Now", icon: "tv", test: null },
       { key: "nepal", title: "Nepal — Live TV", icon: "flag", test: (c) => matchCountry(c, "Nepal") },
       { key: "india", title: "India — Live TV", icon: "flag", test: (c) => matchCountry(c, "India") },
+      { key: "us", title: "United States — Live TV", icon: "flag", test: (c) => matchCountry(c, "United States") },
       { key: "news", title: "News", icon: "newspaper", test: (c) => matchGenre(c, "News") },
       { key: "sports", title: "Sports", icon: "trophy", test: (c) => matchGenre(c, "Sports") },
       { key: "movies", title: "Movies", icon: "clapperboard", test: (c) => matchGenre(c, "Movies") },
       { key: "entertainment", title: "Entertainment", icon: "sparkles", test: (c) => matchGenre(c, "Entertainment") },
-      { key: "kids", title: "Kids & Family", icon: "smile", test: (c) => matchGenre(c, "Kids") },
+      { key: "kids", title: "Kids & Family", icon: "smile", test: (c) => matchGenre(c, "Kids") || matchGenre(c, "Family") },
+      { key: "religious", title: "Religious", icon: "church", test: (c) => matchGenre(c, "Religious") },
+      { key: "series", title: "Series", icon: "monitor-play", test: (c) => matchGenre(c, "Series") },
+      { key: "animation", title: "Animation", icon: "palette", test: (c) => matchGenre(c, "Animation") },
+      { key: "education", title: "Education", icon: "graduation-cap", test: (c) => matchGenre(c, "Education") },
+      { key: "comedy", title: "Comedy", icon: "laugh", test: (c) => matchGenre(c, "Comedy") },
+      { key: "culture", title: "Culture", icon: "landmark", test: (c) => matchGenre(c, "Culture") },
+      { key: "lifestyle", title: "Lifestyle", icon: "coffee", test: (c) => matchGenre(c, "Lifestyle") },
       { key: "music", title: "Music", icon: "music", test: (c) => matchGenre(c, "Music") },
       { key: "business", title: "Business", icon: "briefcase", test: (c) => matchGenre(c, "Business") },
       { key: "documentary", title: "Documentary", icon: "book-open", test: (c) => matchGenre(c, "Documentary") }
@@ -1374,6 +1698,7 @@
       if (def.key === "top10" || def.key === "live") return { kind: "all" };
       if (def.key === "nepal") return { kind: "country", value: "Nepal" };
       if (def.key === "india") return { kind: "country", value: "India" };
+      if (def.key === "us") return { kind: "country", value: "United States" };
       const cap = def.key.charAt(0).toUpperCase() + def.key.slice(1);
       return { kind: "genre", value: cap };
     }
@@ -1509,18 +1834,18 @@
       scoped.forEach(ch => { if (ch.group) available.add(ch.group); });
       const merged = ["All"];
       STANDARD_GENRES.slice(1).forEach(g => {
-        if (g === "India" || g === "Nepal") { if (selectedCountry === "ALL") merged.push(g); }
+        if (g === "India" || g === "Nepal" || g === "United States") { if (selectedCountry === "ALL") merged.push(g); }
         else if ([...available].some(ag => ag.toLowerCase().includes(g.toLowerCase()))) merged.push(g);
       });
       if (!merged.includes(selectedGenre)) selectedGenre = "All";
       $("genrePills").innerHTML = merged.map(g => {
-        const flag = g === "India" ? "🇮🇳 " : g === "Nepal" ? "🇳🇵 " : "";
+        const flag = g === "India" ? "🇮🇳 " : g === "Nepal" ? "🇳🇵 " : g === "United States" ? "🇺🇸 " : "";
         return `<button class="pill ${selectedGenre === g ? "active" : ""}" data-genre="${esc(g)}">${flag}${esc(g)}</button>`;
       }).join("");
       document.querySelectorAll("#genrePills .pill").forEach(btn => {
         btn.addEventListener("click", () => {
           const g = btn.getAttribute("data-genre");
-          if (g === "India" || g === "Nepal") {
+          if (g === "India" || g === "Nepal" || g === "United States") {
             selectedCountry = g; selectedGenre = "All";
             browseScope = { kind: "country", value: g };
             $("browseTitle").textContent = scopeTitle(browseScope);
