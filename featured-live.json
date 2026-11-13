@@ -1,0 +1,106 @@
+{
+  "last_checked": "2026-11-13T19:22:18.956796+00:00",
+  "source": "https://iptv-org.github.io/iptv/index.m3u",
+  "probe": "tier1 manifest fetch (HTTP 200 + #EXTM3U), https + logo required; re-probed minutes before publishing",
+  "total_tested": 31,
+  "movies": 8,
+  "music": 4,
+  "channels": [
+    {
+      "tvg_id": "24HourFreeMovies.us@SD",
+      "name": "24 Hour Free Movies (720p)",
+      "url": "https://d1j2u714xk898n.cloudfront.net/scheduler/scheduleMaster/145.m3u8",
+      "category": "Movies",
+      "country": "United States",
+      "logo": "https://i.imgur.com/iSVnzR1.png"
+    },
+    {
+      "tvg_id": "30AMusic.us@SD",
+      "name": "30A Music (720p)",
+      "url": "https://30a-tv.com/music.m3u8",
+      "category": "Music",
+      "country": "United States",
+      "logo": "https://i.imgur.com/gNWg9tl.png"
+    },
+    {
+      "tvg_id": "AndTV.in@International",
+      "name": "&TV International (1080p)",
+      "url": "https://3f56f997.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9BbmRUVl9ITFM/playlist.m3u8",
+      "category": "Movies",
+      "country": "India",
+      "logo": "https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_SYMANDTV/images/LOGO_HD/LOGO_HD_image.png"
+    },
+    {
+      "tvg_id": "9XTashan.in@SD",
+      "name": "9X Tashan (1080p)",
+      "url": "https://amg01281-9xmediapvtltd-9xtashan-samsungin-xz1sd.amagi.tv/playlist/amg01281-9xmediapvtltd-9xtashan-samsungin/playlist.m3u8",
+      "category": "Music",
+      "country": "India",
+      "logo": "https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_9X_TASHAN/images/LOGO_HD/image.png"
+    },
+    {
+      "tvg_id": "AsianetMovies.in@SD",
+      "name": "Asianet Movies (396p)",
+      "url": "https://da86m1sqpm3o0.cloudfront.net/28072023/smil:asianetmovies.smil/chunklist_b1928000.m3u8",
+      "category": "Movies",
+      "country": "India",
+      "logo": "https://i.imgur.com/cps67hs.png"
+    },
+    {
+      "tvg_id": "7080TV.it@SD",
+      "name": "70-80 TV (1080p)",
+      "url": "https://585b674743bbb.streamlock.net/9050/9050/playlist.m3u8",
+      "category": "Music",
+      "country": "Italy",
+      "logo": "https://i.imgur.com/y4kNV3Q.png"
+    },
+    {
+      "tvg_id": "Aflam.sa@SD",
+      "name": "Aflam (1080p)",
+      "url": "https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8",
+      "category": "Movies",
+      "country": "Saudi Arabia",
+      "logo": "https://i.imgur.com/cTLj7Yt.png"
+    },
+    {
+      "tvg_id": "360TuneBox.nl@SD",
+      "name": "360TuneBox (1080p)",
+      "url": "https://dash3.antik.sk/live/test_360_tunebox_medium_atk/playlist.m3u8",
+      "category": "Music",
+      "country": "Netherlands",
+      "logo": "https://i.imgur.com/1Fyezng.png"
+    },
+    {
+      "tvg_id": "AlloCine.cm@SD",
+      "name": "Allo Cine (1080p)",
+      "url": "https://d1yl6bf4hrzbr0.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-5km3zs4zs9sp0/allo.m3u8",
+      "category": "Movies",
+      "country": "Cameroon",
+      "logo": "https://raw.githubusercontent.com/songwenhui239/Songwenhui239/refs/heads/main/Allo%20Cine.jpeg"
+    },
+    {
+      "tvg_id": "B4UKadak.in@SD",
+      "name": "B4U Kadak (1080p)",
+      "url": "https://amg00877-b4unew-amg00877c4-xiaomi-in-5473.playouts.now.amagi.tv/playlist.m3u8",
+      "category": "Movies",
+      "country": "India",
+      "logo": "https://dtil.tmsimg.com/assets/s142695_ld_h15_aa.png?lock=720x540"
+    },
+    {
+      "tvg_id": "BollywoodHD.ro@Russia",
+      "name": "Bollywood HD Russia (576p)",
+      "url": "https://xykt-fix.github.io/cinerama_edge01/hls/BOLLYWOOD_RU/Movie009.m3u8",
+      "category": "Movies",
+      "country": "Romania",
+      "logo": "https://i.imgur.com/scDKOLS.png"
+    },
+    {
+      "tvg_id": "AuroraMediaFilms.gt@SD",
+      "name": "Aurora Media Films (720p)",
+      "url": "https://cdn.streamhispanatv.net:3417/live/auroramflive.m3u8",
+      "category": "Movies",
+      "country": "Guatemala",
+      "logo": "https://i.imgur.com/DVC5w6H.png"
+    }
+  ]
+}

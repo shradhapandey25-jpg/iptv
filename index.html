@@ -247,6 +247,7 @@
     .row-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; padding: 0 2px; }
     .row-title { font-size: 1.18rem; font-weight: 800; letter-spacing: -0.01em; display: flex; align-items: center; gap: 9px; }
     .row-title .row-count { font-size: 0.72rem; font-weight: 700; color: var(--text-3); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); padding: 2px 8px; border-radius: 999px; }
+    .row-sub { font-size: 0.75rem; font-weight: 500; color: var(--text-3); margin-top: 2px; }
     .row-showall { background: none; border: none; color: var(--text-2); font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .row-showall:hover { color: var(--accent-2); }
     .row-showall svg { width: 14px; height: 14px; }
@@ -348,6 +349,30 @@
     }
     .pill:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
     .pill.active { background: var(--accent); border-color: var(--accent); color: #04120a; font-weight: 700; }
+
+    /* ============ CATEGORY BAR (sticky, under the topbar) ============ */
+    .catbar {
+      position: sticky; top: 60px; z-index: 30;
+      display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+      padding: 14px 2px 12px; margin: 0 -2px;
+      background: linear-gradient(180deg, var(--bg) 82%, rgba(7, 11, 22, 0));
+    }
+    .catbar::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0;
+      padding: 8px 14px; font-size: 0.85rem; font-weight: 700; font-family: inherit;
+      color: var(--text-2); background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border); border-radius: 999px; cursor: pointer;
+      transition: all 0.18s ease; white-space: nowrap;
+    }
+    .cat-pill:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .cat-pill.active { background: var(--accent); border-color: var(--accent); color: #04120a; }
+    .cat-pill svg { width: 15px; height: 15px; }
+    .cat-pill .cat-count {
+      font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12); min-width: 26px; text-align: center;
+    }
+    .cat-pill.active .cat-count { background: rgba(4, 18, 10, 0.18); }
     .grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
       gap: 14px; margin-top: 18px;
@@ -610,6 +635,9 @@
 
   <div class="shell">
     <main class="content" id="content">
+      <!-- CATEGORY BAR: All, Favorites, USA, India, Nepal, Movies, News, Sports, Kids -->
+      <nav class="catbar" id="catbar" aria-label="Categories"></nav>
+
       <!-- HOME VIEW -->
       <section id="homeView">
         <div class="hero" id="hero">
@@ -1262,7 +1290,27 @@
 
     const STANDARD_GENRES = ["All", "India", "Nepal", "United States", "Movies", "News", "Sports", "Kids", "Music", "Business", "Entertainment", "Documentary", "Religious", "Series", "Animation", "Education", "Comedy", "Culture", "Lifestyle"];
 
-    // Featured hero rotation (curated from the starter channels)
+    // Category navigation: the nine top-level categories — All and
+    // Favorites first, then countries (USA, India, Nepal), then genres
+    // (Movies, News, Sports, Kids). Counts are computed live from
+    // allChannels in updateCounts(); Kids covers Kids + Family, matching
+    // the Kids & Family home row (Animation keeps its own row).
+    const CATEGORIES = [
+      { key: "all", label: "All", icon: "tv", scope: { kind: "all" } },
+      { key: "fav", label: "Favorites", icon: "star", scope: { kind: "fav" } },
+      { key: "usa", label: "USA", icon: "flag", scope: { kind: "country", value: "United States" } },
+      { key: "india", label: "India", icon: "flag", scope: { kind: "country", value: "India" } },
+      { key: "nepal", label: "Nepal", icon: "flag", scope: { kind: "country", value: "Nepal" } },
+      { key: "movies", label: "Movies", icon: "clapperboard", scope: { kind: "genre", value: "Movies" } },
+      { key: "news", label: "News", icon: "newspaper", scope: { kind: "genre", value: "News" } },
+      { key: "sports", label: "Sports", icon: "trophy", scope: { kind: "genre", value: "Sports" } },
+      { key: "kids", label: "Kids", icon: "smile", scope: { kind: "kids" } }
+    ];
+
+    // Featured hero rotation (curated from the starter channels).
+    // Used as the fallback until featured-live.json loads — once the
+    // verified Featured Live list is matched against the playlist, the
+    // hero rotates through those running movies + music channels instead.
     const HERO_FEATURES = [
       { id: "st_np_kantipur", tag: "Featured Live", desc: "Nepal's leading HD news channel — live headlines, talk shows and prime-time bulletins from Kathmandu." },
       { id: "st_in_ddnews", tag: "Featured Live", desc: "India's public broadcaster, live around the clock — national news, debates and ground reports." },
@@ -1296,6 +1344,11 @@
     let retryCount = 0;
     let uiHideTimer = null;
     let rowsBuilt = false;
+    let recommendedMeta = null; // { last_checked, channels: [...] } from recommended.json
+    let recommendedIds = new Set(); // stableIds of verified-working channels
+    let featuredMeta = null; // { last_checked, channels: [...] } from featured-live.json
+    let featuredIds = new Set(); // stableIds of the Featured Live channels
+    let featuredList = []; // matched allChannels entries, in featured-live.json order
 
     const LS_FAVS = "iptvdekh_favs";
     const LS_CONTINUE = "iptvdekh_continue";
@@ -1433,9 +1486,58 @@
       }
     }
 
+    async function loadRecommended() {
+      // Optional: if recommended.json is missing or invalid, the row
+      // simply stays hidden and the page works exactly as before.
+      try {
+        const res = await fetch("recommended.json");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !Array.isArray(data.channels) || data.channels.length === 0) return;
+        recommendedMeta = data;
+        recommendedIds = new Set(data.channels.map(ch => stableId(ch.url)).filter(Boolean));
+        if (rowsBuilt) buildRows();
+      } catch (e) { /* recommended.json unavailable — row stays hidden */ }
+    }
+
+    async function loadFeatured() {
+      // Optional: if featured-live.json is missing or invalid, the hero
+      // keeps rotating the starter features and the Featured Live row
+      // stays hidden — the page works exactly as before.
+      try {
+        const res = await fetch("featured-live.json");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data || !Array.isArray(data.channels) || data.channels.length === 0) return;
+        featuredMeta = data;
+        if (applyFeatured() && rowsBuilt) buildRows();
+      } catch (e) { /* featured-live.json unavailable — hero falls back to starters */ }
+    }
+
+    // Match the verified Featured Live entries against the loaded playlist
+    // (by stream URL). Returns true when the matched list changed.
+    function applyFeatured() {
+      if (!featuredMeta) return false;
+      const byId = new Map(allChannels.map(c => [c.id, c]));
+      const next = featuredMeta.channels
+        .map(ch => byId.get(stableId(ch.url)))
+        .filter(Boolean);
+      const changed = next.length !== featuredList.length ||
+        next.some((c, i) => !featuredList[i] || c.id !== featuredList[i].id);
+      featuredList = next;
+      featuredIds = new Set(next.map(c => c.id));
+      if (featuredList.length >= 3 && changed) {
+        heroIndex = 0;
+        renderHero();
+        restartHeroTimer();
+      }
+      return changed;
+    }
+
     function initializeData() {
       rebuildSearchIndex();
       updateCounts();
+      applyFeatured();
       buildRows();
       if (activeView === "browse") renderGrid();
     }
@@ -1468,10 +1570,14 @@
       if (genre === "All") return true;
       return c.group && c.group.toLowerCase().includes(genre.toLowerCase());
     }
+    function matchKids(c) { return matchGenre(c, "Kids") || matchGenre(c, "Family"); }
 
     function scopedList(scope) {
       let list = [...allChannels];
       if (scope.kind === "fav") list = list.filter(c => favorites.has(c.id));
+      else if (scope.kind === "recommended") list = list.filter(c => recommendedIds.has(c.id));
+      else if (scope.kind === "featured") list = list.filter(c => featuredIds.has(c.id));
+      else if (scope.kind === "kids") list = list.filter(matchKids);
       else if (scope.kind === "continue") {
         const byId = new Map(allChannels.map(c => [c.id, c]));
         list = continueWatching.map(c => byId.get(c.id)).filter(Boolean);
@@ -1530,13 +1636,87 @@
       $("tileMoviesCount").textContent = movies.toLocaleString() + " movie channels";
       $("tileNewsCount").textContent = news.toLocaleString() + " live news channels";
       $("tileFavCount").textContent = favorites.size ? favorites.size + " saved" : "Your favorites";
+      updateCategoryCounts();
+    }
+
+    /* ========================================================
+       CATEGORY BAR
+       ======================================================== */
+    function categoryCount(key) {
+      if (key === "all") return allChannels.length;
+      if (key === "fav") return favorites.size;
+      if (key === "usa") return allChannels.filter(c => matchCountry(c, "United States")).length;
+      if (key === "india") return allChannels.filter(c => matchCountry(c, "India")).length;
+      if (key === "nepal") return allChannels.filter(c => matchCountry(c, "Nepal")).length;
+      if (key === "kids") return allChannels.filter(matchKids).length;
+      const cat = CATEGORIES.find(c => c.key === key);
+      return cat ? allChannels.filter(c => matchGenre(c, cat.scope.value)).length : 0;
+    }
+    function buildCategoryBar() {
+      const bar = $("catbar");
+      bar.innerHTML = CATEGORIES.map(cat => `
+        <button class="cat-pill ${cat.key === "all" ? "active" : ""}" data-cat="${cat.key}">
+          <i data-lucide="${cat.icon}"></i>${esc(cat.label)}
+          <span class="cat-count" data-cat-count="${cat.key}">…</span>
+        </button>`).join("");
+      bar.querySelectorAll(".cat-pill").forEach(btn => btn.addEventListener("click", () => {
+        goCategory(btn.getAttribute("data-cat"));
+      }));
+      refreshIcons();
+      updateCategoryCounts();
+      syncCatbarTop();
+    }
+    function updateCategoryCounts() {
+      CATEGORIES.forEach(cat => {
+        const el = document.querySelector(`[data-cat-count="${cat.key}"]`);
+        if (el) el.textContent = categoryCount(cat.key).toLocaleString();
+      });
+    }
+    function setActiveCategory(key) {
+      document.querySelectorAll("#catbar .cat-pill").forEach(btn =>
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === key));
+    }
+    function categoryKeyForScope(scope) {
+      if (scope.kind === "fav") return "fav";
+      if (scope.kind === "kids") return "kids";
+      if (scope.kind === "country") return scope.value === "United States" ? "usa" : scope.value.toLowerCase();
+      if (scope.kind === "genre") return scope.value.toLowerCase();
+      if (scope.kind === "all") return "all";
+      return null; // search / continue / recommended / featured: no pill
+    }
+    function goCategory(key) {
+      const cat = CATEGORIES.find(c => c.key === key);
+      if (!cat) return;
+      setActiveCategory(key);
+      if (key === "all") { showHome(); return; }
+      openBrowse(cat.scope, scopeTitle(cat.scope));
+    }
+    // Keep the sticky bar parked exactly under the topbar at any width
+    // (the topbar wraps taller on small screens).
+    function syncCatbarTop() {
+      const topbar = document.querySelector(".topbar");
+      const bar = $("catbar");
+      if (topbar && bar) bar.style.top = topbar.offsetHeight + "px";
     }
 
     /* ========================================================
        HERO
        ======================================================== */
+    // Hero rotation: verified Featured Live movies + music once matched,
+    // otherwise the curated starter features.
+    function heroFeatures() {
+      if (featuredList.length >= 3) {
+        return featuredList.map(ch => ({
+          id: ch.id,
+          tag: "Featured Live",
+          desc: `${ch.group || "Live TV"} from ${ch.country || "around the world"} — verified live and playing now.`
+        }));
+      }
+      return HERO_FEATURES;
+    }
     function heroChannel(i) {
-      const feat = HERO_FEATURES[i % HERO_FEATURES.length];
+      const feats = heroFeatures();
+      const feat = feats[i % feats.length];
       return { ch: allChannels.find(c => c.id === feat.id) || STARTER_CHANNELS[0], feat };
     }
     function renderHero() {
@@ -1566,7 +1746,7 @@
         `<span>${esc(ch.country || "International")}</span><span>•</span><span>${esc(ch.group || "General")}</span>`;
       $("heroDesc").textContent = feat.desc;
       $("heroFavLabel").textContent = favorites.has(ch.id) ? "In My List ✓" : "My List";
-      $("heroDots").innerHTML = HERO_FEATURES.map((_, i) =>
+      $("heroDots").innerHTML = heroFeatures().map((_, i) =>
         `<button class="hero-dot ${i === heroIndex ? "active" : ""}" data-hero="${i}" aria-label="Featured ${i + 1}"></button>`
       ).join("");
       document.querySelectorAll(".hero-dot").forEach(d => d.addEventListener("click", () => {
@@ -1577,7 +1757,7 @@
     }
     function restartHeroTimer() {
       clearInterval(heroTimer);
-      heroTimer = setInterval(() => { heroIndex = (heroIndex + 1) % HERO_FEATURES.length; renderHero(); }, 8000);
+      heroTimer = setInterval(() => { heroIndex = (heroIndex + 1) % heroFeatures().length; renderHero(); }, 8000);
     }
 
     /* ========================================================
@@ -1656,8 +1836,10 @@
        HOME ROWS (lazy-rendered)
        ======================================================== */
     const ROW_DEFS = [
+      { key: "featured", title: "Featured Live — Movies & Music", icon: "flame", test: null },
       { key: "continue", title: "Continue Watching", icon: "history", test: null },
       { key: "top10", title: "Top 10 Today", icon: "trending-up", test: null },
+      { key: "recommended", title: "Recommended — verified working", icon: "badge-check", test: null },
       { key: "live", title: "Live Now", icon: "tv", test: null },
       { key: "nepal", title: "Nepal — Live TV", icon: "flag", test: (c) => matchCountry(c, "Nepal") },
       { key: "india", title: "India — Live TV", icon: "flag", test: (c) => matchCountry(c, "India") },
@@ -1666,7 +1848,7 @@
       { key: "sports", title: "Sports", icon: "trophy", test: (c) => matchGenre(c, "Sports") },
       { key: "movies", title: "Movies", icon: "clapperboard", test: (c) => matchGenre(c, "Movies") },
       { key: "entertainment", title: "Entertainment", icon: "sparkles", test: (c) => matchGenre(c, "Entertainment") },
-      { key: "kids", title: "Kids & Family", icon: "smile", test: (c) => matchGenre(c, "Kids") || matchGenre(c, "Family") },
+      { key: "kids", title: "Kids & Family", icon: "smile", test: matchKids },
       { key: "religious", title: "Religious", icon: "church", test: (c) => matchGenre(c, "Religious") },
       { key: "series", title: "Series", icon: "monitor-play", test: (c) => matchGenre(c, "Series") },
       { key: "animation", title: "Animation", icon: "palette", test: (c) => matchGenre(c, "Animation") },
@@ -1681,6 +1863,7 @@
     const ROW_LIMIT = 24;
 
     function rowChannels(def) {
+      if (def.key === "featured") return featuredList;
       if (def.key === "continue") {
         const byId = new Map(allChannels.map(c => [c.id, c]));
         return continueWatching.map(c => byId.get(c.id)).filter(Boolean);
@@ -1689,12 +1872,18 @@
         const byId = new Map(allChannels.map(c => [c.id, c]));
         return TOP10_IDS.map(id => byId.get(id)).filter(Boolean);
       }
+      if (def.key === "recommended") {
+        return allChannels.filter(c => recommendedIds.has(c.id));
+      }
       if (def.key === "live") return allChannels.slice(0, 60);
       return allChannels.filter(def.test);
     }
 
     function rowScope(def) {
       if (def.key === "continue") return { kind: "continue" };
+      if (def.key === "recommended") return { kind: "recommended" };
+      if (def.key === "featured") return { kind: "featured" };
+      if (def.key === "kids") return { kind: "kids" };
       if (def.key === "top10" || def.key === "live") return { kind: "all" };
       if (def.key === "nepal") return { kind: "country", value: "Nepal" };
       if (def.key === "india") return { kind: "country", value: "India" };
@@ -1722,9 +1911,15 @@
         const section = document.createElement("section");
         section.className = "row-section";
         section.dataset.rowKey = def.key;
+        const verifiedMeta = def.key === "recommended" ? recommendedMeta : def.key === "featured" ? featuredMeta : null;
+        const subtitle = (verifiedMeta && verifiedMeta.last_checked)
+          ? `<div class="row-sub">Streams verified working · checked ${new Date(verifiedMeta.last_checked).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</div>` : "";
         section.innerHTML = `
           <div class="row-head">
-            <h2 class="row-title"><i data-lucide="${def.icon}" style="width:18px;height:18px;color:var(--accent-2);"></i>${esc(def.title)} <span class="row-count">${list.length.toLocaleString()}</span></h2>
+            <div>
+              <h2 class="row-title"><i data-lucide="${def.icon}" style="width:18px;height:18px;color:var(--accent-2);"></i>${esc(def.title)} <span class="row-count">${list.length.toLocaleString()}</span></h2>
+              ${subtitle}
+            </div>
             <button class="row-showall" data-showall="${def.key}">Show all <i data-lucide="chevron-right"></i></button>
           </div>
           <div class="row-wrap">
@@ -1768,12 +1963,16 @@
       $("browseView").style.display = "block";
       $("browseTitle").textContent = title || scopeTitle(scope);
       setActiveNav(navKeyForScope(scope));
+      setActiveCategory(categoryKeyForScope(scope));
       setupCountrySelector();
       setupGenrePills();
       renderGrid();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     function scopeTitle(scope) {
+      if (scope.kind === "recommended") return "Recommended — verified working";
+      if (scope.kind === "featured") return "Featured Live — Movies & Music";
+      if (scope.kind === "kids") return "Kids & Family Channels";
       if (scope.kind === "fav") return "My List — Favorites";
       if (scope.kind === "continue") return "Continue Watching";
       if (scope.kind === "country") return scope.value === "Nepal" ? "🇳🇵 Nepal Live TV" : scope.value === "India" ? "🇮🇳 India Live TV" : scope.value + " Channels";
@@ -1784,7 +1983,8 @@
     function navKeyForScope(scope) {
       if (scope.kind === "fav") return "fav";
       if (scope.kind === "continue") return "continue";
-      if (scope.kind === "country") return scope.value.toLowerCase();
+      if (scope.kind === "kids") return "kids";
+      if (scope.kind === "country") return scope.value === "United States" ? "usa" : scope.value.toLowerCase();
       if (scope.kind === "genre") return scope.value.toLowerCase();
       return "all";
     }
@@ -1793,6 +1993,7 @@
       $("browseView").style.display = "none";
       $("homeView").style.display = "block";
       setActiveNav("home");
+      setActiveCategory("all");
       searchInput.value = "";
       searchClearBtn.style.display = "none";
       window.scrollTo({ top: 0 });
@@ -2122,11 +2323,13 @@
     const NAV_SCOPES = {
       home: null,
       all: { kind: "all" },
+      usa: { kind: "country", value: "United States" },
       nepal: { kind: "country", value: "Nepal" },
       india: { kind: "country", value: "India" },
       movies: { kind: "genre", value: "Movies" },
       news: { kind: "genre", value: "News" },
       sports: { kind: "genre", value: "Sports" },
+      kids: { kind: "kids" },
       fav: { kind: "fav" },
       continue: { kind: "continue" }
     };
@@ -2152,13 +2355,15 @@
       toggleFav(ch.id);
     });
     $("heroPrev").addEventListener("click", () => {
-      heroIndex = (heroIndex - 1 + HERO_FEATURES.length) % HERO_FEATURES.length;
+      const n = heroFeatures().length;
+      heroIndex = (heroIndex - 1 + n) % n;
       renderHero(); restartHeroTimer();
     });
     $("heroNext").addEventListener("click", () => {
-      heroIndex = (heroIndex + 1) % HERO_FEATURES.length;
+      heroIndex = (heroIndex + 1) % heroFeatures().length;
       renderHero(); restartHeroTimer();
     });
+    window.addEventListener("resize", debounce(syncCatbarTop, 150));
 
     /* Search */
     const debouncedSearch = debounce(() => {
@@ -2256,6 +2461,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       loadStored();
       refreshIcons();
+      buildCategoryBar();
       renderHero();
       restartHeroTimer();
       updateCounts();
@@ -2269,6 +2475,8 @@
         if (ch) setTimeout(() => playChannel(ch), 400);
       }
       loadPlaylist(DEFAULT_PLAYLIST_URL);
+      loadRecommended();
+      loadFeatured();
     });
   </script>
 </body>

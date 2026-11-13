@@ -1,0 +1,76 @@
+{
+  "last_checked": "2026-11-13T18:34:11.403247+00:00",
+  "source": "https://iptv-org.github.io/iptv/index.m3u",
+  "total_tested": 300,
+  "working": 215,
+  "dead": 70,
+  "uncertain": 15,
+  "skipped": 0,
+  "ffprobe_confirmed": 8,
+  "channels": [
+    {
+      "tvg_id": "1KZNTV.za@SD",
+      "name": "1KZN TV (576p)",
+      "url": "https://cdn.freevisiontv.co.za/sttv/smil:1kzn.stream.smil/playlist.m3u8",
+      "category": "Entertainment",
+      "country": "South Africa",
+      "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bebaae.jpg"
+    },
+    {
+      "tvg_id": "2x2.ru@SD",
+      "name": "2x2 (576p)",
+      "url": "http://176.118.197.101/2x2/index.m3u8",
+      "category": "Entertainment",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/fhQFLEl.png"
+    },
+    {
+      "tvg_id": "4everTheater.ua@SD",
+      "name": "4ever Theater (1080p)",
+      "url": "http://stream.mcquack.net/259/index.m3u8",
+      "category": "Entertainment",
+      "country": "Ukraine",
+      "logo": "https://i.imgur.com/kfngtev.png"
+    },
+    {
+      "tvg_id": "123TV.ve@SD",
+      "name": "123TV (480p)",
+      "url": "http://200.59.191.177:8000/play/a0lb/index.m3u8",
+      "category": "Kids",
+      "country": "Venezuela",
+      "logo": "https://i.imgur.com/xXGeZms.png"
+    },
+    {
+      "tvg_id": "312Kino.kg@SD",
+      "name": "312 Kino (406p)",
+      "url": "http://176.126.166.43:1935/live/312kino/playlist.m3u8",
+      "category": "Movies",
+      "country": "Kyrgyzstan",
+      "logo": "https://i.ibb.co/3m9LrLj/k7gIibH.png"
+    },
+    {
+      "tvg_id": "4everCinema.ua@SD",
+      "name": "4ever Cinema (1080p)",
+      "url": "http://stream.mcquack.net/258/index.m3u8",
+      "category": "Movies",
+      "country": "Ukraine",
+      "logo": "https://i.imgur.com/vFOgVbG.png"
+    },
+    {
+      "tvg_id": "1HDMusicTelevision.ru@HD",
+      "name": "1HD Music Television (1080p)",
+      "url": "http://176.118.197.101/1HD/index.m3u8",
+      "category": "Music",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/4Ww7CsR.png"
+    },
+    {
+      "tvg_id": "2TV.lt@SD",
+      "name": "2TV (1080p)",
+      "url": "https://lnk5511.bstrm.net/live/687e3ff1679c8d4d68fab6c5/hd/manifest.mpd",
+      "category": "Music",
+      "country": "Lithuania",
+      "logo": "https://i.imgur.com/sZUIhGc.png"
+    }
+  ]
+}
