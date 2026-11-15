@@ -14,6 +14,10 @@
 //   GET /api/pluto?id=<24-hex channel id>  — master playlist for a channel
 //       (optional &fp=roku|samsung|web selects the device fingerprint
 //       sent to the stitcher; default roku — see FINGERPRINTS below)
+//       (optional &v2=1 uses Pluto's newer v2 API instead: anonymous
+//       boot session at boot.pluto.tv, then the v2 stitcher with the
+//       session JWT. Test hook — the v1 embed path slates every
+//       unauthenticated profile as of Nov 2026.)
 //   GET /api/pluto?u=<encoded absolute URL> — proxied fetch of a nested
 //       playlist, media segment, or decryption key referenced by a playlist
 //
@@ -105,6 +109,29 @@ function buildStitcherUrl(channelId, fpName) {
   );
   return `${STITCHER_BASE}/${channelId}/master.m3u8?${params}`;
 }
+
+// Pluto v2 API (anonymous test path). Step 1: boot session at
+// boot.pluto.tv/v4/start — no account, so no username/password. The
+// response carries sessionToken + stitcherParams. Step 2: the v2
+// stitcher master playlist with jwt=<sessionToken>. Token lifetime is
+// ~4h; this test path boots fresh on every request (no caching).
+// If anonymous v2 works, add session caching before making it default.
+const BOOT_URL = "https://boot.pluto.tv/v4/start";
+const V2_STITCHER_BASE =
+  "https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/v2/stitch/hls/channel";
+const V2_BOOT_PARAMS = {
+  appName: "web",
+  appVersion: "8.0.0-111b2b9dc00bd0bea9030b30662159ed9e7c8bc6",
+  deviceVersion: "122.0.0",
+  deviceModel: "web",
+  deviceMake: "chrome",
+  deviceType: "web",
+  // Stable generated client id (one consistent virtual device).
+  clientID: "add63b26-3628-4929-b6e5-1785248975e5",
+  clientModelNumber: "1.0.0",
+  serverSideAds: "false",
+  drmCapabilities: "",
+};
 const CHANNEL_ID_RE = /^[0-9a-f]{24}$/i;
 const FETCH_TIMEOUT_MS = 15000;
 const MAX_PLAYLIST_BYTES = 2 * 1024 * 1024;
@@ -254,6 +281,60 @@ async function handleMaster(req, res, channelId, fpName) {
   return proxyResponse(upstream, req, res, "public, max-age=5");
 }
 
+async function handleMasterV2(req, res, channelId) {
+  if (!CHANNEL_ID_RE.test(channelId || "")) {
+    return sendError(res, 400, "Invalid Pluto channel id");
+  }
+  // Step 1: anonymous boot session (no account credentials).
+  let boot;
+  try {
+    const bootUrl = `${BOOT_URL}?${new URLSearchParams(V2_BOOT_PARAMS)}`;
+    const r = await fetch(bootUrl, {
+      headers: {
+        "User-Agent": UA,
+        Accept: "application/json",
+        Origin: "https://pluto.tv",
+        Referer: "https://pluto.tv/",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!r.ok) {
+      console.warn(`pluto proxy: v2 boot returned ${r.status}`);
+      return sendError(res, 502, `Pluto boot session failed (${r.status})`);
+    }
+    boot = await r.json();
+  } catch (err) {
+    console.warn(`pluto proxy: v2 boot failed: ${err.message}`);
+    return sendError(res, 502, "Could not reach Pluto TV");
+  }
+  const token = boot && boot.sessionToken;
+  const stitcherParams = boot && boot.stitcherParams;
+  if (!token || !stitcherParams) {
+    console.warn("pluto proxy: v2 boot response missing sessionToken/stitcherParams");
+    return sendError(res, 502, "Pluto boot session gave no token");
+  }
+  // Step 2: v2 stitcher master playlist with the session JWT.
+  const params =
+    typeof stitcherParams === "string"
+      ? stitcherParams
+      : new URLSearchParams(stitcherParams).toString();
+  const stitcherUrl =
+    `${V2_STITCHER_BASE}/${channelId}/master.m3u8?${params}` +
+    `&jwt=${encodeURIComponent(token)}&masterJWTPassthrough=true&includeExtendedEvents=true`;
+  let upstream;
+  try {
+    upstream = await fetchUpstream(stitcherUrl, req);
+  } catch (err) {
+    console.warn(`pluto proxy: v2 stitcher fetch failed for ${channelId}: ${err.message}`);
+    return sendError(res, 502, "Could not reach Pluto TV");
+  }
+  if (!upstream.ok) {
+    return sendError(res, upstream.status, `Pluto TV returned ${upstream.status}`);
+  }
+  return proxyResponse(upstream, req, res, "public, max-age=5");
+}
+
 async function handleFetch(req, res, rawUrl) {
   let target;
   try {
@@ -302,7 +383,12 @@ async function handler(req, res) {
     return sendError(res, 400, "Bad request URL");
   }
   try {
-    if (query.id) return await handleMaster(req, res, query.id, query.fp);
+    if (query.id) {
+      if (query.v2 === "1" || query.api === "v2") {
+        return await handleMasterV2(req, res, query.id);
+      }
+      return await handleMaster(req, res, query.id, query.fp);
+    }
     if (query.u) return await handleFetch(req, res, query.u);
     return sendError(res, 400, "Provide ?id=<Pluto channel id> or ?u=<encoded URL>");
   } catch (err) {
