@@ -2124,6 +2124,16 @@
       $("playerError").style.display = state === "error" ? "block" : "none";
     }
 
+    // Pluto TV channels in the playlist route through the dead jmp2.uk
+    // proxy (https://jmp2.uk/plu-<id>.m3u8). Rewrite them to our own Vercel
+    // proxy (/api/pluto), which fetches Pluto's stitcher server-side —
+    // Pluto sends no CORS headers, so browsers can't load it directly.
+    // Every other URL passes through untouched.
+    function resolvePlayUrl(url) {
+      const m = /jmp2\.uk\/plu-([0-9a-f]{24})\.m3u8/i.exec(url || "");
+      return m ? `/api/pluto?id=${m[1]}` : url;
+    }
+
     function playChannel(channel) {
       currentChannel = channel;
       activeChannelId = channel.id;
@@ -2147,10 +2157,11 @@
       video.removeAttribute("src");
       video.load();
 
-      const isHls = /\.m3u8($|\?)/i.test(channel.url) || channel.url.includes("m3u");
+      const playUrl = resolvePlayUrl(channel.url);
+      const isHls = /\.m3u8($|\?)/i.test(playUrl) || playUrl.includes("m3u") || playUrl.startsWith("/api/pluto");
       if (typeof Hls !== "undefined" && Hls.isSupported() && isHls) {
         hls = new Hls({ enableWorker: true, lowLatencyMode: true, maxBufferLength: 30 });
-        hls.loadSource(channel.url);
+        hls.loadSource(playUrl);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           buildQualityMenu();
@@ -2177,10 +2188,10 @@
           }
         });
       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = channel.url;
+        video.src = playUrl;
         video.play().catch(() => setCenter("paused"));
       } else {
-        video.src = channel.url;
+        video.src = playUrl;
         video.play().catch(() => setCenter("paused"));
       }
 
