@@ -12,6 +12,8 @@
 //
 // Endpoints:
 //   GET /api/pluto?id=<24-hex channel id>  — master playlist for a channel
+//       (optional &fp=roku|samsung|web selects the device fingerprint
+//       sent to the stitcher; default roku — see FINGERPRINTS below)
 //   GET /api/pluto?u=<encoded absolute URL> — proxied fetch of a nested
 //       playlist, media segment, or decryption key referenced by a playlist
 //
@@ -32,23 +34,77 @@ const STITCHER_BASE =
   "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel";
 const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36";
-// Device params for the stitcher. Location is Salt Lake City — the user
-// explicitly authorized sharing location with stream hosts for this work.
-const DEVICE_PARAMS = {
-  deviceType: "web",
-  deviceMake: "Chrome",
-  deviceModel: "web",
-  deviceVersion: "1.0",
-  appVersion: "1.0",
-  deviceLat: "40.76",
-  deviceLon: "-111.89",
-  deviceDNT: "false",
-  // Stable generated device ids (fixed so Pluto sees one consistent device).
-  deviceId: "8d45cb32-7812-4482-9e71-e0c26b115d40",
-  advertisingId: "9573b37f-789d-44a5-b10e-3e2658c3558d",
-  appName: "web",
-  serverSideAds: "false",
+// Device fingerprints for the stitcher (query params on the master URL).
+// Pluto slates the generic web profile (verified live 2026-11-14: every
+// channel returns the same "service ended" takedown-slate clip) — since
+// Feb 2026 Pluto requires an account for its regular web/app API, and
+// the unauthenticated web embed profile gets the slate. The Roku Channel
+// partner profile was verified serving real content 2026-08-16
+// (Free-TV/IPTV#1077) and is the default. ?fp=<name> on the ?id= request
+// selects a preset (unknown names fall back to the default).
+// Location in the web preset is Salt Lake City — the user explicitly
+// authorized sharing location with stream hosts for this work.
+const FINGERPRINTS = {
+  roku: {
+    advertisingId: "channel",
+    appName: "rokuchannel",
+    appVersion: "1.0",
+    bmodel: "bm1",
+    channel_id: "channel",
+    content: "channel",
+    content_rating: "ROKU_ADS_CONTENT_RATING",
+    content_type: "livefeed",
+    coppa: "false",
+    deviceDNT: "1",
+    deviceId: "channel",
+    deviceMake: "rokuChannel",
+    deviceModel: "web",
+    deviceType: "rokuChannel",
+    deviceVersion: "1.0",
+    embedPartner: "rokuChannel",
+    genre: "ROKU_ADS_CONTENT_GENRE",
+    is_lat: "1",
+    platform: "web",
+    rdid: "channel",
+    studio_id: "viacom",
+    tags: "ROKU_CONTENT_TAGS",
+  },
+  samsung: {
+    advertisingId: "{PSID}",
+    appVersion: "unknown",
+    deviceDNT: "{TARGETOPT}",
+    deviceId: "{PSID}",
+    deviceLat: "0",
+    deviceLon: "0",
+    deviceMake: "samsung",
+    deviceModel: "samsung",
+    deviceType: "samsung-tvplus",
+    deviceVersion: "unknown",
+    embedPartner: "samsung-tvplus",
+  },
+  web: {
+    deviceType: "web",
+    deviceMake: "Chrome",
+    deviceModel: "web",
+    deviceVersion: "1.0",
+    appVersion: "1.0",
+    deviceLat: "40.76",
+    deviceLon: "-111.89",
+    deviceDNT: "false",
+    // Stable generated device ids (fixed so Pluto sees one consistent device).
+    deviceId: "8d45cb32-7812-4482-9e71-e0c26b115d40",
+    advertisingId: "9573b37f-789d-44a5-b10e-3e2658c3558d",
+    appName: "web",
+    serverSideAds: "false",
+  },
 };
+const DEFAULT_FINGERPRINT = "roku";
+function buildStitcherUrl(channelId, fpName) {
+  const params = new URLSearchParams(
+    FINGERPRINTS[fpName] || FINGERPRINTS[DEFAULT_FINGERPRINT]
+  );
+  return `${STITCHER_BASE}/${channelId}/master.m3u8?${params}`;
+}
 const CHANNEL_ID_RE = /^[0-9a-f]{24}$/i;
 const FETCH_TIMEOUT_MS = 15000;
 const MAX_PLAYLIST_BYTES = 2 * 1024 * 1024;
@@ -180,12 +236,11 @@ async function proxyResponse(upstream, req, res, cacheControl) {
   }
 }
 
-async function handleMaster(req, res, channelId) {
+async function handleMaster(req, res, channelId, fpName) {
   if (!CHANNEL_ID_RE.test(channelId || "")) {
     return sendError(res, 400, "Invalid Pluto channel id");
   }
-  const params = new URLSearchParams(DEVICE_PARAMS);
-  const stitcherUrl = `${STITCHER_BASE}/${channelId}/master.m3u8?${params}`;
+  const stitcherUrl = buildStitcherUrl(channelId, fpName);
   let upstream;
   try {
     upstream = await fetchUpstream(stitcherUrl, req);
@@ -247,7 +302,7 @@ async function handler(req, res) {
     return sendError(res, 400, "Bad request URL");
   }
   try {
-    if (query.id) return await handleMaster(req, res, query.id);
+    if (query.id) return await handleMaster(req, res, query.id, query.fp);
     if (query.u) return await handleFetch(req, res, query.u);
     return sendError(res, 400, "Provide ?id=<Pluto channel id> or ?u=<encoded URL>");
   } catch (err) {
@@ -262,3 +317,5 @@ module.exports = handler;
 module.exports.rewritePlaylist = rewritePlaylist;
 module.exports.isAllowedHost = isAllowedHost;
 module.exports.proxiedUrl = proxiedUrl;
+module.exports.buildStitcherUrl = buildStitcherUrl;
+module.exports.FINGERPRINTS = FINGERPRINTS;
