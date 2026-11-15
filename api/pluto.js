@@ -55,13 +55,15 @@ const MAX_PLAYLIST_BYTES = 2 * 1024 * 1024;
 
 // Host allowlist for the ?u= fetch mode. Pluto serves its stitcher
 // playlists and media from its own domains; anything else is rejected.
-// EXTRA_CDN_HOSTS is intentionally empty: extend it ONLY after a live
-// run shows (via the rejection log below) that Pluto serves segments
-// from an additional host, and only with a host verified to be Pluto's.
+// plutotv.net is Pluto's segment/key CDN (verified live 2026-11-14:
+// the stitcher playlist for 00s Replay points segments and AES keys at
+// siloh-ns1.plutotv.net). EXTRA_CDN_HOSTS is for any further verified
+// Pluto host a live run reveals via the rejection log below.
 const EXTRA_CDN_HOSTS = [];
 function isAllowedHost(hostname) {
   const h = (hostname || "").toLowerCase();
   if (h === "pluto.tv" || h.endsWith(".pluto.tv")) return true;
+  if (h === "plutotv.net" || h.endsWith(".plutotv.net")) return true;
   return EXTRA_CDN_HOSTS.includes(h);
 }
 
