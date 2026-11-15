@@ -1,13 +1,101 @@
 {
-  "last_checked": "2026-11-13T18:34:11.403247+00:00",
+  "last_checked": "2026-11-14T07:23:51.665896+00:00",
   "source": "https://iptv-org.github.io/iptv/index.m3u",
-  "total_tested": 300,
-  "working": 215,
-  "dead": 70,
-  "uncertain": 15,
-  "skipped": 0,
-  "ffprobe_confirmed": 8,
+  "total_tested": 11469,
+  "working": 1561,
+  "dead": 9688,
+  "uncertain": 208,
+  "skipped": 15,
+  "ffprobe_confirmed": 54,
   "channels": [
+    {
+      "tvg_id": "10TV.in@SD",
+      "name": "10 TV (720p)",
+      "url": "https://mumbai-edge.smartplaytv.in/10TV/index.m3u8",
+      "category": "News",
+      "country": "India",
+      "logo": "https://xstreamcp-assets-msp.streamready.in/assets/LIVETV/LIVECHANNEL/LIVETV_LIVETVCHANNEL_10TV/images/LOGO_HD/image.png"
+    },
+    {
+      "tvg_id": "6TVTelugu.in@SD",
+      "name": "6 TV Telugu (576p)",
+      "url": "https://mumbai-edge.smartplaytv.in/6TVTelugu/index.m3u8",
+      "category": "News",
+      "country": "India",
+      "logo": "https://i.imgur.com/l3EcRnZ.png"
+    },
+    {
+      "tvg_id": "AMCLatinAmerica.us@Brazil",
+      "name": "AMC Latin America Brazil (720p)",
+      "url": "http://170.83.49.66:8083/AMCHD/index.m3u8",
+      "category": "Movies",
+      "country": "United States",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/AMC_logo_2019.svg/960px-AMC_logo_2019.svg.png"
+    },
+    {
+      "tvg_id": "3ABNLatino.us@SD",
+      "name": "3ABN Latino (1080p)",
+      "url": "http://138.59.177.78:9999/play/a0a3/index.m3u8",
+      "category": "Religious",
+      "country": "United States",
+      "logo": "https://i.imgur.com/Ugb4AFo.png"
+    },
+    {
+      "tvg_id": "100NEWS.ua@SD",
+      "name": "100% NEWS (576p)",
+      "url": "http://85.238.112.40:8810/hls_sec/239.33.16.32-.m3u8",
+      "category": "Business",
+      "country": "Ukraine",
+      "logo": "https://i.imgur.com/bSXKdK5.png"
+    },
+    {
+      "tvg_id": "365daysTV.ru@SD",
+      "name": "365 days TV (576p)",
+      "url": "http://stream.mcquack.net/70/index.m3u8",
+      "category": "Documentary",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/NfnAiTR.png"
+    },
+    {
+      "tvg_id": "AgroCanal.br@SD",
+      "name": "AgroCanal (720p)",
+      "url": "http://170.83.49.66:8083/AGROCANALHD/index.m3u8",
+      "category": "Education",
+      "country": "Brazil",
+      "logo": "https://i.imgur.com/5XyopHf.png"
+    },
+    {
+      "tvg_id": "PlusMaisUm.br@HD",
+      "name": "+MaisUm (720p)",
+      "url": "https://stream.ichibansys.com:3230/hybrid/play.m3u8",
+      "category": "Entertainment",
+      "country": "Brazil",
+      "logo": "https://i.ibb.co/ZRDvqJcf/Logo-Mais-Um-original-sem-fundo.png"
+    },
+    {
+      "tvg_id": "black.ru@SD",
+      "name": ".black (576p)",
+      "url": "http://stream.mcquack.net/263/index.m3u8",
+      "category": "Entertainment",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/Q4A6ci4.png"
+    },
+    {
+      "tvg_id": "red.ru@HD",
+      "name": ".red HD (1080p)",
+      "url": "http://178.134.1.158:8081/red/index.m3u8",
+      "category": "Entertainment",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/GET9Qut.png"
+    },
+    {
+      "tvg_id": "13emeRue.fr@SD",
+      "name": "13eme Rue",
+      "url": "http://192.99.186.30/stream/251/index.m3u8",
+      "category": "Entertainment",
+      "country": "France",
+      "logo": "https://i.imgur.com/k0DCMTL.png"
+    },
     {
       "tvg_id": "1KZNTV.za@SD",
       "name": "1KZN TV (576p)",
@@ -25,12 +113,68 @@
       "logo": "https://i.imgur.com/fhQFLEl.png"
     },
     {
-      "tvg_id": "4everTheater.ua@SD",
-      "name": "4ever Theater (1080p)",
-      "url": "http://stream.mcquack.net/259/index.m3u8",
+      "tvg_id": "312TV.kg@SD",
+      "name": "312 TV (406p)",
+      "url": "http://176.126.166.43:1935/live/312musik/playlist.m3u8",
       "category": "Entertainment",
+      "country": "Kyrgyzstan",
+      "logo": "https://i.ibb.co/S6sZvqk/iLSGi6c.png"
+    },
+    {
+      "tvg_id": "1Plus1Ukraina.ua@SD",
+      "name": "1+1 Ukraina (1080p)",
+      "url": "http://stream.mcquack.net/219/index.m3u8",
+      "category": "General",
       "country": "Ukraine",
-      "logo": "https://i.imgur.com/kfngtev.png"
+      "logo": "https://i.imgur.com/FlG7npq.png"
+    },
+    {
+      "tvg_id": "111TV.it@SD",
+      "name": "111 TV (720p)",
+      "url": "https://5db313b643fd8.streamlock.net/111/111/playlist.m3u8",
+      "category": "General",
+      "country": "Italy",
+      "logo": "https://i.imgur.com/kVREx1Q.png"
+    },
+    {
+      "tvg_id": "12TVParma.it@SD",
+      "name": "12 TV Parma (540p) [Not 24/7]",
+      "url": "https://5929b138b139d.streamlock.net/12TVParma/livestream/playlist.m3u8",
+      "category": "General",
+      "country": "Italy",
+      "logo": "https://i.imgur.com/mBYxWOg.png"
+    },
+    {
+      "tvg_id": "2Plus2.ua@SD",
+      "name": "2+2 (1080p)",
+      "url": "http://stream.mcquack.net/173/index.m3u8",
+      "category": "General",
+      "country": "Ukraine",
+      "logo": "https://i.imgur.com/v6KBgqk.png"
+    },
+    {
+      "tvg_id": "2M.ma@SD",
+      "name": "2M (576p)",
+      "url": "http://185.9.2.18/chid_218/index.m3u8",
+      "category": "General",
+      "country": "Morocco",
+      "logo": "https://i.imgur.com/PJYTfHi.png"
+    },
+    {
+      "tvg_id": "31Kanal.kz@SD",
+      "name": "31 Kanal (576p)",
+      "url": "http://stream.mcquack.net/388/index.m3u8",
+      "category": "General",
+      "country": "Kazakhstan",
+      "logo": "https://31.kz/noimage.png"
+    },
+    {
+      "tvg_id": "360RFTV.cr@SD",
+      "name": "360 RFTV (576p) [Geo-blocked]",
+      "url": "https://acceso.mediosdecostarica.com:3638/live/360rftvcrlive.m3u8",
+      "category": "General",
+      "country": "Costa Rica",
+      "logo": "https://i.imgur.com/EBtgnxR.png"
     },
     {
       "tvg_id": "123TV.ve@SD",
@@ -39,6 +183,14 @@
       "category": "Kids",
       "country": "Venezuela",
       "logo": "https://i.imgur.com/xXGeZms.png"
+    },
+    {
+      "tvg_id": "4FunKids.pl@SD",
+      "name": "4 Fun Kids (576i)",
+      "url": "https://stream.4fun.tv:8889/hls/4fk.m3u8",
+      "category": "Kids",
+      "country": "Poland",
+      "logo": "https://i.imgur.com/2JO5Y8c.png"
     },
     {
       "tvg_id": "312Kino.kg@SD",
@@ -71,6 +223,78 @@
       "category": "Music",
       "country": "Lithuania",
       "logo": "https://i.imgur.com/sZUIhGc.png"
+    },
+    {
+      "tvg_id": "4FunDance.pl@SD",
+      "name": "4 Fun Dance",
+      "url": "http://92.114.85.87:8018/play/a00k/index.m3u8",
+      "category": "Music",
+      "country": "Poland",
+      "logo": "https://i.imgur.com/ZEWHe1B.png"
+    },
+    {
+      "tvg_id": "51RadioTV.it@SD",
+      "name": "51 Radio TV (480p) [Geo-blocked]",
+      "url": "http://wms.shared.streamshow.it/canale51/canale51/playlist.m3u8",
+      "category": "Music",
+      "country": "Italy",
+      "logo": "https://www.51news.it/images/loghi/logo_tv_radio_51news.png"
+    },
+    {
+      "tvg_id": "24TV.tr@SD",
+      "name": "24 TV (720p)",
+      "url": "https://turkmedya-live.ercdn.net/tv24/tv24.m3u8",
+      "category": "News",
+      "country": "Turkey",
+      "logo": "https://i.imgur.com/8FO41es.png"
+    },
+    {
+      "tvg_id": "360.tr@SD",
+      "name": "360 (720p) [Not 24/7]",
+      "url": "https://turkmedya-live.ercdn.net/tv360/tv360.m3u8",
+      "category": "News",
+      "country": "Turkey",
+      "logo": "https://i.imgur.com/agn47sQ.png"
+    },
+    {
+      "tvg_id": "ARCanal.pa@SD",
+      "name": "A&R Canal (720p)",
+      "url": "http://51.222.9.192:3589/stream/play.m3u8",
+      "category": "Religious",
+      "country": "Panama",
+      "logo": "https://i.imgur.com/ejRJqSI.png"
+    },
+    {
+      "tvg_id": "scifi.ru@SD",
+      "name": ".sci-fi (576p)",
+      "url": "http://stream.mcquack.net/180/index.m3u8",
+      "category": "Science",
+      "country": "Russia",
+      "logo": "https://i.imgur.com/nSSUHcg.png"
+    },
+    {
+      "tvg_id": "4everDrama.ua@SD",
+      "name": "4ever Drama (1080p)",
+      "url": "http://stream.mcquack.net/260/index.m3u8",
+      "category": "Series",
+      "country": "Ukraine",
+      "logo": "https://i.imgur.com/CD3vZU6.png"
+    },
+    {
+      "tvg_id": "1001Noites.br@SD",
+      "name": "1001 Noites (480p)",
+      "url": "https://cpbr.appflux.com.br:2000/hls/1001noites/1001noites.m3u8",
+      "category": "Shop",
+      "country": "Brazil",
+      "logo": "https://i.imgur.com/dWA9y2J.png"
+    },
+    {
+      "tvg_id": "ASpor.tr@SD",
+      "name": "A Spor SD (1080p)",
+      "url": "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/aspor/aspor.m3u8",
+      "category": "Sports",
+      "country": "Turkey",
+      "logo": "https://i.imgur.com/ZhkZzLf.png"
     }
   ]
 }
