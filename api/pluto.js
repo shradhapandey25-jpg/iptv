@@ -13,11 +13,10 @@
 // Endpoints:
 //   GET /api/pluto?id=<24-hex channel id>  — master playlist for a channel
 //       (optional &fp=roku|samsung|web selects the device fingerprint
-//       sent to the stitcher; default roku — see FINGERPRINTS below)
-//       (optional &v2=1 uses Pluto's newer v2 API instead: anonymous
-//       boot session at boot.pluto.tv, then the v2 stitcher with the
-//       session JWT. Test hook — the v1 embed path slates every
-//       unauthenticated profile as of Nov 2026.)
+//       sent to the v1 stitcher; default roku — see FINGERPRINTS below)
+//   GET /api/pluto?id=<id>&v1=1 — the OLD v1 embed path (slated as of
+//       Nov 2026, kept as a fallback). Without &v1=1 the proxy uses
+//       Pluto's v2 API: anonymous boot session + v2 stitcher with JWT.
 //   GET /api/pluto?u=<encoded absolute URL> — proxied fetch of a nested
 //       playlist, media segment, or decryption key referenced by a playlist
 //
@@ -110,12 +109,14 @@ function buildStitcherUrl(channelId, fpName) {
   return `${STITCHER_BASE}/${channelId}/master.m3u8?${params}`;
 }
 
-// Pluto v2 API (anonymous test path). Step 1: boot session at
-// boot.pluto.tv/v4/start — no account, so no username/password. The
-// response carries sessionToken + stitcherParams. Step 2: the v2
-// stitcher master playlist with jwt=<sessionToken>. Token lifetime is
-// ~4h; this test path boots fresh on every request (no caching).
-// If anonymous v2 works, add session caching before making it default.
+// Pluto v2 API (the DEFAULT path — verified live 2026-11-14 serving
+// real content anonymously, e.g. "Along Came a Spider" on 00s Replay,
+// while the v1 embed path slates every profile). Step 1: boot session
+// at boot.pluto.tv/v4/start — no account, so no username/password.
+// The response carries sessionToken + stitcherParams. Step 2: the v2
+// stitcher master playlist with jwt=<sessionToken>. Tokens last ~4h;
+// the session is cached in memory and refreshed 30 min early, and a
+// 401 from the stitcher triggers one fresh-boot retry.
 const BOOT_URL = "https://boot.pluto.tv/v4/start";
 const V2_STITCHER_BASE =
   "https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/v2/stitch/hls/channel";
@@ -132,6 +133,51 @@ const V2_BOOT_PARAMS = {
   serverSideAds: "false",
   drmCapabilities: "",
 };
+// V2 session cache (module-level: survives warm invocations; cold
+// starts re-boot). Refresh 30 min before the ~4h token expiry.
+let v2Session = null; // { token, stitcherParams, expiresAt }
+const V2_SESSION_TTL_MS = 3.5 * 60 * 60 * 1000;
+
+async function bootV2Session() {
+  const bootUrl = `${BOOT_URL}?${new URLSearchParams(V2_BOOT_PARAMS)}`;
+  const r = await fetch(bootUrl, {
+    headers: {
+      "User-Agent": UA,
+      Accept: "application/json",
+      Origin: "https://pluto.tv",
+      Referer: "https://pluto.tv/",
+    },
+    redirect: "follow",
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
+  if (!r.ok) throw new Error(`boot returned ${r.status}`);
+  const boot = await r.json();
+  if (!boot || !boot.sessionToken || !boot.stitcherParams) {
+    throw new Error("boot response missing sessionToken/stitcherParams");
+  }
+  return {
+    token: boot.sessionToken,
+    stitcherParams: boot.stitcherParams,
+    expiresAt: Date.now() + V2_SESSION_TTL_MS,
+  };
+}
+
+async function getV2Session() {
+  if (v2Session && v2Session.expiresAt > Date.now()) return v2Session;
+  v2Session = await bootV2Session();
+  return v2Session;
+}
+
+function buildV2StitcherUrl(channelId, session) {
+  const params =
+    typeof session.stitcherParams === "string"
+      ? session.stitcherParams
+      : new URLSearchParams(session.stitcherParams).toString();
+  return (
+    `${V2_STITCHER_BASE}/${channelId}/master.m3u8?${params}` +
+    `&jwt=${encodeURIComponent(session.token)}&masterJWTPassthrough=true&includeExtendedEvents=true`
+  );
+}
 const CHANNEL_ID_RE = /^[0-9a-f]{24}$/i;
 const FETCH_TIMEOUT_MS = 15000;
 const MAX_PLAYLIST_BYTES = 2 * 1024 * 1024;
@@ -285,49 +331,31 @@ async function handleMasterV2(req, res, channelId) {
   if (!CHANNEL_ID_RE.test(channelId || "")) {
     return sendError(res, 400, "Invalid Pluto channel id");
   }
-  // Step 1: anonymous boot session (no account credentials).
-  let boot;
+  let session;
   try {
-    const bootUrl = `${BOOT_URL}?${new URLSearchParams(V2_BOOT_PARAMS)}`;
-    const r = await fetch(bootUrl, {
-      headers: {
-        "User-Agent": UA,
-        Accept: "application/json",
-        Origin: "https://pluto.tv",
-        Referer: "https://pluto.tv/",
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    });
-    if (!r.ok) {
-      console.warn(`pluto proxy: v2 boot returned ${r.status}`);
-      return sendError(res, 502, `Pluto boot session failed (${r.status})`);
-    }
-    boot = await r.json();
+    session = await getV2Session();
   } catch (err) {
     console.warn(`pluto proxy: v2 boot failed: ${err.message}`);
     return sendError(res, 502, "Could not reach Pluto TV");
   }
-  const token = boot && boot.sessionToken;
-  const stitcherParams = boot && boot.stitcherParams;
-  if (!token || !stitcherParams) {
-    console.warn("pluto proxy: v2 boot response missing sessionToken/stitcherParams");
-    return sendError(res, 502, "Pluto boot session gave no token");
-  }
-  // Step 2: v2 stitcher master playlist with the session JWT.
-  const params =
-    typeof stitcherParams === "string"
-      ? stitcherParams
-      : new URLSearchParams(stitcherParams).toString();
-  const stitcherUrl =
-    `${V2_STITCHER_BASE}/${channelId}/master.m3u8?${params}` +
-    `&jwt=${encodeURIComponent(token)}&masterJWTPassthrough=true&includeExtendedEvents=true`;
   let upstream;
   try {
-    upstream = await fetchUpstream(stitcherUrl, req);
+    upstream = await fetchUpstream(buildV2StitcherUrl(channelId, session), req);
   } catch (err) {
     console.warn(`pluto proxy: v2 stitcher fetch failed for ${channelId}: ${err.message}`);
     return sendError(res, 502, "Could not reach Pluto TV");
+  }
+  // Token expired mid-flight: clear the cache, re-boot once, retry.
+  if (upstream.status === 401) {
+    console.warn("pluto proxy: v2 stitcher 401, refreshing session and retrying");
+    v2Session = null;
+    try {
+      session = await getV2Session();
+      upstream = await fetchUpstream(buildV2StitcherUrl(channelId, session), req);
+    } catch (err) {
+      console.warn(`pluto proxy: v2 stitcher retry failed for ${channelId}: ${err.message}`);
+      return sendError(res, 502, "Could not reach Pluto TV");
+    }
   }
   if (!upstream.ok) {
     return sendError(res, upstream.status, `Pluto TV returned ${upstream.status}`);
@@ -384,10 +412,12 @@ async function handler(req, res) {
   }
   try {
     if (query.id) {
-      if (query.v2 === "1" || query.api === "v2") {
-        return await handleMasterV2(req, res, query.id);
+      // v2 is the default (v1 slates every profile); &v1=1 keeps the
+      // old embed path available as a fallback.
+      if (query.v1 === "1") {
+        return await handleMaster(req, res, query.id, query.fp);
       }
-      return await handleMaster(req, res, query.id, query.fp);
+      return await handleMasterV2(req, res, query.id);
     }
     if (query.u) return await handleFetch(req, res, query.u);
     return sendError(res, 400, "Provide ?id=<Pluto channel id> or ?u=<encoded URL>");
@@ -405,3 +435,5 @@ module.exports.isAllowedHost = isAllowedHost;
 module.exports.proxiedUrl = proxiedUrl;
 module.exports.buildStitcherUrl = buildStitcherUrl;
 module.exports.FINGERPRINTS = FINGERPRINTS;
+// Test-only: clear the cached v2 session between tests.
+module.exports._resetV2Session = () => { v2Session = null; };
